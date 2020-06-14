@@ -155,7 +155,7 @@
 				incomplete-dir-enabled = true;
 				rpc-authentication-required = "true";
 				rpc-username = "dmitry";
-				rpc-password = "NuxePuwq0!Coca";
+				rpc-password = (builtins.readFile ./transmission-password.txt);
 				rpc-bind-address = "0.0.0.0";
 				rpc-whitelist-enabled = false;
 			};
@@ -313,18 +313,7 @@
 	};
 
 	nixpkgs.overlays = [
-		#(import (builtins.fetchGit {
-		#	url = "https://github.com/dkudriavtsev/tilp-nix";
-		#	rev = "cc591e7c9830acfc8bd4a5334ff164015da22bf9";
-		#}))
-
 		(self: super: {
-			# vte = super.vte.overrideAttrs (_: {
-			# 	patches = [ (builtins.fetchurl
-			# 		"https://gist.githubusercontent.com/Francesco149/80ac74999d42bc51adf33f55ee5a0f4b/raw/8135aeabbec7bc7628199ec1886722937c825155/vte-120fps-0.56.0.diff"
-			# 	) ];
-			# });
-
 			rpcs3 = super.qt5.callPackage ./rpcs3.nix {};
 
 			libbluray = super.libbluray.override {
