@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+function urlencode {
+  local string="${1}"
+  local strlen=${#string}
+  local encoded=""
+  local pos c o
+
+  for (( pos=0 ; pos<strlen ; pos++ )); do
+     c=${string:$pos:1}
+     case "$c" in
+        [-_.~a-zA-Z0-9] ) o="${c}" ;;
+        * )               printf -v o '%%%02x' "'$c"
+     esac
+     encoded+="${o}"
+  done
+  echo -n "${encoded}"
+}
+
+function join_by { local IFS="$1"; shift; echo "$*"; }
+
+function shove {
+  URLS=()
+
+  for i in $*; do
+    fn=$RANDOM-"$(basename "$i")"
+    scp "$i" image-upload@WebServer.dk0.us:/var/www/files/uploads/"$fn"
+
+    URL=$(printf "http://u.dk0.us/%s" $(urlencode "$fn"))
+    echo $URL
+    URLS+=$URL
+  done
+
+  join_by $'\n' "$URLS" | xclip -selection clipboard
+}

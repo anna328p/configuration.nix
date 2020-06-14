@@ -1,0 +1,23 @@
+diff --git a/x3270/Makefile.obj.in b/x3270/Makefile.obj.in
+index c7b81a1..db784b6 100644
+--- a/x3270/Makefile.obj.in
++++ b/x3270/Makefile.obj.in
+@@ -85,14 +85,14 @@ x3270: $(OBJS1) $(DEP3270) $(DEP3270I) $(DEP32XX) $(DEP3270STUBS)
+ 	bdftopcf $< | gzip -n9 >$@
+ 
+ dryrun: dryrun.in
+-	/bin/cp $< $@
++	cp $< $@
+ 
+ man:: x3270.man
+-	if [ ! -f $(notdir $^) ]; then /bin/cp $< $(notdir $^); fi
++	if [ ! -f $(notdir $^) ]; then cp $< $(notdir $^); fi
+ man:: x3270-script.man
+-	if [ ! -f $(notdir $^) ]; then /bin/cp $< $(notdir $^); fi
++	if [ ! -f $(notdir $^) ]; then cp $< $(notdir $^); fi
+ man:: ibm_hosts.man
+-	if [ ! -f $(notdir $^) ]; then /bin/cp $< $(notdir $^); fi
++	if [ ! -f $(notdir $^) ]; then cp $< $(notdir $^); fi
+ 
+ install:: x3270
+ 	[ -d $(DESTDIR)$(BINDIR) ] || \
