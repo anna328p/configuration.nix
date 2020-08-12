@@ -3,7 +3,6 @@
 {
 	imports = [
 		./hardware-configuration.nix
-		(builtins.fetchurl "https://gist.github.com/peti/304a14130d562602c1ffa9128543bf38/raw/f651f7b1bc3cac130ed83f1ad5f3c1f2bcd9bf18/disable-gdm-auto-suspend.nix")
 		<home-manager/nixos>
 	];
 
@@ -21,13 +20,6 @@
 
 		initrd = {
 			availableKernelModules = [ "amdgpu" "vfio-pci" ];
-			preDeviceCommands = ''
-				DEVS="0000:0f:00.0 0000:0f:00.1" # 0000:03:00.0"
-				for dev in $DEVS; do
-					echo "vfio-pci" > /sys/bus/pci/devices/$dev/driver_override
-				done
-				modprobe -i vfio-pci
-			'';
 		};
 
 		plymouth.enable = false;
@@ -36,7 +28,7 @@
 	};
 
 	networking = {
-		hostName = "theseus";
+		hostName = "hermes";
 		domain = "ad.dk0.us";
 
 		networkmanager = {
@@ -48,7 +40,7 @@
 
 		firewall.enable = false;
 
-		nameservers = [ "104.248.109.126" "10.10.10.111" "10.10.10.1" "1.1.1.1" "1.0.0.1" ];
+		nameservers = [ "10.10.10.1" "1.1.1.1" "1.0.0.1" ];
 
 		enableIPv6 = true;
 	};
@@ -68,20 +60,18 @@
 		zsh tmux neovim thefuck hexedit mosh minicom lftp 
 		exa dfc ripgrep file pv units neofetch dnsutils ldns speedtest-cli wget
 		git gitAndTools.hub yadm
-		acpi usbutils pciutils lm_sensors dmidecode nvtop efibootmgr multipath-tools
+		acpi usbutils pciutils lm_sensors dmidecode efibootmgr multipath-tools
 		linuxConsoleTools sdl-jstest
 		zip unzip p7zip zstd xz
 		ffmpeg imagemagick ghostscript
 
 		nix gnupg1 nix-prefetch-github nix-prefetch-git
 		adoptopenjdk-hotspot-bin-8 ruby_2_6 nodejs bundix binutils patchelf
-		(python3.withPackages (p: with p; [ powerline ]))
 
 		firefox-devedition-bin transgui
 		gimp inkscape krita gimpPlugins.resynthesizer2 obs-studio
-		libreoffice (gnome3.geary.overrideAttrs(_: { doCheck = false; }))
+		libreoffice gnome3.geary
 		mpv vlc rhythmbox gnome3.gnome-sound-recorder
-		qjackctl gcolor2 gstreamer
 		virtmanager spice_gtk
 		# podman conmon runc slirp4netns fuse-overlayfs
 	];
@@ -115,8 +105,7 @@
 				xclip xautomation xdotool xfontsel catclock wmctrl
 				termite maim slop libnotify pavucontrol youtube-dl powertop
 
-				discord hexchat fractal weechat # tdesktop
-				element-desktop
+				discord hexchat fractal weechat element-desktop # tdesktop
 				zoom-us arduino
 				blender kicad freecad prusa-slicer
 				kdenlive
@@ -124,16 +113,12 @@
 				# tilp gfm
 
 				wineWowPackages.unstable winetricks lutris
-				steam minecraft cataclysm-dda openarena multimc minetest
-				 rpcs3
+				steam openarena multimc
 
-				autokey bchunk espeak-ng
-				vulkan-loader vulkan-tools
+				bchunk espeak-ng
 
 				piper
-
 				direnv
-
 				calibre
 			];
 		};
@@ -152,21 +137,6 @@
 		openssh.enable = true;
 		printing.enable = true;
 		gpm.enable = true;
-		transmission = {
-			enable = true;
-			settings = {
-				download-dir = "/media/storage/torrents";
-				ncomplete-dir = "/media/storage/torrents/incomplete";
-				incomplete-dir-enabled = true;
-				rpc-authentication-required = "true";
-				rpc-username = "dmitry";
-				rpc-password = (builtins.readFile ./transmission-password.txt);
-				rpc-bind-address = "0.0.0.0";
-				rpc-whitelist-enabled = false;
-			};
-			port = 9091;
-		};
-		# Enable the X11 windowing system.
 		xserver = {
 			enable = true;
 			layout = "us";
@@ -175,7 +145,7 @@
 				xterm.enable = false;
 			};
 			displayManager = {
-				defaultSession = "gnome-xorg";
+				# defaultSession = "gnome-xorg";
 				gdm = {
 					enable = true;
 					wayland = true;
@@ -198,7 +168,6 @@
 
 		gnome3 = {
 			chrome-gnome-shell.enable = true;
-			#rygel.enable = true;
 			evolution-data-server.enable = true;
 			glib-networking.enable = true;
 			gnome-user-share.enable = true;
@@ -262,7 +231,6 @@
 	sound.enable = true;
 
 	hardware = {
-		# pulseaudio.enable = false;
 		pulseaudio = {
 			enable = true;
 			support32Bit = true;
@@ -324,26 +292,13 @@
 
 	nixpkgs.overlays = [
 		(self: super: {
-			x3270 = super.callPackage ./x3270.nix {};
-
-			libbluray = super.libbluray.override {
-				withAACS = true;
-				withBDplus = true;
-			};
-
 			nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
 				inherit pkgs;
 			};
-
-			airwave = super.qt5.callPackage ./airwave.nix {};
-
-			wine = super.wine.overrideAttrs (oldAttrs: {
-				buildInputs = oldAttrs.buildInputs ++ [ super.libxml2 ];
-			});
 		})
 	];
 	nix.nixPath = options.nix.nixPath.default ++ [ "nixpkgs-overlays=/etc/nixos/overlays-compat/" ];
 
-	system.stateVersion = "18.09"; # Do not change unless specified in release notes
+	system.stateVersion = "20.09"; # Do not change unless specified in release notes
 }
 # vim: noet:ts=4:sw=4:ai:mouse=a
