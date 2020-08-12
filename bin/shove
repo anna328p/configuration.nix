@@ -19,17 +19,16 @@ function urlencode {
 
 function join_by { local IFS="$1"; shift; echo "$*"; }
 
-function shove {
-  URLS=()
+URLS=()
 
-  for i in $*; do
-    fn=$RANDOM-"$(basename "$i")"
-    scp "$i" image-upload@WebServer.dk0.us:/var/www/files/uploads/"$fn"
+for i in "$@"; do
+  fn=$RANDOM-"$(basename "$i")"
 
-    URL=$(printf "http://u.dk0.us/%s" $(urlencode "$fn"))
-    echo $URL
-    URLS+=$URL
-  done
+  scp "$i" "image-upload@WebServer.dk0.us:'/var/www/files/uploads/$fn'"
 
-  join_by $'\n' "$URLS" | xclip -selection clipboard
-}
+  URL=$(printf "https://u.dk0.us/%s" $(urlencode "$fn"))
+  echo $URL
+  URLS+=$URL
+done
+
+join_by $'\n' "$URLS" | xclip -selection clipboard

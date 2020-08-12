@@ -58,6 +58,8 @@
 			'';
 
 			sessionVariables = {
+				EDITOR = "nvim";
+				VISUAL = "nvim";
 				NIX_AUTO_RUN = 1;
 			};
 
@@ -67,6 +69,8 @@
 				":w" = "sync";
 				":q" = "exit";
 				":wq" = "sync; exit";
+				nbs = "time sudo nixos-rebuild switch --show-trace";
+				nbsu = "time sudo nixos-rebuild switch --upgrade --show-trace";
 			};
 
 			prezto = {
@@ -100,7 +104,7 @@
 				autosuggestions.color = "fg=blue";
 				editor.dotExpansion = true;
 				prompt.theme = "agnoster";
-				syntaxHighlighting.highlighters = [ "main" "brackets" "pattern" "line" "cursor" "root" ];
+				syntaxHighlighting.highlighters = [ "main" "brackets" "pattern" "line" "root" ];
 				terminal = {
 					autoTitle = true;
 					multiplexerTitleFormat = "%s";
@@ -122,33 +126,32 @@
 			historyLimit = 300000;
 			newSession = true;
 			plugins = with pkgs.tmuxPlugins; [
-				sensible
-				yank
+				sensible yank
 				{
 					plugin = resurrect;
 					extraConfig = ''
-					set -g @resurrect-strategy-nvim 'session'
-					set -g @resurrect-processes 'ssh telnet mosh-client'
-					set -g @resurrect-capture-pane-contents 'on'
+						set -g @resurrect-strategy-nvim 'session'
+						set -g @resurrect-processes 'ssh telnet mosh-client nvim dmesg'
+						set -g @resurrect-capture-pane-contents 'on'
 					'';
 				}
 				{
 					plugin = continuum;
 					extraConfig = ''
-					set -g @continuum-restore on
-					set -g @continuum-save-interval '10' # minutes
+						set -g @continuum-restore on
+						set -g @continuum-save-interval '10' # minutes
 					'';
 				}
 			];
 			terminal = "xterm-256color";
 
 			extraConfig = ''
-			setw -g alternate-screen on
-			set-option -ga terminal-overrides ",xterm-termite:Tc,xterm-256color:Tc"
-			set-option -ga status-style fg=black,bg=blue
-			set-option -ga clock-mode-colour white
-			bind-key -n C-j detach
-			set -g mouse on
+				setw -g alternate-screen on
+				set-option -ga terminal-overrides ",xterm-termite:Tc,xterm-256color:Tc"
+				set-option -ga status-style fg=black,bg=blue
+				set-option -ga clock-mode-colour white
+				bind-key -n C-j detach
+				set -g mouse on
 			'';
 		};
 
@@ -162,18 +165,18 @@
 		direnv = {
 			enable = true;
 			enableZshIntegration = true;
-			# enableNixDirenvIntegration = true;
+			enableNixDirenvIntegration = true;
 		};
 
 		ssh = {
 			enable = true;
 			compression = true;
 			controlMaster = "yes";
-			controlPersist = "30m";
+			# controlPersist = "30m";
 			forwardAgent = true;
 			matchBlocks = {
 				"theseus-remote" = {
-					user = "dmitry";
+					user = "anna";
 					hostname = "ddns.dk0.us";
 					port = 2225;
 				};
@@ -190,13 +193,23 @@
 				};
 
 				"leonardo" = {
-					user = "dmitry";
+					user = "anna";
 					hostname = "leonardo.dk0.us";
 				};
 
 				"neo" = {
-					user = "dmitry";
+					user = "anna";
 					hostname = "neo.dk0.us";
+				};
+
+				"iris" = {
+					user = "anna";
+					hostname = "iris.dk0.us";
+				};
+
+				"hephaestus" = {
+					user = "pi";
+					hostname = "hephaestus.ad.dk0.us";
 				};
 			};
 		};
@@ -352,61 +365,36 @@
 				'';
 				packages.myVimPackage = with pkgs.vimPlugins; {
 					start = [
-						base16-vim
-						vim-gitgutter
+						base16-vim vim-gitgutter
 
-						deoplete-nvim
-						neco-vim
+						deoplete-nvim neco-vim
 
-						neoinclude-vim
-						neco-syntax
-						deoplete-emoji
-						deoplete-github
 						neomake
-						deoplete-rust
-						deoplete-clang
+						neoinclude-vim neco-syntax
+						deoplete-emoji deoplete-github
+						deoplete-rust deoplete-clang
 						deoplete-zsh
 
 						vim-autoformat
-						colorizer
-						vim-airline
-						vim-airline-themes
-						rainbow
+						colorizer rainbow
+						vim-airline vim-airline-themes
 
-						dart-vim-plugin
-						vim-polyglot
 						syntastic
-						vim-nix
+						vim-polyglot vim-nix dart-vim-plugin
 
-						nerdtree
-						vim-nerdtree-tabs
+						nerdtree vim-nerdtree-tabs
 						tabular
 
-						vim-commentary
-						vim-dispatch
-						vim-fugitive
-						vim-rhubarb
-						vim-sensible
-						vim-sleuth
-						vim-speeddating
+						vim-commentary vim-dispatch vim-fugitive vim-rhubarb
+						vim-sensible vim-sleuth vim-speeddating
 
-						vim-sneak
-						vim-surround
-						delimitMate
-						vim-easytags
-						vim-startify
-						bclose-vim
+						vim-sneak vim-surround delimitMate vim-easytags vim-startify bclose-vim
 
-						ctrlp-py-matcher
-						fzf-vim
+						ctrlp-py-matcher fzf-vim
 
-						tmux-complete-vim
-						vim-misc
-						tagbar
-						a-vim
+						tmux-complete-vim vim-misc tagbar a-vim
 
-						vim-obsession
-						vim-prosession
+						vim-obsession vim-prosession
 					];
 				};
 			};
@@ -476,6 +464,5 @@
 	};
 
 	systemd = {
-		user.sessionVariables = { EDITOR = "nvim"; VISUAL = "nvim"; };
 	};
 }

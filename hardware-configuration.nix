@@ -43,7 +43,13 @@
 		};
 
 		"/media/backup" = {
-			device = "/dev/disk/by-uuid/6affc920-80dd-41f1-b7c5-b304ea7cb234";
+			device = "/dev/disk/by-uuid/aad5ac37-057e-4f18-88ff-81632eefe237";
+			fsType = "btrfs";
+			options = [ "nofail" "noauto" "x-systemd.automount" ];
+		};
+
+		"/media/backup2" = {
+			device = "/dev/disk/by-uuid/56cd0ce4-63a1-4146-873c-b565a19f5d10";
 			fsType = "btrfs";
 			options = [ "nofail" "noauto" "x-systemd.automount" ];
 		};

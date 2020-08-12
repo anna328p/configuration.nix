@@ -42,13 +42,12 @@
 		networkmanager = {
 			enable = true;
 			dhcp = "dhclient";
-			# dns = "dnsmasq";
-			# packages = [ pkgs.dnsmasq ];
+			dns = "dnsmasq";
+			packages = [ pkgs.dnsmasq ];
 		};
+
 		firewall.enable = false;
 
-		# interfaces.enp8s0.ipv4 = { addresses = [ { address = "10.10.10.50"; prefixLength = 16; } ]; };
-		# defaultGateway = { address = "10.10.10.1"; interface = "enp8s0"; };
 		nameservers = [ "104.248.109.126" "10.10.10.111" "10.10.10.1" "1.1.1.1" "1.0.0.1" ];
 
 		enableIPv6 = true;
@@ -69,7 +68,7 @@
 		zsh tmux neovim thefuck hexedit mosh minicom lftp 
 		exa dfc ripgrep file pv units neofetch dnsutils ldns speedtest-cli wget
 		git gitAndTools.hub yadm
-		acpi usbutils pciutils lm_sensors dmidecode nvtop efibootmgr
+		acpi usbutils pciutils lm_sensors dmidecode nvtop efibootmgr multipath-tools
 		linuxConsoleTools sdl-jstest
 		zip unzip p7zip zstd xz
 		ffmpeg imagemagick ghostscript
@@ -81,9 +80,9 @@
 		firefox-devedition-bin transgui
 		gimp inkscape krita gimpPlugins.resynthesizer2 obs-studio
 		libreoffice (gnome3.geary.overrideAttrs(_: { doCheck = false; }))
-		mpv vlc rhythmbox gnome3.gnome-sound-recorder audacity
-		pipewire-libs qjackctl gcolor2 gstreamer gst_plugins_good
-		virtmanager spice_gtk looking-glass-client barrier scream-receivers
+		mpv vlc rhythmbox gnome3.gnome-sound-recorder
+		qjackctl gcolor2 gstreamer
+		virtmanager spice_gtk
 		# podman conmon runc slirp4netns fuse-overlayfs
 	];
 	environment.pathsToLink = [ "/share/zsh" ];
@@ -98,8 +97,8 @@
 		mutableUsers = false;
 		defaultUserShell = pkgs.zsh;
 
-		users.dmitry = {
-		    description = "Dmitry Kudriavtsev";
+		users.anna = {
+		    description = "Anna";
 			isNormalUser = true;
 			uid = 1000;
 
@@ -116,13 +115,17 @@
 				xclip xautomation xdotool xfontsel catclock wmctrl
 				termite maim slop libnotify pavucontrol youtube-dl powertop
 
-				discord hexchat fractal weechat
-				zoom-us arduino blender kicad freecad kdenlive
+				discord hexchat fractal weechat # tdesktop
+				element-desktop
+				zoom-us arduino
+				blender kicad freecad prusa-slicer
+				kdenlive
 				google-play-music-desktop-player hercules x3270
 				# tilp gfm
 
-				wineWowPackages.unstable winetricks
-				steam minecraft cataclysm-dda openarena rpcs3 multimc minetest
+				wineWowPackages.unstable winetricks lutris
+				steam minecraft cataclysm-dda openarena multimc minetest
+				 rpcs3
 
 				autokey bchunk espeak-ng
 				vulkan-loader vulkan-tools
@@ -130,6 +133,8 @@
 				piper
 
 				direnv
+
+				calibre
 			];
 		};
 		users.root = {
@@ -138,7 +143,7 @@
 	};
 
 	home-manager = {
-		users.dmitry = (import ./home.nix);
+		users.anna = (import ./home.nix);
 		useUserPackages = true;
 		useGlobalPkgs = true;
 	};
@@ -151,7 +156,7 @@
 			enable = true;
 			settings = {
 				download-dir = "/media/storage/torrents";
-				incomplete-dir = "/media/storage/torrents/incomplete";
+				ncomplete-dir = "/media/storage/torrents/incomplete";
 				incomplete-dir-enabled = true;
 				rpc-authentication-required = "true";
 				rpc-username = "dmitry";
@@ -165,7 +170,6 @@
 		xserver = {
 			enable = true;
 			layout = "us";
-			#videoDrivers = [ "nvidiaBeta" ];
 			desktopManager = {
 				gnome3.enable = true;
 				xterm.enable = false;
@@ -174,31 +178,33 @@
 				defaultSession = "gnome-xorg";
 				gdm = {
 					enable = true;
-					wayland = false;
+					wayland = true;
 				};
 			};
 			libinput.enable = true;
 			wacom.enable = true;
-			# config = pkgs.lib.mkOverride 50 (builtins.readFile ./xorg.conf);
 		};
 		udev.extraRules = ''
+			# Steam Controller
 			KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1050", ATTRS{idProduct}=="0113|0114|0115|0116|0120|0200|0402|0403|0406|0407|0410", TAG+="uaccess"
-
-			# This rule is needed for basic functionality of the controller in Steam and keyboard/mouse emulation
 			SUBSYSTEM=="usb", ATTRS{idVendor}=="28de", MODE="0666"
-
 			KERNEL=="uinput", MODE="0660", GROUP="users", OPTIONS+="static_node=uinput"
-
-			# Valve HID devices over USB hidraw
 			KERNEL=="hidraw*", ATTRS{idVendor}=="28de", MODE="0666"
-
-			# Valve HID devices over bluetooth hidraw
 			KERNEL=="hidraw*", KERNELS=="*28DE:*", MODE="0666"
 
 			KERNEL=="tun", GROUP="users", MODE="0660"
 		'';
 		usbmuxd.enable = true;
-		gnome3.chrome-gnome-shell.enable = true;
+
+		gnome3 = {
+			chrome-gnome-shell.enable = true;
+			#rygel.enable = true;
+			evolution-data-server.enable = true;
+			glib-networking.enable = true;
+			gnome-user-share.enable = true;
+			sushi.enable = true;
+			tracker-miners.enable = true;
+		};
 
 		ratbagd.enable = true;
 
@@ -218,6 +224,8 @@
 		};
 
 		pipewire.enable = true;
+
+		flatpak.enable = true;
 	};
 
 	virtualisation = {
@@ -246,8 +254,9 @@
 
 	environment.variables = {
 		EDITOR = "nvim";
+		VISUAL = "nvim";
 		MOZ_ENABLE_WAYLAND = "true";
-		# TRANSMISSION_WEB_HOME = pkgs.fetchzip { url = https://github.com/killemov/Shift/archive/master.zip; };
+		SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS = "0";
 	};
 
 	sound.enable = true;
@@ -256,7 +265,7 @@
 		# pulseaudio.enable = false;
 		pulseaudio = {
 			enable = true;
-		  support32Bit = true;
+			support32Bit = true;
 			extraModules = [ pkgs.pulseaudio-modules-bt ];
 			package = pkgs.pulseaudioFull.override { jackaudioSupport = true; };
 			daemon.config = {
@@ -310,41 +319,30 @@
 		permittedInsecurePackages = [
 			"p7zip-16.02"
 		];
+		allowBroken = true;
 	};
 
 	nixpkgs.overlays = [
 		(self: super: {
-			rpcs3 = super.qt5.callPackage ./rpcs3.nix {};
+			x3270 = super.callPackage ./x3270.nix {};
 
 			libbluray = super.libbluray.override {
 				withAACS = true;
 				withBDplus = true;
 			};
 
-			x3270 = super.callPackage ./x3270.nix {};
-
-			pipewire-libs = super.lowPrio (super.stdenv.mkDerivation {
-				pname = "pipewirelibs";
-				inherit (self.pipewire) version src;
-
-				dontBuild = true;
-
-				installPhase = ''
-					mkdir -p $out/lib
-					cp -pdv ${self.pipewire.lib}/lib/pipewire-*/pulse/* $out/lib
-				'';
-			});
-
 			nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
 				inherit pkgs;
 			};
+
+			airwave = super.qt5.callPackage ./airwave.nix {};
+
+			wine = super.wine.overrideAttrs (oldAttrs: {
+				buildInputs = oldAttrs.buildInputs ++ [ super.libxml2 ];
+			});
 		})
 	];
 	nix.nixPath = options.nix.nixPath.default ++ [ "nixpkgs-overlays=/etc/nixos/overlays-compat/" ];
-
-	# system.replaceRuntimeDependencies = [
-	# 	{ original = pkgs.libpulseaudio; replacement = pkgs.pipewire-libs; }
-	# ];
 
 	system.stateVersion = "18.09"; # Do not change unless specified in release notes
 }
