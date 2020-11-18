@@ -7,9 +7,10 @@
 	];
 
 	boot = {
-		kernelPackages = pkgs.linuxPackages_latest;
-		kernelParams = [ "iomem=relaxed" "pcie_aspm=off" ];
-		kernelModules = [ "kvm-amd" "snd-seq" "snd-rawmidi" "nct6775" ];
+		kernelPackages = pkgs.linuxPackages_testing;
+		kernelParams = [ "iomem=relaxed" "iwlwifi.swcrypto=0" "bluetooth.disable_ertm=1" ];
+		kernelModules = [ "kvm-amd" "snd-seq" "snd-rawmidi" "nct6775" "v4l2loopback" ];
+		extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
 		loader = {
 			systemd-boot.enable = true;
 			efi = {
@@ -19,12 +20,13 @@
 		};
 
 		initrd = {
-			availableKernelModules = [ "amdgpu" "vfio-pci" ];
+			availableKernelModules = [ "amdgpu" ];
 		};
 
-		plymouth.enable = false;
-
 		supportedFilesystems = [ "ntfs" "exfat" ];
+		
+		plymouth.enable = true;
+		tmpOnTmpfs = true;
 	};
 
 	networking = {
@@ -60,26 +62,31 @@
 		zsh tmux neovim thefuck hexedit mosh minicom lftp 
 		exa dfc ripgrep file pv units neofetch dnsutils ldns speedtest-cli wget
 		git gitAndTools.hub yadm
-		acpi usbutils pciutils lm_sensors dmidecode efibootmgr multipath-tools
+		acpi usbutils pciutils lm_sensors dmidecode efibootmgr multipath-tools powertop
 		linuxConsoleTools sdl-jstest
 		zip unzip p7zip zstd xz
 		ffmpeg imagemagick ghostscript
+		xxd
 
 		nix gnupg1 nix-prefetch-github nix-prefetch-git
-		adoptopenjdk-hotspot-bin-8 ruby_2_6 nodejs bundix binutils patchelf
+		adoptopenjdk-hotspot-bin-8 ruby_2_7 nodejs bundix binutils patchelf
+		solargraph
 
 		firefox-devedition-bin transgui
-		gimp inkscape krita gimpPlugins.resynthesizer2 obs-studio
+		gimp inkscape krita
+		obs-studio obs-v4l2sink
 		libreoffice gnome3.geary
 		mpv vlc rhythmbox gnome3.gnome-sound-recorder
 		virtmanager spice_gtk
 		# podman conmon runc slirp4netns fuse-overlayfs
+
+		gnomeExtensions.gsconnect
 	];
 	environment.pathsToLink = [ "/share/zsh" ];
 
 	fonts.fonts = with pkgs; [
 		source-code-pro source-sans-pro source-serif-pro
-		noto-fonts noto-fonts-cjk noto-fonts-emoji
+		noto-fonts noto-fonts-cjk noto-fonts-emoji-blob-bin
 		liberation_ttf
 	];
 
@@ -98,28 +105,33 @@
 			extraGroups = [
 				"wheel" "networkmanager" "dialout" "transmission" "audio"
 				"vboxusers" "adbusers" "libvirtd" "jackaudio" "docker"
+				"scanner" "lp"
 			];
 
 			hashedPassword = "$6$o3HFaJySc0ptEcz$tr5ndkC9HMA0RDVobaLUncgzEiveeWtSJV8659EYdA2EnrNxB9vTrSmJVv5lAlF8nR0fu4HpBJ5e5wP02LHqq0";
 			packages = with pkgs; [
 				xclip xautomation xdotool xfontsel catclock wmctrl
-				termite maim slop libnotify pavucontrol youtube-dl powertop
+				maim slop libnotify pavucontrol youtube-dl
 
-				discord hexchat fractal weechat element-desktop # tdesktop
+				discord hexchat weechat element-desktop tdesktop
 				zoom-us arduino
-				blender kicad freecad prusa-slicer
+				blender kicad prusa-slicer # freecad
 				kdenlive
-				google-play-music-desktop-player hercules x3270
-				# tilp gfm
+				google-play-music-desktop-player
+				tilp gfm
 
-				wineWowPackages.unstable winetricks lutris
-				steam openarena multimc
+				# wineWow winetricks wineasio protontricks
+				wineWowPackages.staging winetricks
+				steam retroarch libretro.vba-next libretro.bsnes-mercury
+				openarena osu-lazer multimc
 
 				bchunk espeak-ng
+				carla
 
 				piper
 				direnv
-				calibre
+				anki
+				# calibre
 			];
 		};
 		users.root = {
@@ -158,12 +170,34 @@
 			# Steam Controller
 			KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1050", ATTRS{idProduct}=="0113|0114|0115|0116|0120|0200|0402|0403|0406|0407|0410", TAG+="uaccess"
 			SUBSYSTEM=="usb", ATTRS{idVendor}=="28de", MODE="0666"
+			SUBSYSTEM=="usb", ATTRS{idVendor}=="1050", MODE="0666"
 			KERNEL=="uinput", MODE="0660", GROUP="users", OPTIONS+="static_node=uinput"
 			KERNEL=="hidraw*", ATTRS{idVendor}=="28de", MODE="0666"
 			KERNEL=="hidraw*", KERNELS=="*28DE:*", MODE="0666"
 
-			KERNEL=="tun", GROUP="users", MODE="0660"
-		'';
+			SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", MODE="0666"
+			KERNEL=="tun", GROUP="users", MODE="0666"
+
+			# SilverLink
+			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451",
+			ATTR{idProduct}=="e001", MODE="0666", GROUP="plugdev"
+			# TI-84+ DirectLink
+			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451",
+			ATTR{idProduct}=="e003", MODE="0666", GROUP="plugdev"
+			# TI-89 Titanium DirectLink
+			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451",
+			ATTR{idProduct}=="e004", MODE="0666", GROUP="plugdev"
+			# TI-84+ SE DirectLink
+			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451",
+			ATTR{idProduct}=="e008", MODE="0666", GROUP="plugdev"
+			# TI-Nspire DirectLink
+			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451",
+			ATTR{idProduct}=="e012", MODE="0666", GROUP="plugdev"
+		'' + builtins.readFile (builtins.fetchurl {
+			url = "https://raw.githubusercontent.com/Yubico/libu2f-host/master/70-u2f.rules";
+			sha256 = "0whfqh0m3ps7l9w00s8l6yy0jkjkssqnsk2kknm497p21cs43wnm";
+		});
+
 		usbmuxd.enable = true;
 
 		gnome3 = {
@@ -174,8 +208,6 @@
 			sushi.enable = true;
 			tracker-miners.enable = true;
 		};
-
-		ratbagd.enable = true;
 
 		avahi = {
 			enable = true;
@@ -192,19 +224,17 @@
 			nssmdns = true;
 		};
 
-		pipewire.enable = true;
-
 		flatpak.enable = true;
+		fprintd.enable = true;
+		# fwupd.enable = true; # broken
+		tlp.enable = true;
+		fstrim.enable = true;
+		syncthing.enable = true;
 	};
 
 	virtualisation = {
-		libvirtd = {
-			enable = true;
-			qemuOvmf = true;
-			qemuRunAsRoot = false;
-			onShutdown = "shutdown";
-		};
-		docker.enable = true;
+		podman.enable = true;
+		libvirtd.enable = true;
 	};
 
 	programs = {
@@ -218,8 +248,6 @@
 		};
 		adb.enable = true;
 	};
-
-	environment.shellAliases = { ls = "exa"; };
 
 	environment.variables = {
 		EDITOR = "nvim";
@@ -235,19 +263,6 @@
 			enable = true;
 			support32Bit = true;
 			extraModules = [ pkgs.pulseaudio-modules-bt ];
-			package = pkgs.pulseaudioFull.override { jackaudioSupport = true; };
-			daemon.config = {
-				high-priority = "yes";
-				nice-level = "-15";
-
-				realtime-scheduling = "yes";
-				realtime-priority = "50";
-
-				resample-method = "speex-float-0";
-
-				default-fragments = "2"; # Minimum is 2
-				default-fragment-size-msec = "2"; # You can set this to 1, but that will break OBS audio capture.
-			};
 
 			extraConfig = ''
 				load-module module-udev-detect tsched=1
@@ -260,6 +275,13 @@
 		};
 		opengl.driSupport32Bit = true;
 		nvidia.modesetting.enable = true;
+		sane = {
+			enable = true;
+			extraBackends = with pkgs; [
+				sane-airscan
+				hplipWithPlugin
+			];
+		};
 	};
 
 	security = {
@@ -282,12 +304,16 @@
 		pulseaudio = true;
 		firefox = {
 			enableGnomeExtensions = true;
-			enableAdobeFlash = true;
+			# enableAdobeFlash = true; # broken most of the time
 		};
 		permittedInsecurePackages = [
 			"p7zip-16.02"
 		];
 		allowBroken = true;
+		retroarch = {
+			enableVbaNext = true;
+			enableBsnesMercury = true;
+		};
 	};
 
 	nixpkgs.overlays = [
@@ -295,7 +321,35 @@
 			nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
 				inherit pkgs;
 			};
+
+			gjs = super.gjs.overrideAttrs (oldAttrs: { doCheck = false; });
+
+			asiosdk = super.callPackage ./asiosdk.nix { };
+			wineasio = super.callPackage ./wineasio.nix { };
+
+			wineWow = super.wine.override {
+				wineBuild = "wineWow";
+				wineRelease = "staging";
+				vulkanSupport = true;
+				vkd3dSupport = true;
+				xmlSupport = true;
+				alsaSupport = true;
+				gtkSupport = true;
+			};
+
+			protontricks = super.protontricks.override { wine = self.wineWow; };
+
+			transgui = super.transgui.overrideAttrs (oldAttrs: {
+				patches = [
+					./0001-dedup-requestinfo-params.patch
+				];
+			});
 		})
+
+		(import (builtins.fetchGit {
+			url = "https://github.com/anna328p/tilp-nix";
+			rev = "8767c1911ec8e0cfe3801383c1438cedb767c710";
+		}))
 	];
 	nix.nixPath = options.nix.nixPath.default ++ [ "nixpkgs-overlays=/etc/nixos/overlays-compat/" ];
 

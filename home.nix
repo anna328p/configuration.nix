@@ -61,9 +61,11 @@
 				EDITOR = "nvim";
 				VISUAL = "nvim";
 				NIX_AUTO_RUN = 1;
+				MOZ_USE_XINPUT2 = 1;
 			};
 
 			shellAliases = {
+				ls = "exa";
 				open = "xdg-open";
 				":e" = "vim";
 				":w" = "sync";
@@ -71,6 +73,9 @@
 				":wq" = "sync; exit";
 				nbs = "time sudo nixos-rebuild switch --show-trace";
 				nbsu = "time sudo nixos-rebuild switch --upgrade --show-trace";
+				secn = "sudo -e /etc/nixos/configuration.nix";
+				sehc = "sudo -e /etc/nixos/hardware-configuration.nix";
+				sehn = "sudo -e /etc/nixos/home.nix";
 			};
 
 			prezto = {
@@ -207,9 +212,24 @@
 					hostname = "iris.dk0.us";
 				};
 
+				"talos" = {
+					user = "anna";
+					hostname = "talos.dk0.us";
+				};
+
 				"hephaestus" = {
 					user = "pi";
 					hostname = "hephaestus.ad.dk0.us";
+				};
+
+				"ews" = {
+					user = "anna10";
+					hostname = "linux.ews.illinois.edu";
+				};
+
+				"uiweb" = {
+					user = "anna10";
+					hostname = "anna10.web.illinois.edu";
 				};
 			};
 		};
@@ -401,7 +421,7 @@
 		};
 
 		termite = {
-			enable = true;
+			enable = false;
 			allowBold = true;
 			audibleBell = true;
 			browser = "${pkgs.xdg_utils}/bin/xdg-open";
