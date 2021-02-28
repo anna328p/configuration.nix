@@ -9,6 +9,8 @@
 	];
 
 	boot = {
+		kernelParams = [ "iomem=relaxed" "pcie_aspm=off" ];
+
 		initrd.availableKernelModules = [
 			"xhci_pci"
 			"ehci_pci"
@@ -18,10 +20,13 @@
 			"usbhid"
 			"uas"
 			"sd_mod"
+			"amdgpu"
 		];
 
-		kernelModules = [ "kvm-amd" ];
-		extraModulePackages = [ ];
+		kernelModules = [ "kvm-amd" "snd-seq" "snd-rawmidi" "nct6775" "v4l2loopback" ];
+		extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
+
+		supportedFilesystems = [ "ntfs" "exfat" ];
 	};
 
 	fileSystems = {
@@ -39,26 +44,26 @@
 		"/media/storage" = {
 			device = "/dev/disk/by-uuid/d54cf5fb-f74d-46f1-9a2b-001c07fdb422";
 			fsType = "btrfs";
-			options = [ "nofail" "noauto" "x-systemd.automount" ];
+			options = [ "nofail" "noauto" "x-systemd.automount" "compress-force=zstd" ];
 		};
 
 		"/media/backup" = {
 			device = "/dev/disk/by-uuid/aad5ac37-057e-4f18-88ff-81632eefe237";
 			fsType = "btrfs";
-			options = [ "nofail" "noauto" "x-systemd.automount" ];
+			options = [ "nofail" "noauto" "x-systemd.automount" "compress-force=zstd" ];
 		};
 
 		"/media/backup2" = {
 			device = "/dev/disk/by-uuid/56cd0ce4-63a1-4146-873c-b565a19f5d10";
 			fsType = "btrfs";
-			options = [ "nofail" "noauto" "x-systemd.automount" ];
+			options = [ "nofail" "noauto" "x-systemd.automount" "compress-force=zstd" ];
 		};
 
 		"/home" = {
 			device = "/dev/disk/by-uuid/0d52b88d-3955-42b5-b091-6f8ffc3452ae";
 			fsType = "btrfs";
 			noCheck = true;
-			options = [ "subvol=@home" ];
+			options = [ "subvol=@home" "compress=zstd" ];
 		};
 	};
 

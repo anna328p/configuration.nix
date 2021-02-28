@@ -3,14 +3,13 @@
 {
 	imports = [
 		./hardware-configuration.nix
-		(builtins.fetchurl "https://gist.github.com/peti/304a14130d562602c1ffa9128543bf38/raw/f651f7b1bc3cac130ed83f1ad5f3c1f2bcd9bf18/disable-gdm-auto-suspend.nix")
+		./wayland.nix
 		<home-manager/nixos>
 	];
 
 	boot = {
-		kernelPackages = pkgs.linuxPackages_latest;
-		kernelParams = [ "iomem=relaxed" "pcie_aspm=off" ];
-		kernelModules = [ "kvm-amd" "snd-seq" "snd-rawmidi" "nct6775" ];
+		kernelPackages = pkgs.linuxPackages_5_11;
+
 		loader = {
 			systemd-boot.enable = true;
 			efi = {
@@ -19,20 +18,8 @@
 			};
 		};
 
-		initrd = {
-			availableKernelModules = [ "amdgpu" "vfio-pci" ];
-			preDeviceCommands = ''
-				DEVS="0000:0f:00.0 0000:0f:00.1" # 0000:03:00.0"
-				for dev in $DEVS; do
-					echo "vfio-pci" > /sys/bus/pci/devices/$dev/driver_override
-				done
-				modprobe -i vfio-pci
-			'';
-		};
-
-		plymouth.enable = false;
-
-		supportedFilesystems = [ "ntfs" "exfat" ];
+		plymouth.enable = true;
+		# tmpOnTmpfs = true; # broken
 	};
 
 	networking = {
@@ -48,13 +35,18 @@
 
 		firewall.enable = false;
 
-		nameservers = [ "104.248.109.126" "10.10.10.111" "10.10.10.1" "1.1.1.1" "1.0.0.1" ];
+		nameservers = [ "10.10.10.111" "10.10.10.1" "1.1.1.1" "1.0.0.1" ];
 
 		enableIPv6 = true;
 	};
 
 	i18n = {
 		defaultLocale = "en_US.UTF-8";
+		supportedLocales = [ "en_US.UTF-8/UTF-8" "ja_JP.UTF-8/UTF-8" ];
+		inputMethod = {
+			enabled = "ibus";
+			ibus.engines = with pkgs.ibus-engines; [ mozc ];
+		};
 	};
 
 	console = {
@@ -65,25 +57,20 @@
 	time.timeZone = "America/Los_Angeles";
 
 	environment.systemPackages = with pkgs; [
-		zsh tmux neovim thefuck hexedit mosh minicom lftp 
-		exa dfc ripgrep file pv units neofetch dnsutils ldns speedtest-cli wget
-		git gitAndTools.hub yadm
-		acpi usbutils pciutils lm_sensors dmidecode nvtop efibootmgr multipath-tools
+		zsh tmux neovim thefuck mosh minicom
+		exa dfc ripgrep file pv units neofetch
+		dnsutils speedtest-cli wget
+		acpi usbutils pciutils lm_sensors efibootmgr multipath-tools
 		linuxConsoleTools sdl-jstest
 		zip unzip p7zip zstd xz
 		ffmpeg imagemagick ghostscript
+		piper
 
-		nix gnupg1 nix-prefetch-github nix-prefetch-git
-		adoptopenjdk-hotspot-bin-8 ruby_2_6 nodejs bundix binutils patchelf
-		(python3.withPackages (p: with p; [ powerline ]))
+		nix 
 
-		firefox-devedition-bin transgui
-		gimp inkscape krita gimpPlugins.resynthesizer2 obs-studio
-		libreoffice (gnome3.geary.overrideAttrs(_: { doCheck = false; }))
+		firefox-devedition-bin transgui libreoffice
 		mpv vlc rhythmbox gnome3.gnome-sound-recorder
-		qjackctl gcolor2 gstreamer
 		virtmanager spice_gtk
-		# podman conmon runc slirp4netns fuse-overlayfs
 	];
 	environment.pathsToLink = [ "/share/zsh" ];
 
@@ -108,31 +95,35 @@
 			extraGroups = [
 				"wheel" "networkmanager" "dialout" "transmission" "audio"
 				"vboxusers" "adbusers" "libvirtd" "jackaudio" "docker"
+				"scanner" "lp"
 			];
 
 			hashedPassword = "$6$o3HFaJySc0ptEcz$tr5ndkC9HMA0RDVobaLUncgzEiveeWtSJV8659EYdA2EnrNxB9vTrSmJVv5lAlF8nR0fu4HpBJ5e5wP02LHqq0";
 			packages = with pkgs; [
-				xclip xautomation xdotool xfontsel catclock wmctrl
-				termite maim slop libnotify pavucontrol youtube-dl powertop
+				xclip xdotool
+				libnotify pavucontrol youtube-dl powertop
 
-				discord hexchat fractal weechat # tdesktop
-				element-desktop
-				zoom-us arduino
-				blender kicad freecad prusa-slicer
+				discord tdesktop element-desktop zoom-us
+				blender kicad-with-packages3d prusa-slicer
+				google-play-music-desktop-player
+				gimp inkscape krita mtpaint aseprite-unfree
 				kdenlive
-				google-play-music-desktop-player hercules x3270
 				# tilp gfm
 
-				wineWowPackages.unstable winetricks lutris
-				steam minecraft cataclysm-dda openarena multimc minetest
-				 rpcs3
+				git gitAndTools.hub yadm gh
+				gnupg1 nix-prefetch-github nix-prefetch-git
+				adoptopenjdk-openj9-bin-15 ruby_2_7 bundix
+				python3 direnv arduino
+				hercules x3270
+
+				qjackctl gcolor2 gst_all_1.gstreamer
+
+				wineWowPackages.staging winetricks lutris
+				steam openarena multimc osu-lazer
+				(chromium.override { enableVaapi = true; })
+				# rpcs3
 
 				autokey bchunk espeak-ng
-				vulkan-loader vulkan-tools
-
-				piper
-
-				direnv
 
 				calibre
 			];
@@ -148,6 +139,8 @@
 		useGlobalPkgs = true;
 	};
 
+	systemd.services.transmission.serviceConfig.BindPaths = [ "/media/storage" ];
+
 	services = {
 		openssh.enable = true;
 		printing.enable = true;
@@ -156,13 +149,14 @@
 			enable = true;
 			settings = {
 				download-dir = "/media/storage/torrents";
-				ncomplete-dir = "/media/storage/torrents/incomplete";
+				incomplete-dir = "/media/storage/torrents/incomplete";
 				incomplete-dir-enabled = true;
 				rpc-authentication-required = "true";
 				rpc-username = "dmitry";
 				rpc-password = (builtins.readFile ./transmission-password.txt);
 				rpc-bind-address = "0.0.0.0";
 				rpc-whitelist-enabled = false;
+				peer-port = 25999;
 			};
 			port = 9091;
 		};
@@ -183,6 +177,11 @@
 			};
 			libinput.enable = true;
 			wacom.enable = true;
+			videoDrivers = [ "amdgpu" ];
+			deviceSection = ''
+				Option "VariableRefresh" "true"
+				Option "TearFree" "true"
+			'';
 		};
 		udev.extraRules = ''
 			# Steam Controller
@@ -198,12 +197,15 @@
 
 		gnome3 = {
 			chrome-gnome-shell.enable = true;
-			#rygel.enable = true;
+			rygel.enable = false;
 			evolution-data-server.enable = true;
 			glib-networking.enable = true;
 			gnome-user-share.enable = true;
 			sushi.enable = true;
+			tracker.enable = true;
 			tracker-miners.enable = true;
+			games.enable = true;
+			experimental-features.realtime-scheduling = true;
 		};
 
 		ratbagd.enable = true;
@@ -223,9 +225,34 @@
 			nssmdns = true;
 		};
 
-		pipewire.enable = true;
-
 		flatpak.enable = true;
+		fwupd.enable = true;
+		syncthing = {
+			enable = true;
+			user = "anna";
+			dataDir = "/home/anna";
+			configDir = "/home/anna/.config/syncthing";
+		};
+
+		atftpd.enable = true;
+		vsftpd = {
+			enable = true;
+			localUsers = true;
+			userlist = [ "anna" ];
+			userlistEnable = true;
+			chrootlocalUser = false;
+		};
+
+		pipewire = {
+			enable = true;
+			pulse.enable = true;
+			alsa = {
+				enable = true;
+				support32Bit = true;
+			};
+			jack.enable = true;
+			media-session.enable = true;
+		};
 	};
 
 	virtualisation = {
@@ -248,6 +275,8 @@
 			enableSSHSupport = true;
 		};
 		adb.enable = true;
+		steam.enable = true;
+		geary.enable = true;
 	};
 
 	environment.shellAliases = { ls = "exa"; };
@@ -257,41 +286,32 @@
 		VISUAL = "nvim";
 		MOZ_ENABLE_WAYLAND = "true";
 		SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS = "0";
+		QT_QPA_PLATFORM = "wayland";
 	};
 
 	sound.enable = true;
 
 	hardware = {
-		# pulseaudio.enable = false;
-		pulseaudio = {
-			enable = true;
-			support32Bit = true;
-			extraModules = [ pkgs.pulseaudio-modules-bt ];
-			package = pkgs.pulseaudioFull.override { jackaudioSupport = true; };
-			daemon.config = {
-				high-priority = "yes";
-				nice-level = "-15";
-
-				realtime-scheduling = "yes";
-				realtime-priority = "50";
-
-				resample-method = "speex-float-0";
-
-				default-fragments = "2"; # Minimum is 2
-				default-fragment-size-msec = "2"; # You can set this to 1, but that will break OBS audio capture.
-			};
-
-			extraConfig = ''
-				load-module module-udev-detect tsched=1
-			'';
-		};
+		pulseaudio.enable = false;
 		trackpoint.enable = true;
 		cpu.amd.updateMicrocode = true;
 		bluetooth = {
 			enable = true;
 		};
-		opengl.driSupport32Bit = true;
-		nvidia.modesetting.enable = true;
+		opengl = {
+			enable = true;
+			driSupport32Bit = true;
+			extraPackages = with pkgs; [
+				libva1-full
+				vaapiVdpau
+				libvdpau-va-gl
+				vulkan-tools
+			];
+		};
+		sane = {
+			enable = true;
+			extraBackends = with pkgs; [ sane-airscan ];
+		};
 	};
 
 	security = {
@@ -314,7 +334,6 @@
 		pulseaudio = true;
 		firefox = {
 			enableGnomeExtensions = true;
-			enableAdobeFlash = true;
 		};
 		permittedInsecurePackages = [
 			"p7zip-16.02"
@@ -324,8 +343,6 @@
 
 	nixpkgs.overlays = [
 		(self: super: {
-			x3270 = super.callPackage ./x3270.nix {};
-
 			libbluray = super.libbluray.override {
 				withAACS = true;
 				withBDplus = true;
@@ -337,12 +354,34 @@
 
 			airwave = super.qt5.callPackage ./airwave.nix {};
 
-			wine = super.wine.overrideAttrs (oldAttrs: {
-				buildInputs = oldAttrs.buildInputs ++ [ super.libxml2 ];
+			gjs = super.gjs.overrideAttrs (oldAttrs: { doCheck = false; });
+			winetricks = super.winetricks.override { wine = super.wineWowPackages.unstable; };
+			droidcam = super.callPackage ./droidcam.nix { };
+
+			neovim-unwrapped = super.neovim-unwrapped.overrideAttrs (oa: {
+				version = "0.5.0-dev";
+
+				buildInputs = oa.buildInputs ++ [ super.tree-sitter ];
+
+				src = super.fetchFromGitHub {
+					owner = "neovim";
+					repo = "neovim";
+					rev = "d68026c9ed0c161ee98d4b71454ef5a7fad1aeec";
+					sha256 = "1ppdmlacqdwfa87ij0dbgp995p7g37yxdcfns5jmvab2d9m79l88";
+				};
 			});
 		})
 	];
-	nix.nixPath = options.nix.nixPath.default ++ [ "nixpkgs-overlays=/etc/nixos/overlays-compat/" ];
+
+	nix = {
+		nixPath = options.nix.nixPath.default ++ [ "nixpkgs-overlays=/etc/nixos/overlays-compat/" ];
+		extraOptions = ''
+			builders-use-substitutes = true
+			secret-key-files = /etc/nix/cache.pem
+			experimental-features = nix-command flakes
+		'';
+		package = pkgs.nixFlakes;
+	};
 
 	system.stateVersion = "18.09"; # Do not change unless specified in release notes
 }
