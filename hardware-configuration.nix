@@ -6,39 +6,44 @@
 {
   imports =
     [ (modulesPath + "/installer/scan/not-detected.nix")
-    ];
+  ];
 
-  boot.initrd.availableKernelModules = [ "nvme" "ehci_pci" "xhci_pci" "rtsx_pci_sdmmc" ];
-  boot.initrd.kernelModules = [ "dm-snapshot" ];
-  boot.kernelModules = [ "kvm-amd" ];
-  boot.extraModulePackages = [ ];
+  boot = {
+    initrd.availableKernelModules = [ "nvme" "ehci_pci" "xhci_pci" "rtsx_pci_sdmmc" ];
+    initrd.kernelModules = [ "dm-snapshot" ];
+    kernelParams = [ "iomem=relaxed" "iwlwifi.swcrypto=0" "bluetooth.disable_ertm=1" ];
+    kernelModules = [ "kvm-amd" "snd-seq" "snd-rawmidi" "nct6775" "v4l2loopback" ];
+    extraModulePackages = [ ];
+  };
+
+  powerManagement.enable = true;
 
   boot.initrd.luks.devices.enc-pv = {
-	device = "/dev/disk/by-uuid/f414305d-598b-4234-8b08-73e571d5d3c7";
-	allowDiscards = true;
-	preLVM = true;
-};
+    device = "/dev/disk/by-uuid/f414305d-598b-4234-8b08-73e571d5d3c7";
+    allowDiscards = true;
+    preLVM = true;
+  };
 
-fileSystems."/boot" = {
-  device = "/dev/disk/by-uuid/AFA1-9E0B";
-  fsType = "vfat";
-};
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/AFA1-9E0B";
+    fsType = "vfat";
+  };
 
-  fileSystems."/" =
-    { device = "/dev/disk/by-uuid/a723b3f9-1d61-4254-815a-4ffd2285adae";
-      fsType = "btrfs";
-      options = [ "subvol=@nixos" ];
-    };
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/a723b3f9-1d61-4254-815a-4ffd2285adae";
+    fsType = "btrfs";
+    options = [ "subvol=@nixos" ];
+  };
 
   fileSystems."/home" =
-    { device = "/dev/disk/by-uuid/a723b3f9-1d61-4254-815a-4ffd2285adae";
-      fsType = "btrfs";
-      options = [ "subvol=@home" ];
-    };
+  { device = "/dev/disk/by-uuid/a723b3f9-1d61-4254-815a-4ffd2285adae";
+  fsType = "btrfs";
+  options = [ "subvol=@home" ];
+  };
 
   swapDevices =
     [ { device = "/dev/disk/by-uuid/5460a21c-d279-41e2-990e-1e7b66c5620e"; }
     ];
 
 
-}
+  }

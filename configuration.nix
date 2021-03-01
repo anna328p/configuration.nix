@@ -26,7 +26,7 @@
 		supportedFilesystems = [ "ntfs" "exfat" ];
 		
 		plymouth.enable = true;
-		tmpOnTmpfs = true;
+		tmpOnTmpfs = false;
 	};
 
 	networking = {
@@ -59,7 +59,7 @@
 	time.timeZone = "America/Los_Angeles";
 
 	environment.systemPackages = with pkgs; [
-		zsh tmux neovim thefuck hexedit mosh minicom lftp 
+		zsh tmux neovim thefuck hexedit mosh minicom lftp
 		exa dfc ripgrep file pv units neofetch dnsutils ldns speedtest-cli wget
 		git gitAndTools.hub yadm
 		acpi usbutils pciutils lm_sensors dmidecode efibootmgr multipath-tools powertop
@@ -120,7 +120,6 @@
 				google-play-music-desktop-player
 				tilp gfm
 
-				# wineWow winetricks wineasio protontricks
 				wineWowPackages.staging winetricks
 				steam retroarch libretro.vba-next libretro.bsnes-mercury
 				openarena osu-lazer multimc
@@ -130,7 +129,6 @@
 
 				piper
 				direnv
-				anki
 				# calibre
 			];
 		};
@@ -165,6 +163,11 @@
 			};
 			libinput.enable = true;
 			wacom.enable = true;
+			videoDrivers = [ "amdgpu" ];
+			deviceSection = ''
+				Option "VariableRefresh" "true"
+				Option "TearFree" "true"
+			'';
 		};
 		udev.extraRules = ''
 			# Steam Controller
@@ -176,23 +179,16 @@
 			KERNEL=="hidraw*", KERNELS=="*28DE:*", MODE="0666"
 
 			SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", MODE="0666"
+			SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="0456", ATTRS{idProduct}=="b672", MODE="0666"
+
 			KERNEL=="tun", GROUP="users", MODE="0666"
 
-			# SilverLink
-			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451",
-			ATTR{idProduct}=="e001", MODE="0666", GROUP="plugdev"
-			# TI-84+ DirectLink
-			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451",
-			ATTR{idProduct}=="e003", MODE="0666", GROUP="plugdev"
-			# TI-89 Titanium DirectLink
-			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451",
-			ATTR{idProduct}=="e004", MODE="0666", GROUP="plugdev"
-			# TI-84+ SE DirectLink
-			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451",
-			ATTR{idProduct}=="e008", MODE="0666", GROUP="plugdev"
-			# TI-Nspire DirectLink
-			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451",
-			ATTR{idProduct}=="e012", MODE="0666", GROUP="plugdev"
+			# TI
+			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e001", MODE="0666", GROUP="plugdev"
+			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e003", MODE="0666", GROUP="plugdev"
+			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e004", MODE="0666", GROUP="plugdev"
+			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e008", MODE="0666", GROUP="plugdev"
+			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e012", MODE="0666", GROUP="plugdev"
 		'' + builtins.readFile (builtins.fetchurl {
 			url = "https://raw.githubusercontent.com/Yubico/libu2f-host/master/70-u2f.rules";
 			sha256 = "0whfqh0m3ps7l9w00s8l6yy0jkjkssqnsk2kknm497p21cs43wnm";
@@ -225,15 +221,21 @@
 		};
 
 		flatpak.enable = true;
-		fprintd.enable = true;
-		# fwupd.enable = true; # broken
+		# fprintd.enable = true; # broken
+		fwupd.enable = true;
 		tlp.enable = true;
 		fstrim.enable = true;
-		syncthing.enable = true;
+		syncthing = {
+			enable = true;
+			user = "anna";
+			dataDir = "/home/anna";
+			configDir = "/home/anna/.config/syncthing";
+		};
+
+		pipewire.enable = true;
 	};
 
 	virtualisation = {
-		podman.enable = true;
 		libvirtd.enable = true;
 	};
 
@@ -293,6 +295,8 @@
 		];
 
 		wrappers.spice-client-glib-usb-acl-helper.source = "${pkgs.spice_gtk}/bin/spice-client-glib-usb-acl-helper";
+
+		rtkit.enable = true;
 	};
 
 	system = {
@@ -323,21 +327,6 @@
 			};
 
 			gjs = super.gjs.overrideAttrs (oldAttrs: { doCheck = false; });
-
-			asiosdk = super.callPackage ./asiosdk.nix { };
-			wineasio = super.callPackage ./wineasio.nix { };
-
-			wineWow = super.wine.override {
-				wineBuild = "wineWow";
-				wineRelease = "staging";
-				vulkanSupport = true;
-				vkd3dSupport = true;
-				xmlSupport = true;
-				alsaSupport = true;
-				gtkSupport = true;
-			};
-
-			protontricks = super.protontricks.override { wine = self.wineWow; };
 
 			transgui = super.transgui.overrideAttrs (oldAttrs: {
 				patches = [
