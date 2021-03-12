@@ -9,7 +9,7 @@
 	];
 
 	boot = {
-		kernelParams = [ "iomem=relaxed" "pcie_aspm=off" ];
+		kernelParams = [ "iomem=relaxed" "pcie_aspm=off" "v4l2loopback.devices=4" ];
 
 		initrd.availableKernelModules = [
 			"xhci_pci"
@@ -64,6 +64,20 @@
 			fsType = "btrfs";
 			noCheck = true;
 			options = [ "subvol=@home" "compress=zstd" ];
+		};
+
+		"/media/games" = {
+			device = "/dev/disk/by-uuid/0d52b88d-3955-42b5-b091-6f8ffc3452ae";
+			fsType = "btrfs";
+			noCheck = true;
+			options = [ "subvol=@games" "compress=zstd" ];
+		};
+
+		"/media/raw-home" = {
+			device = "/dev/disk/by-uuid/0d52b88d-3955-42b5-b091-6f8ffc3452ae";
+			fsType = "btrfs";
+			noCheck = true;
+			options = [ "subvol=/" "compress=zstd" ];
 		};
 	};
 

@@ -5,7 +5,10 @@
 		./hardware-configuration.nix
 		./wayland.nix
 		<home-manager/nixos>
+		<musnix>
 	];
+
+	musnix.enable = true;
 
 	boot = {
 		kernelPackages = pkgs.linuxPackages_5_11;
@@ -65,8 +68,6 @@
 		zip unzip p7zip zstd xz
 		ffmpeg imagemagick ghostscript
 		piper
-
-		nix 
 
 		firefox-devedition-bin transgui libreoffice
 		mpv vlc rhythmbox gnome3.gnome-sound-recorder
@@ -169,7 +170,7 @@
 				xterm.enable = false;
 			};
 			displayManager = {
-				defaultSession = "gnome-xorg";
+				defaultSession = "gnome";
 				gdm = {
 					enable = true;
 					wayland = true;
@@ -352,11 +353,8 @@
 				inherit pkgs;
 			};
 
-			airwave = super.qt5.callPackage ./airwave.nix {};
-
 			gjs = super.gjs.overrideAttrs (oldAttrs: { doCheck = false; });
 			winetricks = super.winetricks.override { wine = super.wineWowPackages.unstable; };
-			droidcam = super.callPackage ./droidcam.nix { };
 
 			neovim-unwrapped = super.neovim-unwrapped.overrideAttrs (oa: {
 				version = "0.5.0-dev";
@@ -366,9 +364,13 @@
 				src = super.fetchFromGitHub {
 					owner = "neovim";
 					repo = "neovim";
-					rev = "d68026c9ed0c161ee98d4b71454ef5a7fad1aeec";
+					rev = "8f4b9b8b7de3a24279fad914e9d7ad5ac1213034";
 					sha256 = "1ppdmlacqdwfa87ij0dbgp995p7g37yxdcfns5jmvab2d9m79l88";
 				};
+			});
+
+			transgui = super.transgui.overrideAttrs (oa: {
+				 patches = [ ./0001-dedup-requestinfo-params.patch ];
 			});
 		})
 	];
@@ -378,7 +380,7 @@
 		extraOptions = ''
 			builders-use-substitutes = true
 			secret-key-files = /etc/nix/cache.pem
-			experimental-features = nix-command flakes
+			experimental-features = nix-command flakes ca-references
 		'';
 		package = pkgs.nixFlakes;
 	};
