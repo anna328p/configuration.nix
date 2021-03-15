@@ -39,6 +39,10 @@
 	qt = {
 		enable = true;
 		platformTheme = "gnome";
+		style = {
+			package = pkgs.adwaita-qt;
+			name = "adwaita-dark";
+		};
 	};
 
 	programs = {
@@ -164,7 +168,7 @@
 					plugin = resurrect;
 					extraConfig = ''
 						set -g @resurrect-strategy-nvim 'session'
-						set -g @resurrect-processes 'ssh telnet mosh-client nvim dmesg'
+						set -g @resurrect-processes 'ssh telnet mosh-client nvim dmesg nix'
 						set -g @resurrect-capture-pane-contents 'on'
 					'';
 				}
@@ -334,16 +338,18 @@
 				let g:airline#extensions#tabline#enabled = 1
 				let g:airline_detect_paste=1
 
-				"NERDTree
+				" Required after having changed the colorscheme
+				hi clear SignColumn
+				let g:airline#extensions#hunks#non_zero_only = 1
+
 				nmap <silent> <leader>t :NERDTreeTabsToggle<CR>
 				"let g:nerdtree_tabs_open_on_console_startup = 1
 
-				"Syntastic
 				let g:syntastic_error_symbol = 'E'
 				let g:syntastic_warning_symbol = "W"
 				augroup mySyntastic
-				au!
-				au FileType tex let b:syntastic_mode = "passive"
+					au!
+					au FileType tex let b:syntastic_mode = "passive"
 				augroup END
 
 				" ----- xolox/vim-easytags settings -----
@@ -356,50 +362,35 @@
 				let g:easytags_resolve_links = 1
 				let g:easytags_suppress_ctags_warning = 1
 
-				" ----- majutsushi/tagbar settings -----
-				" Open/close tagbar with \b
 				nmap <silent> <leader>b :TagbarToggle<CR>
+				let g:tagbar_ctags_bin = "${pkgs.universal-ctags}"
 				" Uncomment to open tagbar automatically whenever possible
 				"autocmd BufEnter * nested :call tagbar#autoopen(0)
 
-				" ----- airblade/vim-gitgutter settings -----
-				" Required after having changed the colorscheme
-				hi clear SignColumn
-				"In vim-airline, only display "hunks" if the diff is non-zero
-				let g:airline#extensions#hunks#non_zero_only = 1
-				
-				
+
 				" ----- Raimondi/delimitMate settings -----
 				let delimitMate_expand_cr = 1
 				augroup mydelimitMate
-				au!
-				au FileType markdown let b:delimitMate_nesting_quotes = ["`"]
-				au FileType tex let b:delimitMate_quotes = ""
-				au FileType tex let b:delimitMate_matchpairs = "(:),[:],{:},`:'"
-				au FileType python let b:delimitMate_nesting_quotes = ['"', "'"]
+					au!
+					au FileType markdown let b:delimitMate_nesting_quotes = ["`"]
+					au FileType tex let b:delimitMate_quotes = ""
+					au FileType tex let b:delimitMate_matchpairs = "(:),[:],{:},`:'"
+					au FileType python let b:delimitMate_nesting_quotes = ['"', "'"]
 				augroup END"'"'"]"'"`
 
 				set guifont=Source\ Code\ Pro\ 15.5
 
-				"[NeoMake]
-				" When reading a buffer (after 1s), and when writing (no delay).
-				" call neomake#configure#automake('rw', 1000)
+				call neomake#configure#automake('rw', 1000)
 
-				" LSP
 				lua <<EOF
 				  require'lspconfig'.solargraph.setup{}
 EOF
 
-				"[Deoplete]
 				let g:deoplete#enable_at_startup = 1
-				"dont require the same file type
 				let g:deoplete#buffer#require_same_filetype = 0
-				"<TAB> completion.
 				inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-				"dont litter your windows
 				autocmd CompleteDone * pclose
 
-				"[ctrlp.vim]
 				let g:ctrlp_working_path_mode = 'ra'
 				"ignore whats in git ignore
 				let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
@@ -407,14 +398,12 @@ EOF
 				"this is to prioritize matches sanely such as exact first
 				let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
 
-				"[rainbow]
 				let g:rainbow_active = 1
 
-				" ripgrep
 				if executable('rg')
-				let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
-				set grepprg=rg\ --vimgrep
-				command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
+					let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
+					set grepprg=rg\ --vimgrep
+					command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
 				endif
 			'';
 			plugins = with pkgs.vimPlugins; [

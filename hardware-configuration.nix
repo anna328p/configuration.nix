@@ -85,6 +85,8 @@
 		{ device = "/dev/disk/by-uuid/dc871ccb-2841-4b41-95dc-184fe08e3c77"; }
 	];
 
+	services.btrfs.autoScrub.enable = true;
+
 	nix.maxJobs = lib.mkDefault 4;
 	powerManagement.cpuFreqGovernor = lib.mkDefault "performance";
 }
