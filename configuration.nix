@@ -105,7 +105,7 @@
 				libnotify pavucontrol youtube-dl powertop
 
 				discord tdesktop element-desktop zoom-us
-				blender kicad-with-packages3d prusa-slicer
+				blender kicad-with-packages3d prusa-slicer openscad
 				google-play-music-desktop-player
 				gimp inkscape krita mtpaint aseprite-unfree
 				kdenlive
@@ -119,9 +119,8 @@
 
 				qjackctl gcolor2 gst_all_1.gstreamer
 
-				wineWowPackages.staging winetricks lutris
-				steam openarena multimc osu-lazer
-				(chromium.override { enableVaapi = true; })
+				myWine winetricks lutris
+				steam openarena multimc osu-lazer chromium
 				# rpcs3
 
 				autokey bchunk espeak-ng
@@ -288,6 +287,7 @@
 		MOZ_ENABLE_WAYLAND = "true";
 		SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS = "0";
 		QT_QPA_PLATFORM = "wayland";
+		CALIBRE_USE_DARK_PALETTE = "1";
 	};
 
 	sound.enable = true;
@@ -353,8 +353,17 @@
 				inherit pkgs;
 			};
 
+			myWine = (super.wineWowPackages.full.overrideAttrs (oa: {
+				patches = [
+					(super.fetchurl {
+						url = "https://source.winehq.org/patches/data/197508";
+						hash = "sha256-XPt6ArpIpYCx+HyHvy+H9qIxHMaoLvagBBsoGEuXcdE=";
+					})
+				];
+			}));
+
 			gjs = super.gjs.overrideAttrs (oldAttrs: { doCheck = false; });
-			winetricks = super.winetricks.override { wine = super.wineWowPackages.unstable; };
+			winetricks = super.winetricks.override { wine = self.myWine; };
 
 			neovim-unwrapped = super.neovim-unwrapped.overrideAttrs (oa: {
 				version = "0.5.0-dev";
@@ -365,7 +374,7 @@
 					owner = "neovim";
 					repo = "neovim";
 					rev = "8f4b9b8b7de3a24279fad914e9d7ad5ac1213034";
-					sha256 = "1ppdmlacqdwfa87ij0dbgp995p7g37yxdcfns5jmvab2d9m79l88";
+					hash = "sha256-m+1BPfIonmqlZGjCB910kXnc4o0XuyESNM3vyIv94lA=";
 				};
 			});
 
