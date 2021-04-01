@@ -3,6 +3,7 @@
 {
 	imports = [
 		./hardware-configuration.nix
+		./wayland.nix
 		<home-manager/nixos>
 	];
 
@@ -42,13 +43,18 @@
 
 		firewall.enable = false;
 
-		nameservers = [ "10.10.10.1" "1.1.1.1" "1.0.0.1" ];
+		nameservers = [ "10.10.10.111" "10.10.10.1" "1.1.1.1" "1.0.0.1" ];
 
 		enableIPv6 = true;
 	};
 
 	i18n = {
 		defaultLocale = "en_US.UTF-8";
+ 		supportedLocales = [ "en_US.UTF-8/UTF-8" "ja_JP.UTF-8/UTF-8" ];
+ 		inputMethod = {
+ 			enabled = "ibus";
+ 			ibus.engines = with pkgs.ibus-engines; [ mozc ];
+ 		};
 	};
 
 	console = {
@@ -59,28 +65,18 @@
 	time.timeZone = "America/Los_Angeles";
 
 	environment.systemPackages = with pkgs; [
-		zsh tmux neovim thefuck hexedit mosh minicom lftp
-		exa dfc ripgrep file pv units neofetch dnsutils ldns speedtest-cli wget
+		zsh tmux neovim thefuck mosh minicom lftp
+		exa dfc ripgrep file pv units neofetch
+		dnsutils speedtest-cli wget
 		git gitAndTools.hub yadm
-		acpi usbutils pciutils lm_sensors dmidecode efibootmgr multipath-tools powertop
+		acpi usbutils pciutils lm_sensors efibootmgr multipath-tools powertop
 		linuxConsoleTools sdl-jstest
 		zip unzip p7zip zstd xz
 		ffmpeg imagemagick ghostscript
-		xxd
 
-		nix gnupg1 nix-prefetch-github nix-prefetch-git
-		adoptopenjdk-hotspot-bin-8 ruby_2_7 nodejs bundix binutils patchelf
-		solargraph
-
-		firefox-devedition-bin transgui
-		gimp inkscape krita
-		obs-studio obs-v4l2sink
-		libreoffice gnome3.geary
+		firefox-devedition-bin transgui libreoffice
 		mpv vlc rhythmbox gnome3.gnome-sound-recorder
 		virtmanager spice_gtk
-		# podman conmon runc slirp4netns fuse-overlayfs
-
-		gnomeExtensions.gsconnect
 	];
 	environment.pathsToLink = [ "/share/zsh" ];
 
@@ -110,26 +106,27 @@
 
 			hashedPassword = "$6$o3HFaJySc0ptEcz$tr5ndkC9HMA0RDVobaLUncgzEiveeWtSJV8659EYdA2EnrNxB9vTrSmJVv5lAlF8nR0fu4HpBJ5e5wP02LHqq0";
 			packages = with pkgs; [
-				xclip xautomation xdotool xfontsel catclock wmctrl
-				maim slop libnotify pavucontrol youtube-dl
+				xclip xdotool
+				libnotify pavucontrol youtube-dl powertop
 
-				discord hexchat weechat element-desktop tdesktop
-				zoom-us arduino
-				blender kicad prusa-slicer # freecad
-				kdenlive
+				discord tdesktop element-desktop zoom-us
+				blender prusa-slicer
+				kicad-with-packages3d
 				google-play-music-desktop-player
-				tilp gfm
+				gimp inkscape krita aseprite-unfree kdenlive
 
-				wineWowPackages.staging winetricks
-				steam retroarch libretro.vba-next libretro.bsnes-mercury
-				openarena osu-lazer multimc
+				git gitAndTools.hub yadm gh gnupg1
+				nix-prefetch-github nix-prefetch-git bundix cachix direnv
+				adoptopenjdk-openj9-bin-15 ruby_2_7 python3 arduino go
 
-				bchunk espeak-ng
-				carla
+				iotop strace appimage-run pigz woeusb
 
-				piper
-				direnv
-				# calibre
+				qjackctl gcolor2
+
+				wineWowPackages.staging winetricks lutris
+				steam steam-run multimc osu-lazer wesnoth
+
+				bchunk espeak-ng calibre
 			];
 		};
 		users.root = {
@@ -155,7 +152,6 @@
 				xterm.enable = false;
 			};
 			displayManager = {
-				# defaultSession = "gnome-xorg";
 				gdm = {
 					enable = true;
 					wayland = true;
@@ -189,6 +185,7 @@
 			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e004", MODE="0666", GROUP="plugdev"
 			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e008", MODE="0666", GROUP="plugdev"
 			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e012", MODE="0666", GROUP="plugdev"
+			KERNEL=="tun", GROUP="users", MODE="0660"
 		'' + builtins.readFile (builtins.fetchurl {
 			url = "https://raw.githubusercontent.com/Yubico/libu2f-host/master/70-u2f.rules";
 			sha256 = "0whfqh0m3ps7l9w00s8l6yy0jkjkssqnsk2kknm497p21cs43wnm";
@@ -198,11 +195,15 @@
 
 		gnome3 = {
 			chrome-gnome-shell.enable = true;
+			rygel.enable = false;
 			evolution-data-server.enable = true;
 			glib-networking.enable = true;
 			gnome-user-share.enable = true;
 			sushi.enable = true;
+			tracker.enable = true;
 			tracker-miners.enable = true;
+			games.enable = true;
+			experimental-features.realtime-scheduling = true;
 		};
 
 		avahi = {
@@ -221,7 +222,7 @@
 		};
 
 		flatpak.enable = true;
-		# fprintd.enable = true; # broken
+		fprintd.enable = true; # broken
 		fwupd.enable = true;
 		tlp.enable = true;
 		fstrim.enable = true;
@@ -232,7 +233,16 @@
 			configDir = "/home/anna/.config/syncthing";
 		};
 
-		pipewire.enable = true;
+		pipewire = {
+			enable = true;
+			pulse.enable = true;
+			alsa = {
+				enable = true;
+				support32Bit = true;
+			};
+			jack.enable = true;
+			media-session.enable = true;
+		};
 	};
 
 	virtualisation = {
@@ -249,6 +259,8 @@
 			enableSSHSupport = true;
 		};
 		adb.enable = true;
+		steam.enable = true;
+		geary.enable = true;
 	};
 
 	environment.variables = {
@@ -256,27 +268,27 @@
 		VISUAL = "nvim";
 		MOZ_ENABLE_WAYLAND = "true";
 		SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS = "0";
+		QT_QPA_PLATFORM = "wayland";
 	};
 
 	sound.enable = true;
 
 	hardware = {
-		pulseaudio = {
-			enable = true;
-			support32Bit = true;
-			extraModules = [ pkgs.pulseaudio-modules-bt ];
-
-			extraConfig = ''
-				load-module module-udev-detect tsched=1
-			'';
-		};
+		pulseaudio.enable = false;
 		trackpoint.enable = true;
 		cpu.amd.updateMicrocode = true;
 		bluetooth = {
 			enable = true;
 		};
-		opengl.driSupport32Bit = true;
-		nvidia.modesetting.enable = true;
+		opengl = {
+			driSupport32Bit = true;
+			extraPackages = with pkgs; [
+				libva1-full
+				vaapiVdpau
+				libvdpau-va-gl
+				vulkan-tools
+			];
+		};
 		sane = {
 			enable = true;
 			extraBackends = with pkgs; [
@@ -308,7 +320,6 @@
 		pulseaudio = true;
 		firefox = {
 			enableGnomeExtensions = true;
-			# enableAdobeFlash = true; # broken most of the time
 		};
 		permittedInsecurePackages = [
 			"p7zip-16.02"
@@ -333,6 +344,47 @@
 					./0001-dedup-requestinfo-params.patch
 				];
 			});
+
+			winetricks = super.winetricks.override { wine = super.wineWowPackages.unstable; };
+
+ 			neovim-unwrapped = super.neovim-unwrapped.overrideAttrs (oa: {
+ 				version = "0.5.0-dev";
+ 
+ 				buildInputs = oa.buildInputs ++ [ super.tree-sitter ];
+ 
+ 				src = super.fetchFromGitHub {
+ 					owner = "neovim";
+ 					repo = "neovim";
+ 					rev = "d68026c9ed0c161ee98d4b71454ef5a7fad1aeec";
+ 					sha256 = "1ppdmlacqdwfa87ij0dbgp995p7g37yxdcfns5jmvab2d9m79l88";
+ 				};
+ 			});
+
+			pipewire = super.pipewire.override { hsphfpdSupport = false; };
+
+			rhythmbox = super.rhythmbox.overrideAttrs (oa: rec {
+				p3 = super.python3.withPackages (p: with p; [ pygobject3 ]);
+
+				nativeBuildInputs = oa.nativeBuildInputs ++ (with super; [
+					python38Packages.pygobject3.dev
+				]);
+
+				buildInputs = with super; [
+					p3 (libpeas.override { python3 = p3; })
+					libsoup tdb json-glib gtk3 totem-pl-parser
+					gnome3.adwaita-icon-theme
+
+					libgudev libgpod libmtp libnotify brasero grilo grilo-plugins
+				] ++ (with super.gst_all_1; [
+					gstreamer gst-plugins-base gst-plugins-good gst-plugins-ugly
+				]);
+
+				preFixup = ''
+					gappsWrapperArgs+=(--prefix PATH : "${p3}/bin")
+				'';
+
+				configureFlags = [ "--enable-python" ];
+			});
 		})
 
 		(import (builtins.fetchGit {
@@ -340,7 +392,14 @@
 			rev = "8767c1911ec8e0cfe3801383c1438cedb767c710";
 		}))
 	];
-	nix.nixPath = options.nix.nixPath.default ++ [ "nixpkgs-overlays=/etc/nixos/overlays-compat/" ];
+
+	nix = {
+		nixPath = options.nix.nixPath.default ++ [ "nixpkgs-overlays=/etc/nixos/overlays-compat/" ];
+		extraOptions = ''
+			experimental-features = nix-command flakes ca-references
+		'';
+		package = pkgs.nixFlakes;
+	};
 
 	system.stateVersion = "20.09"; # Do not change unless specified in release notes
 }
