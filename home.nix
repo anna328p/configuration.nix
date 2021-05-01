@@ -23,7 +23,6 @@
 
 	services = {
 		fluidsynth.enable = true;
-		lorri.enable = true;
 	};
 
 	fonts.fontconfig.enable = true;
@@ -48,7 +47,7 @@
 	programs = {
 		obs-studio = {
 			enable = true;
-			plugins = with pkgs; [ obs-v4l2sink obs-gstreamer obs-xdg-portal ];
+			plugins = with pkgs; [ obs-v4l2sink obs-gstreamer ];
 		};
 
 		zsh = {
@@ -327,7 +326,11 @@
 
 
 				set termguicolors
-				colorscheme base16-google-dark
+				let g:nord_cursor_line_number_background = 1
+				let g:nord_italic = 1
+				let g:nord_italic_comments = 1
+				let g:nord_underline = 1
+				colorscheme nord
 				set background=dark
 
 				"when entering a terminal enter in insert mode
@@ -407,7 +410,7 @@ EOF
 				endif
 			'';
 			plugins = with pkgs.vimPlugins; [
-				base16-vim vim-gitgutter
+				base16-vim vim-gitgutter nord-vim
 
 				# completions/neomake
 				deoplete-nvim neco-vim nvim-lspconfig neomake neoinclude-vim neco-syntax

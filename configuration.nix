@@ -70,7 +70,8 @@
 		piper
 
 		firefox-devedition-bin transgui libreoffice
-		mpv vlc rhythmbox gnome3.gnome-sound-recorder
+		mpv vlc rhythmbox
+		gnome3.gnome-sound-recorder gnome3.gnome-tweaks
 		virtmanager spice_gtk
 	];
 	environment.pathsToLink = [ "/share/zsh" ];
@@ -109,18 +110,19 @@
 				google-play-music-desktop-player
 				gimp inkscape krita mtpaint aseprite-unfree
 				kdenlive
+				vcv-rack lmms
 				# tilp gfm
 
 				git gitAndTools.hub yadm gh
 				gnupg1 nix-prefetch-github nix-prefetch-git
-				adoptopenjdk-openj9-bin-15 ruby_2_7 bundix
+				adoptopenjdk-openj9-bin-15 ruby_3_0 bundix
 				python3 direnv arduino
 				hercules x3270
 
 				qjackctl gcolor2 gst_all_1.gstreamer
 
 				myWine winetricks lutris
-				steam openarena multimc osu-lazer chromium
+				steam openarena multimc chromium osu-lazer
 				# rpcs3
 
 				autokey bchunk espeak-ng
@@ -190,7 +192,7 @@
 			KERNEL=="uinput", MODE="0660", GROUP="users", OPTIONS+="static_node=uinput"
 			KERNEL=="hidraw*", ATTRS{idVendor}=="28de", MODE="0666"
 			KERNEL=="hidraw*", KERNELS=="*28DE:*", MODE="0666"
-
+			SUBSYSTEMS=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="2838", MODE:="0666"
 			KERNEL=="tun", GROUP="users", MODE="0660"
 		'';
 		usbmuxd.enable = true;
@@ -252,7 +254,12 @@
 			};
 			jack.enable = true;
 			media-session.enable = true;
+			config.pipewire = {
+				"default.clock.rate" = 96000;
+			};
 		};
+
+		gpsd.enable = true;
 	};
 
 	virtualisation = {
@@ -362,7 +369,6 @@
 				];
 			}));
 
-			gjs = super.gjs.overrideAttrs (oldAttrs: { doCheck = false; });
 			winetricks = super.winetricks.override { wine = self.myWine; };
 
 			neovim-unwrapped = super.neovim-unwrapped.overrideAttrs (oa: {
@@ -381,6 +387,9 @@
 			transgui = super.transgui.overrideAttrs (oa: {
 				 patches = [ ./0001-dedup-requestinfo-params.patch ];
 			});
+
+			bundler' = super.bundler.override { ruby = super.ruby_3_0; };
+			bundix' = super.bundix.override { bundler = self.bundler'; };
 		})
 	];
 
