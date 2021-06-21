@@ -23,7 +23,6 @@
 
 	services = {
 		fluidsynth.enable = true;
-		lorri.enable = true;
 	};
 
 	fonts.fontconfig.enable = true;
@@ -48,7 +47,7 @@
 	programs = {
 		obs-studio = {
 			enable = true;
-			plugins = with pkgs; [ obs-v4l2sink obs-gstreamer obs-xdg-portal ];
+			plugins = with pkgs; [ obs-v4l2sink obs-gstreamer ];
 		};
 
 		zsh = {
@@ -320,14 +319,16 @@
 
 				syntax on
 
-				let  $NVIM_TUI_ENABLE_CURSOR_SHAPE=0
-
 				command! W :w
 				command! Q :q
 
 
 				set termguicolors
-				colorscheme base16-google-dark
+				let g:nord_cursor_line_number_background = 1
+				let g:nord_italic = 1
+				let g:nord_italic_comments = 1
+				let g:nord_underline = 1
+				colorscheme nord
 				set background=dark
 
 				"when entering a terminal enter in insert mode
@@ -363,7 +364,7 @@
 				let g:easytags_suppress_ctags_warning = 1
 
 				nmap <silent> <leader>b :TagbarToggle<CR>
-				let g:tagbar_ctags_bin = "${pkgs.universal-ctags}"
+				let g:tagbar_ctags_bin = "${pkgs.universal-ctags}/bin/ctags"
 				" Uncomment to open tagbar automatically whenever possible
 				"autocmd BufEnter * nested :call tagbar#autoopen(0)
 
@@ -383,7 +384,31 @@
 				call neomake#configure#automake('rw', 1000)
 
 				lua <<EOF
-				  require'lspconfig'.solargraph.setup{}
+					require'lspconfig'.solargraph.setup {}
+					require'nvim-treesitter.configs'.setup {
+						rainbow = {
+							enable = true,
+							extended_mode = true,
+						},
+						highlight = {
+							enable = true,
+						},
+						incremental_selection = {
+							enable = true,
+							keymaps = {
+								init_selection = "gnn",
+								node_incremental = "grn",
+								scope_incremental = "grc",
+								node_decremental = "grm",
+							},
+						},
+						indent = {
+							enable = true,
+						},
+					}
+					require'treesitter-context.config'.setup {
+						enable = true,
+					}
 EOF
 
 				let g:deoplete#enable_at_startup = 1
@@ -391,44 +416,36 @@ EOF
 				inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 				autocmd CompleteDone * pclose
 
-				let g:ctrlp_working_path_mode = 'ra'
-				"ignore whats in git ignore
-				let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
-				let g:ctrlp_path_sort = 1
-				"this is to prioritize matches sanely such as exact first
-				let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
-
-				let g:rainbow_active = 1
-
 				if executable('rg')
 					let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
 					set grepprg=rg\ --vimgrep
-					command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
 				endif
+
+				nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
+				nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
+				nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
+				nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
 			'';
 			plugins = with pkgs.vimPlugins; [
-				base16-vim vim-gitgutter
+				base16-vim vim-gitgutter nord-vim
 
 				# completions/neomake
 				deoplete-nvim neco-vim nvim-lspconfig neomake neoinclude-vim neco-syntax
 				deoplete-emoji deoplete-github deoplete-zsh deoplete-lsp
 
-				vim-autoformat colorizer rainbow vim-airline vim-airline-themes
+				vim-autoformat colorizer vim-airline vim-airline-themes
 
 				# languages
-				syntastic vim-polyglot vim-nix dart-vim-plugin
+				syntastic vim-polyglot vim-nix nvim-treesitter nvim-ts-rainbow nvim-treesitter-context
+				vim-rails vim-endwise delimitMate
 
 				# misc
-				nerdtree vim-nerdtree-tabs tabular
-				vim-commentary vim-dispatch vim-fugitive vim-rhubarb
-				vim-sensible vim-sleuth vim-speeddating
+				nerdtree vim-nerdtree-tabs
+				popup-nvim plenary-nvim telescope-nvim
+				vim-dispatch vim-fugitive vim-rhubarb vim-sensible
 
-				vim-sneak vim-surround delimitMate vim-easytags vim-startify bclose-vim
-				ctrlp-py-matcher fzf-vim
+				vim-sneak vim-surround vim-easytags vim-startify bclose-vim
 				tmux-complete-vim vim-misc tagbar a-vim
-
-				# session saving
-				vim-obsession vim-prosession
 			];
 			viAlias = true;
 			vimAlias = true;

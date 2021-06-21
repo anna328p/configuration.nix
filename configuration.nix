@@ -75,7 +75,7 @@
 		ffmpeg imagemagick ghostscript
 
 		firefox-devedition-bin transgui libreoffice
-		mpv vlc rhythmbox gnome3.gnome-sound-recorder
+		mpv vlc rhythmbox gnome.gnome-sound-recorder
 		virtmanager spice_gtk
 	];
 	environment.pathsToLink = [ "/share/zsh" ];
@@ -117,14 +117,14 @@
 
 				git gitAndTools.hub yadm gh gnupg1
 				nix-prefetch-github nix-prefetch-git bundix cachix direnv
-				adoptopenjdk-openj9-bin-15 ruby_2_7 python3 arduino go
+				adoptopenjdk-openj9-bin-15 ruby_3_0 python3 arduino go
 
 				iotop strace appimage-run pigz woeusb
 
 				qjackctl gcolor2
 
-				wineWowPackages.staging winetricks lutris
-				steam steam-run multimc osu-lazer wesnoth
+				myWine winetricks lutris
+				steam steam-run multimc wesnoth
 
 				bchunk espeak-ng calibre
 			];
@@ -148,7 +148,7 @@
 			enable = true;
 			layout = "us";
 			desktopManager = {
-				gnome3.enable = true;
+				gnome.enable = true;
 				xterm.enable = false;
 			};
 			displayManager = {
@@ -193,7 +193,7 @@
 
 		usbmuxd.enable = true;
 
-		gnome3 = {
+		gnome = {
 			chrome-gnome-shell.enable = true;
 			rygel.enable = false;
 			evolution-data-server.enable = true;
@@ -224,7 +224,6 @@
 		flatpak.enable = true;
 		fprintd.enable = true; # broken
 		fwupd.enable = true;
-		tlp.enable = true;
 		fstrim.enable = true;
 		syncthing = {
 			enable = true;
@@ -243,6 +242,11 @@
 			jack.enable = true;
 			media-session.enable = true;
 		};
+		postgresql = {
+			enable = true;
+			package = pkgs.postgresql_13;
+		};
+		ratbagd.enable = true;
 	};
 
 	virtualisation = {
@@ -345,20 +349,29 @@
 				];
 			});
 
-			winetricks = super.winetricks.override { wine = super.wineWowPackages.unstable; };
+			myWine = (super.wineWowPackages.full.overrideAttrs (oa: {
+				patches = [
+					(super.fetchurl {
+						url = "https://source.winehq.org/patches/data/197508";
+						hash = "sha256-XPt6ArpIpYCx+HyHvy+H9qIxHMaoLvagBBsoGEuXcdE=";
+					})
+				];
+			}));
 
- 			neovim-unwrapped = super.neovim-unwrapped.overrideAttrs (oa: {
- 				version = "0.5.0-dev";
- 
- 				buildInputs = oa.buildInputs ++ [ super.tree-sitter ];
- 
- 				src = super.fetchFromGitHub {
- 					owner = "neovim";
- 					repo = "neovim";
- 					rev = "d68026c9ed0c161ee98d4b71454ef5a7fad1aeec";
- 					sha256 = "1ppdmlacqdwfa87ij0dbgp995p7g37yxdcfns5jmvab2d9m79l88";
- 				};
- 			});
+			winetricks = super.winetricks.override { wine = self.myWine; };
+
+			neovim-unwrapped = super.neovim-unwrapped.overrideAttrs (oa: {
+				version = "0.5.0-dev";
+
+				buildInputs = oa.buildInputs ++ [ super.tree-sitter ];
+
+				src = super.fetchFromGitHub {
+					owner = "neovim";
+					repo = "neovim";
+					rev = "8f4b9b8b7de3a24279fad914e9d7ad5ac1213034";
+					hash = "sha256-m+1BPfIonmqlZGjCB910kXnc4o0XuyESNM3vyIv94lA=";
+				};
+			});
 
 			pipewire = super.pipewire.override { hsphfpdSupport = false; };
 
@@ -372,7 +385,7 @@
 				buildInputs = with super; [
 					p3 (libpeas.override { python3 = p3; })
 					libsoup tdb json-glib gtk3 totem-pl-parser
-					gnome3.adwaita-icon-theme
+					gnome.adwaita-icon-theme
 
 					libgudev libgpod libmtp libnotify brasero grilo grilo-plugins
 				] ++ (with super.gst_all_1; [
