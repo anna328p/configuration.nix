@@ -23,8 +23,8 @@
 			"amdgpu"
 		];
 
-		kernelModules = [ "kvm-amd" "snd-seq" "snd-rawmidi" "nct6775" "v4l2loopback" ];
-		extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
+		kernelModules = [ "kvm-amd" "snd-seq" "snd-rawmidi" "nct6775" "v4l2loopback" "ddcci" "i2c_dev" ];
+		extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ddcci-driver ];
 
 		supportedFilesystems = [ "ntfs" "exfat" ];
 	};

@@ -11,7 +11,7 @@
 	musnix.enable = true;
 
 	boot = {
-		kernelPackages = pkgs.linuxPackages_5_11;
+		kernelPackages = pkgs.linuxPackages_latest;
 
 		loader = {
 			systemd-boot.enable = true;
@@ -71,7 +71,7 @@
 
 		firefox-devedition-bin transgui libreoffice
 		mpv vlc rhythmbox
-		gnome3.gnome-sound-recorder gnome3.gnome-tweaks
+		gnome.gnome-sound-recorder gnome.gnome-tweaks
 		virtmanager spice_gtk
 	];
 	environment.pathsToLink = [ "/share/zsh" ];
@@ -107,7 +107,7 @@
 
 				discord tdesktop element-desktop zoom-us
 				blender kicad-with-packages3d prusa-slicer openscad
-				google-play-music-desktop-player
+				google-play-music-desktop-player calibre
 				gimp inkscape krita mtpaint aseprite-unfree
 				kdenlive
 				vcv-rack lmms
@@ -115,19 +115,17 @@
 
 				git gitAndTools.hub yadm gh
 				gnupg1 nix-prefetch-github nix-prefetch-git
-				adoptopenjdk-openj9-bin-15 ruby_3_0 bundix
-				python3 direnv arduino
+				adoptopenjdk-openj9-bin-15 ruby_3_0 bundix' pgmodeler
+				python3 direnv arduino code-minimap
 				hercules x3270
 
-				qjackctl gcolor2 gst_all_1.gstreamer
+				qjackctl gcolor3 gst_all_1.gstreamer
 
 				myWine winetricks lutris
-				steam openarena multimc chromium osu-lazer
+				steam openarena multimc osu-lazer
 				# rpcs3
 
 				autokey bchunk espeak-ng
-
-				calibre
 			];
 		};
 		users.root = {
@@ -167,7 +165,7 @@
 			enable = true;
 			layout = "us";
 			desktopManager = {
-				gnome3.enable = true;
+				gnome.enable = true;
 				xterm.enable = false;
 			};
 			displayManager = {
@@ -194,10 +192,11 @@
 			KERNEL=="hidraw*", KERNELS=="*28DE:*", MODE="0666"
 			SUBSYSTEMS=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="2838", MODE:="0666"
 			KERNEL=="tun", GROUP="users", MODE="0660"
+			${builtins.readFile "${pkgs.opentabletdriver}/lib/udev/rules.d/99-opentabletdriver.rules"}
 		'';
 		usbmuxd.enable = true;
 
-		gnome3 = {
+		gnome = {
 			chrome-gnome-shell.enable = true;
 			rygel.enable = false;
 			evolution-data-server.enable = true;
@@ -260,6 +259,24 @@
 		};
 
 		gpsd.enable = true;
+
+		postgresql = {
+			enable = true;
+			package = pkgs.postgresql_13;
+		};
+
+		saned = {
+			extraConfig = let
+				firmware = pkgs.fetchurl {
+					url = "https://github.com/stevleibelt/scansnap-firmware/raw/master/300_0C00.nal";
+					hash = "sha256-C+279P7bRkZVYoV/+XGOTPKRYkbwal7bWWGSzq0wqg8=";
+				}; in 
+				''
+					# Fujitsu S300
+					firmware ${firmware}
+					usb 0x04c5 0x1156
+				'';
+		};
 	};
 
 	virtualisation = {
@@ -338,14 +355,15 @@
 	};
 
 	nixpkgs.config = {
-		allowUnfree = true;
 		pulseaudio = true;
 		firefox = {
 			enableGnomeExtensions = true;
 		};
+
 		permittedInsecurePackages = [
 			"p7zip-16.02"
 		];
+		allowUnfree = true;
 		allowBroken = true;
 	};
 
@@ -379,8 +397,8 @@
 				src = super.fetchFromGitHub {
 					owner = "neovim";
 					repo = "neovim";
-					rev = "8f4b9b8b7de3a24279fad914e9d7ad5ac1213034";
-					hash = "sha256-m+1BPfIonmqlZGjCB910kXnc4o0XuyESNM3vyIv94lA=";
+					rev = "17434b88b4892218386b49b400e7eb6d265000ff";
+					hash = "sha256-xjXUlGsbqI2fp5ZfYNCwUBD4DZtw2zI/Bi82A4AV+hs=";
 				};
 			});
 
@@ -388,8 +406,16 @@
 				 patches = [ ./0001-dedup-requestinfo-params.patch ];
 			});
 
-			bundler' = super.bundler.override { ruby = super.ruby_3_0; };
+			bundler' = super.bundler.override { ruby = super.ruby_2_7; };
 			bundix' = super.bundix.override { bundler = self.bundler'; };
+
+			gnome = super.gnome.overrideScope' (gself: gsuper: {
+				mutter = gsuper.mutter.overrideAttrs (oa: {
+					patches = oa.patches ++ [
+						./mutter-fix-tablet.patch
+					];
+				});
+			});
 		})
 	];
 

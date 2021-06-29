@@ -1,0 +1,72 @@
+diff --git a/src/backends/meta-input-mapper.c b/src/backends/meta-input-mapper.c
+index 2a41a7508..e2eff57cb 100644
+--- a/src/backends/meta-input-mapper.c
++++ b/src/backends/meta-input-mapper.c
+@@ -273,19 +273,6 @@ mapper_input_info_set_output (MetaMapperInputInfo  *input,
+                  input->device, aspect_ratio);
+ }
+ 
+-static void
+-mapper_output_info_add_input (MetaMapperOutputInfo *output,
+-                              MetaMapperInputInfo  *input,
+-                              MetaMonitor          *monitor)
+-{
+-  g_assert (input->output == NULL);
+-
+-  output->input_devices = g_list_prepend (output->input_devices, input);
+-  output->attached_caps |= mapper_input_info_get_caps (input);
+-
+-  mapper_input_info_set_output (input, output, monitor);
+-}
+-
+ static void
+ mapper_output_info_remove_input (MetaMapperOutputInfo *output,
+                                  MetaMapperInputInfo  *input)
+@@ -303,6 +290,20 @@ mapper_output_info_remove_input (MetaMapperOutputInfo *output,
+   mapper_input_info_set_output (input, NULL, NULL);
+ }
+ 
++static void
++mapper_output_info_add_input (MetaMapperOutputInfo *output,
++                              MetaMapperInputInfo  *input,
++                              MetaMonitor          *monitor)
++{
++  if (input->output != NULL)
++    mapper_output_info_remove_input (input->output, input);
++
++  output->input_devices = g_list_prepend (output->input_devices, input);
++  output->attached_caps |= mapper_input_info_get_caps (input);
++
++  mapper_input_info_set_output (input, output, monitor);
++}
++
+ static void
+ mapper_output_info_clear_inputs (MetaMapperOutputInfo *output)
+ {
+@@ -492,10 +493,6 @@ guess_candidates (MetaInputMapper     *mapper,
+         {
+           flags = libwacom_get_integration_flags (wacom_device);
+ 
+-          if ((flags & (WACOM_DEVICE_INTEGRATED_SYSTEM |
+-                        WACOM_DEVICE_INTEGRATED_DISPLAY)) == 0)
+-            return;
+-
+           integrated = (flags & (WACOM_DEVICE_INTEGRATED_SYSTEM |
+                                  WACOM_DEVICE_INTEGRATED_DISPLAY)) != 0;
+           builtin = (flags & WACOM_DEVICE_INTEGRATED_SYSTEM) != 0;
+diff --git a/src/core/meta-pad-action-mapper.c b/src/core/meta-pad-action-mapper.c
+index e5331e1dd..22e5ebf15 100644
+--- a/src/core/meta-pad-action-mapper.c
++++ b/src/core/meta-pad-action-mapper.c
+@@ -290,7 +290,10 @@ cycle_logical_monitors (MetaPadActionMapper *mapper,
+       else if (skip_all_monitors)
+         *next_logical_monitor = logical_monitors->data;
+       else
+-        *next_logical_monitor = NULL;
++        {
++          l = g_list_first (logical_monitors);
++          *next_logical_monitor = l->data;
++        }
+     }
+ 
+   return TRUE;
