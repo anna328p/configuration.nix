@@ -1,4 +1,4 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, lib, ... }: {
 	home = {
 		file = {
 			bin = {
@@ -103,9 +103,9 @@
 				":wq" = "sync; exit";
 				nbs = "time sudo nixos-rebuild switch --show-trace";
 				nbsu = "time sudo nixos-rebuild switch --upgrade --show-trace";
-				secn = "sudo -e /etc/nixos/configuration.nix";
-				sehc = "sudo -e /etc/nixos/hardware-configuration.nix";
-				sehn = "sudo -e /etc/nixos/home.nix";
+				ecn = "nvim /etc/nixos/configuration.nix";
+				ehc = "nvim /etc/nixos/hardware-configuration.nix";
+				ehn = "nvim /etc/nixos/home.nix";
 			};
 
 			prezto = {
@@ -210,7 +210,13 @@
 			controlMaster = "auto";
 			controlPersist = "30m";
 			forwardAgent = true;
-			matchBlocks = {
+
+            matchBlocks = let
+              servers = [ "leonardo" "neo" "iris" "talos" "jason" "heracles" "castor" "pollux" "cyamites" "WebServer" ];
+              serverBlock = name: { "${name}" = { user = "anna"; hostname = "${name}.dk0.us"; }; };
+              serverBlocks = lib.foldr (a: b: a // b) {} (builtins.map serverBlock servers);
+
+            in serverBlocks // {
 				"theseus-remote" = {
 					user = "anna";
 					hostname = "ddns.dk0.us";
@@ -226,31 +232,6 @@
 					user = "git";
 					hostname = "gitlab.com";
 					identityFile = "~/.ssh/id_rsa";
-				};
-
-				"leonardo" = {
-					user = "anna";
-					hostname = "leonardo.dk0.us";
-				};
-
-				"neo" = {
-					user = "anna";
-					hostname = "neo.dk0.us";
-				};
-
-				"iris" = {
-					user = "anna";
-					hostname = "iris.dk0.us";
-				};
-
-				"talos" = {
-					user = "anna";
-					hostname = "talos.dk0.us";
-				};
-
-				"hephaestus" = {
-					user = "pi";
-					hostname = "hephaestus.ad.dk0.us";
 				};
 
 				"ews" = {
@@ -386,6 +367,7 @@
 				lua <<EOF
 					require'lspconfig'.solargraph.setup {}
 					require'nvim-treesitter.configs'.setup {
+						ensure_installed = "maintained",
 						rainbow = {
 							enable = true,
 							extended_mode = true,
@@ -436,7 +418,7 @@ EOF
 				vim-autoformat colorizer vim-airline vim-airline-themes
 
 				# languages
-				syntastic vim-polyglot vim-nix nvim-treesitter nvim-ts-rainbow nvim-treesitter-context
+				syntastic vim-nix nvim-treesitter nvim-ts-rainbow nvim-treesitter-context
 				vim-rails vim-endwise delimitMate
 
 				# misc
