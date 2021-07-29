@@ -67,7 +67,7 @@
 		linuxConsoleTools sdl-jstest
 		zip unzip p7zip zstd xz
 		ffmpeg imagemagick ghostscript
-		piper
+		(piper.overrideAttrs (oa: {patches = [./piper-enter-esc.patch];}))
 
 		firefox-devedition-bin transgui libreoffice
 		mpv vlc rhythmbox
@@ -76,15 +76,28 @@
 	];
 	environment.pathsToLink = [ "/share/zsh" ];
 
-	fonts.fonts = with pkgs; [
-		source-code-pro source-sans-pro source-serif-pro
-		noto-fonts noto-fonts-cjk noto-fonts-emoji
-		liberation_ttf
-	];
+	fonts = {
+		enableDefaultFonts = true;
+
+		fonts = with pkgs; [
+			source-code-pro source-sans-pro source-serif-pro
+			noto-fonts noto-fonts-cjk noto-fonts-emoji
+			liberation_ttf opensans-ttf corefonts nerdfonts 
+		];
+	};
 
 	users = {
 		mutableUsers = false;
 		defaultUserShell = pkgs.zsh;
+
+		users.guest = {
+			description = "Guest";
+			isNormalUser = true;
+			uid = 1001;
+			packages = with pkgs; [
+				tor-browser-bundle-bin
+			];
+		};
 
 		users.anna = {
 		    description = "Anna";
@@ -106,7 +119,7 @@
 				libnotify pavucontrol youtube-dl powertop
 
 				discord tdesktop element-desktop zoom-us
-				blender kicad-with-packages3d prusa-slicer openscad
+				kicad-with-packages3d prusa-slicer openscad
 				google-play-music-desktop-player calibre
 				gimp inkscape krita mtpaint aseprite-unfree
 				kdenlive
@@ -126,6 +139,13 @@
 				# rpcs3
 
 				autokey bchunk espeak-ng
+
+				# importing profile stuff
+
+				jq nodePackages.nodemon fontforge-gtk potrace git-filter-repo
+				fd cachix appimage-run thefuck zoom-us protontricks steam-run
+				sonic-pi nmap carla cadence audacity ydotool osu-lazer
+				aria2 bottom-rs gnomeExtensions.gsconnect freeplane
 			];
 		};
 		users.root = {
@@ -277,6 +297,11 @@
 					usb 0x04c5 0x1156
 				'';
 		};
+
+		zerotierone = {
+			enable = true;
+			joinNetworks = [ "159924d6306c2686" ];
+		};
 	};
 
 	virtualisation = {
@@ -378,14 +403,11 @@
 				inherit pkgs;
 			};
 
-			myWine = (super.wineWowPackages.full.overrideAttrs (oa: {
-				patches = [
-					(super.fetchurl {
-						url = "https://source.winehq.org/patches/data/197508";
-						hash = "sha256-XPt6ArpIpYCx+HyHvy+H9qIxHMaoLvagBBsoGEuXcdE=";
-					})
-				];
-			}));
+			myWine = super.wineWowPackages.full.override {
+				wineRelease = "staging";
+				gtkSupport = true;
+				vaSupport = true;
+			};
 
 			winetricks = super.winetricks.override { wine = self.myWine; };
 
@@ -397,8 +419,8 @@
 				src = super.fetchFromGitHub {
 					owner = "neovim";
 					repo = "neovim";
-					rev = "17434b88b4892218386b49b400e7eb6d265000ff";
-					hash = "sha256-xjXUlGsbqI2fp5ZfYNCwUBD4DZtw2zI/Bi82A4AV+hs=";
+					rev = "d83bc835b6fad17c666807ecf63e68350416c269";
+					hash = "sha256-W4zh/Lvz2IQUo+IRHV/21KVmP6w4uq2bm1oKq/F+FFA=";
 				};
 			});
 

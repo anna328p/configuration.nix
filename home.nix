@@ -47,7 +47,6 @@
 	programs = {
 		obs-studio = {
 			enable = true;
-			plugins = with pkgs; [ obs-v4l2sink obs-gstreamer ];
 		};
 
 		zsh = {
@@ -200,8 +199,11 @@
 
 		direnv = {
 			enable = true;
+            nix-direnv = {
+              enable = true;
+              enableFlakes = true;
+            };
 			enableZshIntegration = true;
-			enableNixDirenvIntegration = true;
 		};
 
 		ssh = {
@@ -408,7 +410,20 @@ EOF
 				nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
 				nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
 			'';
-			plugins = with pkgs.vimPlugins; [
+            plugins = let
+              vim-unison = pkgs.vimUtils.buildVimPlugin {
+                name = "vim-unison";
+
+                src = pkgs.fetchFromGitHub {
+                  owner = "unisonweb";
+                  repo = "unison";
+                  rev = "a2dd77a5504770ecbb78abe3d852a24e6ef68eaf";
+                  sha256 = "WPuK86gLcB9PT2604qjIpdbcvu/v7f6UFPCeG0WF7Y4=";
+                };
+
+                sourceRoot = "source/editor-support/vim";
+              };
+            in with pkgs.vimPlugins; [
 				base16-vim vim-gitgutter nord-vim
 
 				# completions/neomake
@@ -419,7 +434,7 @@ EOF
 
 				# languages
 				syntastic vim-nix nvim-treesitter nvim-ts-rainbow nvim-treesitter-context
-				vim-rails vim-endwise delimitMate
+				vim-rails vim-endwise delimitMate vim-unison
 
 				# misc
 				nerdtree vim-nerdtree-tabs

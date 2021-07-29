@@ -1,0 +1,52 @@
+diff --git a/data/ui/ButtonDialog.ui b/data/ui/ButtonDialog.ui
+index d5b1278..0156044 100644
+--- a/data/ui/ButtonDialog.ui
++++ b/data/ui/ButtonDialog.ui
+@@ -214,23 +214,6 @@
+                     <property name="position">2</property>
+                   </packing>
+                 </child>
+-                <child>
+-                  <object class="GtkLabel">
+-                    <property name="visible">True</property>
+-                    <property name="can_focus">False</property>
+-                    <property name="label" translatable="yes">Press Escape to cancel or Return to accept.</property>
+-                    <property name="wrap">True</property>
+-                    <property name="track_visited_links">False</property>
+-                    <style>
+-                      <class name="dim-label"/>
+-                    </style>
+-                  </object>
+-                  <packing>
+-                    <property name="expand">False</property>
+-                    <property name="fill">True</property>
+-                    <property name="position">3</property>
+-                  </packing>
+-                </child>
+               </object>
+               <packing>
+                 <property name="name">capture</property>
+diff --git a/piper/buttondialog.py b/piper/buttondialog.py
+index 38ce07f..72ec96f 100644
+--- a/piper/buttondialog.py
++++ b/piper/buttondialog.py
+@@ -277,19 +277,6 @@ class ButtonDialog(Gtk.Dialog):
+ 
+         if event.type == Gdk.EventType.KEY_PRESS:
+             type = RatbagdButton.Macro.KEY_PRESS
+-
+-            # Return accepts the current keystroke.
+-            if event.keyval == Gdk.KEY_Return:
+-                self._current_macro.accept()
+-                return
+-            # Escape cancels the editing.
+-            elif event.keyval == Gdk.KEY_Escape:
+-                if self._action_type == RatbagdButton.ActionType.MACRO:
+-                    self._create_current_macro(macro=self._mapping)
+-                else:
+-                    self._create_current_macro()
+-                self.stack.set_visible_child_name("overview")
+-                return
+         elif event.type == Gdk.EventType.KEY_RELEASE:
+             type = RatbagdButton.Macro.KEY_RELEASE
+ 
