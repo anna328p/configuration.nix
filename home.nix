@@ -47,7 +47,6 @@
 	programs = {
 		obs-studio = {
 			enable = true;
-			plugins = with pkgs; [ obs-v4l2sink obs-gstreamer ];
 		};
 
 		zsh = {
@@ -106,6 +105,7 @@
 				ecn = "nvim /etc/nixos/configuration.nix";
 				ehc = "nvim /etc/nixos/hardware-configuration.nix";
 				ehn = "nvim /etc/nixos/home.nix";
+				nsn = "nix search nixpkgs";
 			};
 
 			prezto = {
@@ -200,8 +200,11 @@
 
 		direnv = {
 			enable = true;
+            nix-direnv = {
+              enable = true;
+              enableFlakes = true;
+            };
 			enableZshIntegration = true;
-			enableNixDirenvIntegration = true;
 		};
 
 		ssh = {
@@ -408,7 +411,7 @@ EOF
 				nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
 				nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
 			'';
-			plugins = with pkgs.vimPlugins; [
+            plugins = with pkgs.vimPlugins; [
 				base16-vim vim-gitgutter nord-vim
 
 				# completions/neomake

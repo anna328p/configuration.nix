@@ -18,14 +18,14 @@
 
   powerManagement.enable = true;
 
-  boot.initrd.luks.devices.enc-pv = {
-    device = "/dev/disk/by-uuid/f414305d-598b-4234-8b08-73e571d5d3c7";
+  boot.initrd.luks.devices.sn850-crypt = {
+    device = "/dev/disk/by-uuid/f11af895-ea0b-4053-bb71-97f1896e2506";
     allowDiscards = true;
     preLVM = true;
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/AFA1-9E0B";
+    device = "/dev/disk/by-uuid/2D89-4D2E";
     fsType = "vfat";
   };
 

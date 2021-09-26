@@ -8,7 +8,14 @@
 	];
 
 	boot = {
-		kernelPackages = pkgs.linuxPackages_testing;
+		kernelPackages = let
+			main = pkgs.linuxPackages_latest;
+			test = pkgs.linuxPackages_testing;
+			latest = if (main.kernel.version > test.kernel.version)
+				then main
+				else test;
+		in builtins.trace latest.kernel.version latest;
+
 		kernelParams = [ "iomem=relaxed" "iwlwifi.swcrypto=0" "bluetooth.disable_ertm=1" ];
 		kernelModules = [ "kvm-amd" "snd-seq" "snd-rawmidi" "nct6775" "v4l2loopback" ];
 		extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
@@ -62,7 +69,7 @@
 		keyMap = "us";
 	};
 
-	time.timeZone = "America/Los_Angeles";
+	time.timeZone = "America/Chicago";
 
 	environment.systemPackages = with pkgs; [
 		zsh tmux neovim thefuck mosh minicom lftp
@@ -91,7 +98,7 @@
 		defaultUserShell = pkgs.zsh;
 
 		users.anna = {
-		    description = "Anna";
+				description = "Anna";
 			isNormalUser = true;
 			uid = 1000;
 
@@ -109,15 +116,15 @@
 				xclip xdotool
 				libnotify pavucontrol youtube-dl powertop
 
-				discord tdesktop element-desktop zoom-us
+				discord discord-canary tdesktop element-desktop zoom-us
 				blender prusa-slicer
 				kicad-with-packages3d
-				google-play-music-desktop-player
+				ytmdesktop
 				gimp inkscape krita aseprite-unfree kdenlive
 
-				git gitAndTools.hub yadm gh gnupg1
+				git gh gnupg1
 				nix-prefetch-github nix-prefetch-git bundix cachix direnv
-				adoptopenjdk-openj9-bin-15 ruby_3_0 python3 arduino go
+				adoptopenjdk-openj9-bin-16 ruby_3_0 python3 arduino go
 
 				iotop strace appimage-run pigz woeusb
 
@@ -127,6 +134,9 @@
 				steam steam-run multimc wesnoth
 
 				bchunk espeak-ng calibre
+				opensc pcsctools
+				anki
+				plover.dev
 			];
 		};
 		users.root = {
@@ -222,7 +232,7 @@
 		};
 
 		flatpak.enable = true;
-		fprintd.enable = true; # broken
+		#fprintd.enable = true; # broken
 		fwupd.enable = true;
 		fstrim.enable = true;
 		syncthing = {
@@ -247,6 +257,7 @@
 			package = pkgs.postgresql_13;
 		};
 		ratbagd.enable = true;
+		pcscd.enable = true;
 	};
 
 	virtualisation = {
@@ -272,7 +283,7 @@
 		VISUAL = "nvim";
 		MOZ_ENABLE_WAYLAND = "true";
 		SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS = "0";
-		QT_QPA_PLATFORM = "wayland";
+		#QT_QPA_PLATFORM = "wayland";
 	};
 
 	sound.enable = true;
@@ -310,8 +321,6 @@
 			{ domain = "@audio"; type = "-"; item = "rtprio"; value = "99"; }
 		];
 
-		wrappers.spice-client-glib-usb-acl-helper.source = "${pkgs.spice_gtk}/bin/spice-client-glib-usb-acl-helper";
-
 		rtkit.enable = true;
 	};
 
@@ -341,39 +350,30 @@
 				inherit pkgs;
 			};
 
-			gjs = super.gjs.overrideAttrs (oldAttrs: { doCheck = false; });
-
 			transgui = super.transgui.overrideAttrs (oldAttrs: {
 				patches = [
 					./0001-dedup-requestinfo-params.patch
 				];
 			});
 
-			myWine = (super.wineWowPackages.full.overrideAttrs (oa: {
-				patches = [
-					(super.fetchurl {
-						url = "https://source.winehq.org/patches/data/197508";
-						hash = "sha256-XPt6ArpIpYCx+HyHvy+H9qIxHMaoLvagBBsoGEuXcdE=";
-					})
-				];
-			}));
+			myWine = super.wineWowPackages.full.override {
+				wineRelease = "staging";
+				gtkSupport = true;
+				vaSupport = true;
+			};
 
 			winetricks = super.winetricks.override { wine = self.myWine; };
 
 			neovim-unwrapped = super.neovim-unwrapped.overrideAttrs (oa: {
-				version = "0.5.0-dev";
+				version = "0.5.0-dirty";
 
 				buildInputs = oa.buildInputs ++ [ super.tree-sitter ];
 
-				src = super.fetchFromGitHub {
-					owner = "neovim";
-					repo = "neovim";
-					rev = "8f4b9b8b7de3a24279fad914e9d7ad5ac1213034";
-					hash = "sha256-m+1BPfIonmqlZGjCB910kXnc4o0XuyESNM3vyIv94lA=";
+				src = builtins.fetchGit {
+					url = "https://github.com/neovim/neovim";
+					rev = "44145847dcf2c641b313026a41d1955f76ca459a";
 				};
 			});
-
-			pipewire = super.pipewire.override { hsphfpdSupport = false; };
 
 			rhythmbox = super.rhythmbox.overrideAttrs (oa: rec {
 				p3 = super.python3.withPackages (p: with p; [ pygobject3 ]);
@@ -397,6 +397,10 @@
 				'';
 
 				configureFlags = [ "--enable-python" ];
+			});
+
+			calibre = super.calibre.overrideAttrs (oa: {
+				buildInputs = oa.buildInputs ++ [ super.python3Packages.pycryptodome ];
 			});
 		})
 
