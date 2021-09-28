@@ -184,6 +184,7 @@
 			KERNEL=="hidraw*", ATTRS{idVendor}=="28de", MODE="0666"
 			KERNEL=="hidraw*", KERNELS=="*28DE:*", MODE="0666"
 
+			# GameCube Controller Adapter
 			SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", MODE="0666"
 			SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="0456", ATTRS{idProduct}=="b672", MODE="0666"
 
@@ -196,6 +197,9 @@
 			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e008", MODE="0666", GROUP="plugdev"
 			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e012", MODE="0666", GROUP="plugdev"
 			KERNEL=="tun", GROUP="users", MODE="0660"
+
+			# ADALM2000
+			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0456", ATTR{idProduct}=="b672", MODE="0666", group="plugdev"
 		'' + builtins.readFile (builtins.fetchurl {
 			url = "https://raw.githubusercontent.com/Yubico/libu2f-host/master/70-u2f.rules";
 			sha256 = "0whfqh0m3ps7l9w00s8l6yy0jkjkssqnsk2kknm497p21cs43wnm";
@@ -258,6 +262,11 @@
 		};
 		ratbagd.enable = true;
 		pcscd.enable = true;
+
+		zerotierone = {
+			enable = true;
+			joinNetworks = [ "abfd31bd4777d83c" ];
+		};
 	};
 
 	virtualisation = {
