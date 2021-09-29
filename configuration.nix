@@ -3,8 +3,6 @@
 {
 	imports = [
 		./hardware-configuration.nix
-		./wayland.nix
-		<home-manager/nixos>
 	];
 
 	boot = {
@@ -355,10 +353,6 @@
 
 	nixpkgs.overlays = [
 		(self: super: {
-			nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
-				inherit pkgs;
-			};
-
 			transgui = super.transgui.overrideAttrs (oldAttrs: {
 				patches = [
 					./0001-dedup-requestinfo-params.patch
