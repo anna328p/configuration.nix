@@ -9,14 +9,16 @@
 		kernelPackages = let
 			main = pkgs.linuxPackages_latest;
 			test = pkgs.linuxPackages_testing;
-			latest = if (main.kernel.version > test.kernel.version)
+			kver = pkg: pkg.kernel.version;
+			latest = if (kver main > kver test)
 				then main
 				else test;
-		in builtins.trace latest.kernel.version latest;
+		in builtins.trace (kver latest) latest;
 
 		kernelParams = [ "iomem=relaxed" "iwlwifi.swcrypto=0" "bluetooth.disable_ertm=1" ];
 		kernelModules = [ "kvm-amd" "snd-seq" "snd-rawmidi" "nct6775" "v4l2loopback" ];
 		extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
+
 		loader = {
 			systemd-boot.enable = true;
 			efi = {
@@ -25,9 +27,7 @@
 			};
 		};
 
-		initrd = {
-			availableKernelModules = [ "amdgpu" ];
-		};
+		initrd.availableKernelModules = [ "amdgpu" ];
 
 		supportedFilesystems = [ "ntfs" "exfat" ];
 		
@@ -47,8 +47,6 @@
 		};
 
 		firewall.enable = false;
-
-		nameservers = [ "10.10.10.111" "10.10.10.1" "1.1.1.1" "1.0.0.1" ];
 
 		enableIPv6 = true;
 	};
@@ -76,7 +74,7 @@
 		git gitAndTools.hub yadm
 		acpi usbutils pciutils lm_sensors efibootmgr multipath-tools powertop
 		linuxConsoleTools sdl-jstest
-		zip unzip p7zip zstd xz
+		zip unzip _7zz zstd xz
 		ffmpeg imagemagick ghostscript
 
 		firefox-devedition-bin transgui libreoffice
@@ -96,7 +94,7 @@
 		defaultUserShell = pkgs.zsh;
 
 		users.anna = {
-				description = "Anna";
+			description = "Anna";
 			isNormalUser = true;
 			uid = 1000;
 
@@ -137,6 +135,7 @@
 				plover.dev
 			];
 		};
+
 		users.root = {
 			hashedPassword = "$6$NxlrJrFQmV$NP4yc0wyb8LuYKApfAYpo52iorA5gDF44NmQUS21fkxVyW.PeLO14xow2l1Sa35LuwDPenQIgsD08xbCqjSgH.";
 		};
@@ -297,11 +296,11 @@
 
 	hardware = {
 		pulseaudio.enable = false;
+		bluetooth.enable = true;
 		trackpoint.enable = true;
+
 		cpu.amd.updateMicrocode = true;
-		bluetooth = {
-			enable = true;
-		};
+
 		opengl = {
 			driSupport32Bit = true;
 			extraPackages = with pkgs; [
@@ -311,6 +310,7 @@
 				vulkan-tools
 			];
 		};
+
 		sane = {
 			enable = true;
 			extraBackends = with pkgs; [
@@ -331,24 +331,13 @@
 		rtkit.enable = true;
 	};
 
-	system = {
-		autoUpgrade.enable = false;
-	};
+	system.autoUpgrade.enable = false;
 
 	nixpkgs.config = {
 		allowUnfree = true;
-		pulseaudio = true;
-		firefox = {
-			enableGnomeExtensions = true;
-		};
-		permittedInsecurePackages = [
-			"p7zip-16.02"
-		];
 		allowBroken = true;
-		retroarch = {
-			enableVbaNext = true;
-			enableBsnesMercury = true;
-		};
+		pulseaudio = true;
+		firefox.enableGnomeExtensions = true;
 	};
 
 	nixpkgs.overlays = [

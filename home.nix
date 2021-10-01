@@ -416,7 +416,7 @@ EOF
 
 				# completions/neomake
 				deoplete-nvim neco-vim nvim-lspconfig neomake neoinclude-vim neco-syntax
-				deoplete-emoji deoplete-github deoplete-zsh deoplete-lsp
+				deoplete-github deoplete-zsh deoplete-lsp
 
 				vim-autoformat colorizer vim-airline vim-airline-themes
 
