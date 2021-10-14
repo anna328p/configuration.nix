@@ -68,18 +68,20 @@
 	time.timeZone = "America/Chicago";
 
 	environment.systemPackages = with pkgs; [
-		zsh tmux neovim thefuck mosh minicom lftp
+		zsh tmux neovim mosh lftp
 		exa dfc ripgrep file pv units neofetch
 		dnsutils speedtest-cli wget
-		git gitAndTools.hub yadm
+		git gitAndTools.hub
 		acpi usbutils pciutils lm_sensors efibootmgr multipath-tools powertop
-		linuxConsoleTools sdl-jstest
+		linuxConsoleTools sdl-jstest piper
 		zip unzip _7zz zstd xz
 		ffmpeg imagemagick ghostscript
 
 		firefox-devedition-bin transgui libreoffice
 		mpv vlc rhythmbox gnome.gnome-sound-recorder
 		virtmanager spice_gtk
+
+		gnomeExtensions.gsconnect
 	];
 	environment.pathsToLink = [ "/share/zsh" ];
 
@@ -141,66 +143,71 @@
 		};
 	};
 
-	home-manager = {
-		users.anna = (import ./home.nix);
-		useUserPackages = true;
-		useGlobalPkgs = true;
-	};
-
 	services = {
 		openssh.enable = true;
-		printing.enable = true;
+		printing = {
+			enable = true;
+			drivers = with pkgs; [ brlaser brgenml1cupswrapper ];
+		};
 		gpm.enable = true;
+
 		xserver = {
 			enable = true;
 			layout = "us";
+
 			desktopManager = {
 				gnome.enable = true;
 				xterm.enable = false;
 			};
-			displayManager = {
-				gdm = {
-					enable = true;
-					wayland = true;
-				};
+
+			displayManager.gdm = {
+				enable = true;
+				wayland = true;
 			};
+
 			libinput.enable = true;
 			wacom.enable = true;
+
 			videoDrivers = [ "amdgpu" ];
 			deviceSection = ''
 				Option "VariableRefresh" "true"
 				Option "TearFree" "true"
 			'';
 		};
-		udev.extraRules = ''
-			# Steam Controller
-			KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1050", ATTRS{idProduct}=="0113|0114|0115|0116|0120|0200|0402|0403|0406|0407|0410", TAG+="uaccess"
-			SUBSYSTEM=="usb", ATTRS{idVendor}=="28de", MODE="0666"
-			SUBSYSTEM=="usb", ATTRS{idVendor}=="1050", MODE="0666"
-			KERNEL=="uinput", MODE="0660", GROUP="users", OPTIONS+="static_node=uinput"
-			KERNEL=="hidraw*", ATTRS{idVendor}=="28de", MODE="0666"
-			KERNEL=="hidraw*", KERNELS=="*28DE:*", MODE="0666"
 
-			# GameCube Controller Adapter
-			SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", MODE="0666"
-			SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="0456", ATTRS{idProduct}=="b672", MODE="0666"
+		udev = {
+			extraRules = ''
+				# Steam Controller
+				KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1050", ATTRS{idProduct}=="0113|0114|0115|0116|0120|0200|0402|0403|0406|0407|0410", TAG+="uaccess"
+				SUBSYSTEM=="usb", ATTRS{idVendor}=="28de", MODE="0666"
+				SUBSYSTEM=="usb", ATTRS{idVendor}=="1050", MODE="0666"
+				KERNEL=="uinput", MODE="0660", GROUP="users", OPTIONS+="static_node=uinput"
+				KERNEL=="hidraw*", ATTRS{idVendor}=="28de", MODE="0666"
+				KERNEL=="hidraw*", KERNELS=="*28DE:*", MODE="0666"
 
-			KERNEL=="tun", GROUP="users", MODE="0666"
+				# GameCube Controller Adapter
+				SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="057e", ATTRS{idProduct}=="0337", MODE="0666"
+				SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="0456", ATTRS{idProduct}=="b672", MODE="0666"
 
-			# TI
-			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e001", MODE="0666", GROUP="plugdev"
-			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e003", MODE="0666", GROUP="plugdev"
-			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e004", MODE="0666", GROUP="plugdev"
-			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e008", MODE="0666", GROUP="plugdev"
-			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e012", MODE="0666", GROUP="plugdev"
-			KERNEL=="tun", GROUP="users", MODE="0660"
+				KERNEL=="tun", GROUP="users", MODE="0666"
 
-			# ADALM2000
-			ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0456", ATTR{idProduct}=="b672", MODE="0666", group="plugdev"
-		'' + builtins.readFile (builtins.fetchurl {
-			url = "https://raw.githubusercontent.com/Yubico/libu2f-host/master/70-u2f.rules";
-			sha256 = "0whfqh0m3ps7l9w00s8l6yy0jkjkssqnsk2kknm497p21cs43wnm";
-		});
+				# TI
+				ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e001", MODE="0666", GROUP="plugdev"
+				ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e003", MODE="0666", GROUP="plugdev"
+				ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e004", MODE="0666", GROUP="plugdev"
+				ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e008", MODE="0666", GROUP="plugdev"
+				ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e012", MODE="0666", GROUP="plugdev"
+				KERNEL=="tun", GROUP="users", MODE="0660"
+
+				# ADALM2000
+				ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0456", ATTR{idProduct}=="b672", MODE="0666", group="plugdev"
+			'' + builtins.readFile (builtins.fetchurl {
+				url = "https://raw.githubusercontent.com/Yubico/libu2f-host/master/70-u2f.rules";
+				sha256 = "0whfqh0m3ps7l9w00s8l6yy0jkjkssqnsk2kknm497p21cs43wnm";
+			});
+
+			packages = with pkgs; [ gnome.gnome-settings-daemon ];
+		};
 
 		usbmuxd.enable = true;
 
@@ -282,6 +289,10 @@
 		adb.enable = true;
 		steam.enable = true;
 		geary.enable = true;
+		kdeconnect = {
+			enable = true;
+			package = pkgs.gnomeExtensions.gsconnect;
+		};
 	};
 
 	environment.variables = {
@@ -289,7 +300,7 @@
 		VISUAL = "nvim";
 		MOZ_ENABLE_WAYLAND = "true";
 		SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS = "0";
-		#QT_QPA_PLATFORM = "wayland";
+		QT_QPA_PLATFORM = "wayland";
 	};
 
 	sound.enable = true;
@@ -343,9 +354,7 @@
 	nixpkgs.overlays = [
 		(self: super: {
 			transgui = super.transgui.overrideAttrs (oldAttrs: {
-				patches = [
-					./0001-dedup-requestinfo-params.patch
-				];
+				patches = [ ./0001-dedup-requestinfo-params.patch ];
 			});
 
 			myWine = super.wineWowPackages.full.override {
@@ -355,17 +364,6 @@
 			};
 
 			winetricks = super.winetricks.override { wine = self.myWine; };
-
-			neovim-unwrapped = super.neovim-unwrapped.overrideAttrs (oa: {
-				version = "0.5.0-dirty";
-
-				buildInputs = oa.buildInputs ++ [ super.tree-sitter ];
-
-				src = builtins.fetchGit {
-					url = "https://github.com/neovim/neovim";
-					rev = "44145847dcf2c641b313026a41d1955f76ca459a";
-				};
-			});
 
 			rhythmbox = super.rhythmbox.overrideAttrs (oa: rec {
 				p3 = super.python3.withPackages (p: with p; [ pygobject3 ]);
@@ -405,7 +403,7 @@
 	nix = {
 		nixPath = options.nix.nixPath.default ++ [ "nixpkgs-overlays=/etc/nixos/overlays-compat/" ];
 		extraOptions = ''
-			experimental-features = nix-command flakes ca-references
+			experimental-features = nix-command flakes ca-references ca-derivations
 		'';
 		package = pkgs.nixFlakes;
 	};

@@ -78,8 +78,6 @@
 				for i in util autopushd escesc; do
 					source ${./zsh/snippets}/$i.zsh
 				done
-
-				eval $(thefuck --alias)
 			'';
 
 			dirHashes = {
