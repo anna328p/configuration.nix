@@ -27,12 +27,10 @@
 			};
 		};
 
-		initrd.availableKernelModules = [ "amdgpu" ];
-
 		supportedFilesystems = [ "ntfs" "exfat" ];
 		
 		plymouth.enable = true;
-		tmpOnTmpfs = false;
+		tmpOnTmpfs = true;
 	};
 
 	networking = {
@@ -68,9 +66,9 @@
 	time.timeZone = "America/Chicago";
 
 	environment.systemPackages = with pkgs; [
-		zsh tmux neovim mosh lftp
+		zsh tmux neovim mosh lftp nmap
 		exa dfc ripgrep file pv units neofetch
-		dnsutils speedtest-cli wget
+		dnsutils speedtest-cli wget mullvad-vpn
 		git gitAndTools.hub
 		acpi usbutils pciutils lm_sensors efibootmgr multipath-tools powertop
 		linuxConsoleTools sdl-jstest piper
@@ -78,7 +76,8 @@
 		ffmpeg imagemagick ghostscript
 
 		firefox-devedition-bin transgui libreoffice
-		mpv vlc rhythmbox gnome.gnome-sound-recorder
+		mpv vlc gnome.gnome-sound-recorder
+		mpdevil helvum
 		virtmanager spice_gtk
 
 		gnomeExtensions.gsconnect
@@ -117,11 +116,12 @@
 				discord discord-canary tdesktop element-desktop zoom-us
 				blender prusa-slicer
 				kicad-with-packages3d
-				ytmdesktop
+				ytmdesktop mpdris2
 				gimp inkscape krita aseprite-unfree kdenlive
 
-				git gh gnupg1
+				git gh gnupg1 nodejs
 				nix-prefetch-github nix-prefetch-git bundix cachix direnv
+				nixpkgs-review
 				adoptopenjdk-openj9-bin-16 ruby_3_0 python3 arduino go
 
 				iotop strace appimage-run pigz woeusb
@@ -173,6 +173,12 @@
 				Option "VariableRefresh" "true"
 				Option "TearFree" "true"
 			'';
+
+			extraLayouts.semimak = {
+				description = "English (Semimak)";
+				languages = [ "eng" ];
+				symbolsFile = ./symbols/semimak;
+			};
 		};
 
 		udev = {
@@ -253,13 +259,29 @@
 		pipewire = {
 			enable = true;
 			pulse.enable = true;
+			jack.enable = true;
+			media-session.enable = true;
+
 			alsa = {
 				enable = true;
 				support32Bit = true;
 			};
-			jack.enable = true;
-			media-session.enable = true;
+
+			config.pipewire-pulse = {
+				"context.modules" = [
+					{ name = "libpipewire-module-rtkit";
+					  flags = [ "ifexists" "nofail" ]; }
+					{ name = "libpipewire-module-protocol-native"; }
+					{ name = "libpipewire-module-client-node"; }
+					{ name = "libpipewire-module-adapter"; }
+					{ name = "libpipewire-module-metadata"; }
+					{ name = "libpipewire-module-protocol-pulse";
+					  args = { "server.address" = [ "unix:native" "tcp:4713" ];
+				               "vm.overrides" = { "pulse.min.quantum" = "1024/48000"; }; }; }
+				];
+			};
 		};
+
 		postgresql = {
 			enable = true;
 			package = pkgs.postgresql_13;
@@ -269,7 +291,28 @@
 
 		zerotierone = {
 			enable = true;
-			joinNetworks = [ "abfd31bd4777d83c" ];
+			joinNetworks = [ "abfd31bd4777d83c" "abfd31bd479dc978" ];
+		};
+
+		mullvad-vpn.enable = true;
+
+		mopidy = {
+			enable = true;
+			extensionPackages = with pkgs; [
+				mopidy-mpd mopidy-iris mopidy-scrobbler
+				mopidy-ytmusic mopidy-somafm
+			];
+
+			configuration = builtins.readFile ./mopidy.conf;
+		};
+	};
+
+	systemd.user.services.mpdris2 = {
+		description = "MPRIS2 support for MPD";
+		serviceConfig = {
+			Type = "simple";
+			Restart = "on-failure";
+			ExecStart = "${pkgs.mpdris2}/bin/mpDris2";
 		};
 	};
 
@@ -298,7 +341,7 @@
 	environment.variables = {
 		EDITOR = "nvim";
 		VISUAL = "nvim";
-		MOZ_ENABLE_WAYLAND = "true";
+		MOZ_ENABLE_WAYLAND = "1";
 		SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS = "0";
 		QT_QPA_PLATFORM = "wayland";
 	};
@@ -312,22 +355,11 @@
 
 		cpu.amd.updateMicrocode = true;
 
-		opengl = {
-			driSupport32Bit = true;
-			extraPackages = with pkgs; [
-				libva1-full
-				vaapiVdpau
-				libvdpau-va-gl
-				vulkan-tools
-			];
-		};
+		opengl.extraPackages = with pkgs; [ libva1-full vaapiVdpau libvdpau-va-gl vulkan-tools ];
 
 		sane = {
 			enable = true;
-			extraBackends = with pkgs; [
-				sane-airscan
-				hplipWithPlugin
-			];
+			extraBackends = with pkgs; [ sane-airscan hplipWithPlugin ];
 		};
 	};
 
@@ -350,55 +382,6 @@
 		pulseaudio = true;
 		firefox.enableGnomeExtensions = true;
 	};
-
-	nixpkgs.overlays = [
-		(self: super: {
-			transgui = super.transgui.overrideAttrs (oldAttrs: {
-				patches = [ ./0001-dedup-requestinfo-params.patch ];
-			});
-
-			myWine = super.wineWowPackages.full.override {
-				wineRelease = "staging";
-				gtkSupport = true;
-				vaSupport = true;
-			};
-
-			winetricks = super.winetricks.override { wine = self.myWine; };
-
-			rhythmbox = super.rhythmbox.overrideAttrs (oa: rec {
-				p3 = super.python3.withPackages (p: with p; [ pygobject3 ]);
-
-				nativeBuildInputs = oa.nativeBuildInputs ++ (with super; [
-					python38Packages.pygobject3.dev
-				]);
-
-				buildInputs = with super; [
-					p3 (libpeas.override { python3 = p3; })
-					libsoup tdb json-glib gtk3 totem-pl-parser
-					gnome.adwaita-icon-theme
-
-					libgudev libgpod libmtp libnotify brasero grilo grilo-plugins
-				] ++ (with super.gst_all_1; [
-					gstreamer gst-plugins-base gst-plugins-good gst-plugins-ugly
-				]);
-
-				preFixup = ''
-					gappsWrapperArgs+=(--prefix PATH : "${p3}/bin")
-				'';
-
-				configureFlags = [ "--enable-python" ];
-			});
-
-			calibre = super.calibre.overrideAttrs (oa: {
-				buildInputs = oa.buildInputs ++ [ super.python3Packages.pycryptodome ];
-			});
-		})
-
-		(import (builtins.fetchGit {
-			url = "https://github.com/anna328p/tilp-nix";
-			rev = "8767c1911ec8e0cfe3801383c1438cedb767c710";
-		}))
-	];
 
 	nix = {
 		nixPath = options.nix.nixPath.default ++ [ "nixpkgs-overlays=/etc/nixos/overlays-compat/" ];

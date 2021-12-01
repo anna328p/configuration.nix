@@ -24,3 +24,7 @@ function try {
     sleep 2
   done
 }
+
+function pagv {
+  ps aux | grep -v grep | grep "$@"
+}

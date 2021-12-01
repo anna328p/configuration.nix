@@ -1,3 +1,4 @@
+{ neovim }:
 { config, pkgs, lib, ... }: {
 	home = {
 		file = {
@@ -200,7 +201,6 @@
 			enable = true;
             nix-direnv = {
               enable = true;
-              enableFlakes = true;
             };
 			enableZshIntegration = true;
 		};
@@ -255,6 +255,8 @@
 
 		neovim = {
 			enable = true;
+			package = neovim;
+
 			extraConfig = ''
 				filetype plugin indent on
 
@@ -409,12 +411,24 @@ EOF
 				nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
 				nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
 			'';
-            plugins = with pkgs.vimPlugins; [
+            plugins = let
+              copilot-vim = pkgs.vimUtils.buildVimPlugin {
+                name = "copilot-vim";
+                src = pkgs.fetchFromGitHub {
+                  owner = "github";
+                  repo = "copilot.vim";
+                  rev = "6149088454abb0e3e4a49c76a4f3fac7f0154e5a";
+                  sha256 = "Hm7nHn803ahgthxjLNi+5ra/vyDiM7ZPi2CifIfmaUM=";
+                };
+              };
+            in with pkgs.vimPlugins; [
 				base16-vim vim-gitgutter nord-vim
 
 				# completions/neomake
 				deoplete-nvim neco-vim nvim-lspconfig neomake neoinclude-vim neco-syntax
 				deoplete-github deoplete-zsh deoplete-lsp
+
+                copilot-vim
 
 				vim-autoformat colorizer vim-airline vim-airline-themes
 

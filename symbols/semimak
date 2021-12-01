@@ -1,0 +1,58 @@
+// Standard Semimak for ANSI and ISO keyboards
+
+default partial
+xkb_symbols "basic" {
+    include "us(basic)"
+
+    name[Group1] = "Semimak";
+
+    key <AD01> {[ f,         F         ]};
+    key <AD02> {[ l,         L         ]};
+    key <AD03> {[ h,         H         ]};
+    key <AD04> {[ v,         V         ]};
+    key <AD05> {[ z,         Z         ]};
+    key <AD06> {[ q,         Q         ]};
+    key <AD07> {[ w,         W         ]};
+    key <AD08> {[ u,         U         ]};
+    key <AD09> {[ o,         O         ]};
+    key <AD10> {[ y,         Y         ]};
+
+    key <AC01> {[ s,         S         ]};
+    key <AC02> {[ r,         R         ]};
+    key <AC03> {[ n,         N         ]};
+    key <AC04> {[ t,         T         ]};
+    key <AC05> {[ k,         K         ]};
+    key <AC06> {[ c,         C         ]};
+    key <AC07> {[ d,         D         ]};
+    key <AC08> {[ e,         E         ]};
+    key <AC09> {[ a,         A         ]};
+    key <AC10> {[ i,         I         ]};
+
+    key <AB01> {[ x,         X         ]};
+    key <AB02> {[ apostrophe, quotedbl ]};
+    key <AB03> {[ b,         B         ]};
+    key <AB04> {[ m,         M	       ]};
+    key <AB05> {[ j,         J         ]};
+    key <AB06> {[ p,         P         ]};
+    key <AB07> {[ g,         G         ]};
+    key <AB08> {[ comma,     less      ]};
+    key <AB09> {[ period,    greater   ]};
+    key <AB10> {[ slash,     question  ]};
+    key <AC11> {[ semicolon, colon     ]};
+};
+
+partial
+xkb_symbols "angle" {
+
+    // the standard layout with Angle Mod applied
+
+    include "semimak"
+
+    name[Group1] = "Semimak (with Angle Mod)";
+
+    key <AB01> {[ apostrophe,quotedbl  ]};
+    key <AB02> {[ b,         B         ]};
+    key <AB03> {[ m,         M         ]};
+    key <AB04> {[ j,         J	       ]};
+    key <AB05> {[ x,         X         ]};
+};
