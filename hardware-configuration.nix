@@ -32,13 +32,13 @@
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/a723b3f9-1d61-4254-815a-4ffd2285adae";
     fsType = "btrfs";
-    options = [ "subvol=@nixos" ];
+    options = [ "subvol=@nixos" "compress=zstd" ];
   };
 
   fileSystems."/home" =
   { device = "/dev/disk/by-uuid/a723b3f9-1d61-4254-815a-4ffd2285adae";
   fsType = "btrfs";
-  options = [ "subvol=@home" ];
+  options = [ "subvol=@home" "compress=zstd" ];
   };
 
   swapDevices =

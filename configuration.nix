@@ -66,19 +66,22 @@
 	time.timeZone = "America/Chicago";
 
 	environment.systemPackages = with pkgs; [
-		zsh tmux neovim mosh lftp nmap
-		exa dfc ripgrep file pv units neofetch
-		dnsutils speedtest-cli wget mullvad-vpn
-		git gitAndTools.hub
+		zsh tmux neovim nmap
+		exa dfc ripgrep file pv neofetch
+		speedtest-cli wget mullvad-vpn
+		git
 		acpi usbutils pciutils lm_sensors efibootmgr multipath-tools powertop
-		linuxConsoleTools sdl-jstest piper
-		zip unzip _7zz zstd xz
-		ffmpeg imagemagick ghostscript
+		opensc pcsctools
+
+		linuxConsoleTools piper
+		zip unzip _7zz zstd xz pigz
+		ffmpeg imagemagick
 
 		firefox-devedition-bin transgui libreoffice
-		mpv vlc gnome.gnome-sound-recorder
-		mpdevil helvum
+		mpv vlc gnome.gnome-sound-recorder gnome.gnome-tweaks
+		helvum
 		virtmanager spice_gtk
+		espeak-ng 
 
 		gnomeExtensions.gsconnect
 	];
@@ -104,37 +107,39 @@
 
 			extraGroups = [
 				"wheel" "networkmanager" "dialout" "transmission" "audio"
-				"vboxusers" "adbusers" "libvirtd" "jackaudio" "docker"
+				"adbusers" "libvirtd" "jackaudio" "docker"
 				"scanner" "lp"
 			];
 
 			hashedPassword = "$6$o3HFaJySc0ptEcz$tr5ndkC9HMA0RDVobaLUncgzEiveeWtSJV8659EYdA2EnrNxB9vTrSmJVv5lAlF8nR0fu4HpBJ5e5wP02LHqq0";
+
 			packages = with pkgs; [
-				xclip xdotool
-				libnotify pavucontrol youtube-dl powertop
+				pavucontrol
 
-				discord discord-canary tdesktop element-desktop zoom-us
-				blender prusa-slicer
+				discord tdesktop zoom-us
+				prusa-slicer openscad solvespace
 				kicad-with-packages3d
-				ytmdesktop mpdris2
-				gimp inkscape krita aseprite-unfree kdenlive
+				mpdris2
+				gimp inkscape krita
 
-				git gh gnupg1 nodejs
-				nix-prefetch-github nix-prefetch-git bundix cachix direnv
+				gh gnupg1 nodejs
+				nix-prefetch-git cachix direnv
 				nixpkgs-review
-				adoptopenjdk-openj9-bin-16 ruby_3_0 python3 arduino go
+				adoptopenjdk-openj9-bin-16 ruby_3_0 python3 mono
 
-				iotop strace appimage-run pigz woeusb
+				iotop appimage-run
 
-				qjackctl gcolor2
+				gcolor3
 
-				myWine winetricks lutris
-				steam steam-run multimc wesnoth
+				myWine winetricks
+				steam steam-run multimc sidequest
 
-				bchunk espeak-ng calibre
-				opensc pcsctools
+				calibre
 				anki
 				plover.dev
+
+				fd osu-lazer freemind guvcview ydotool
+				fontforge-gtk nodePackages.svgo
 			];
 		};
 
@@ -145,10 +150,12 @@
 
 	services = {
 		openssh.enable = true;
+
 		printing = {
 			enable = true;
 			drivers = with pkgs; [ brlaser brgenml1cupswrapper ];
 		};
+
 		gpm.enable = true;
 
 		xserver = {
@@ -174,8 +181,8 @@
 				Option "TearFree" "true"
 			'';
 
-			extraLayouts.semimak = {
-				description = "English (Semimak)";
+			extraLayouts.semimak-jq = {
+				description = "English (Semimak JQ)";
 				languages = [ "eng" ];
 				symbolsFile = ./symbols/semimak;
 			};
@@ -218,15 +225,8 @@
 		usbmuxd.enable = true;
 
 		gnome = {
-			chrome-gnome-shell.enable = true;
-			rygel.enable = false;
-			evolution-data-server.enable = true;
 			glib-networking.enable = true;
-			gnome-user-share.enable = true;
 			sushi.enable = true;
-			tracker.enable = true;
-			tracker-miners.enable = true;
-			games.enable = true;
 			experimental-features.realtime-scheduling = true;
 		};
 
@@ -246,9 +246,9 @@
 		};
 
 		flatpak.enable = true;
-		#fprintd.enable = true; # broken
 		fwupd.enable = true;
 		fstrim.enable = true;
+
 		syncthing = {
 			enable = true;
 			user = "anna";
@@ -282,10 +282,6 @@
 			};
 		};
 
-		postgresql = {
-			enable = true;
-			package = pkgs.postgresql_13;
-		};
 		ratbagd.enable = true;
 		pcscd.enable = true;
 
@@ -325,13 +321,16 @@
 			enable = true;
 			promptInit = "";
 		};
+
 		gnupg.agent = {
 			enable = true;
 			enableSSHSupport = true;
 		};
+
 		adb.enable = true;
 		steam.enable = true;
 		geary.enable = true;
+
 		kdeconnect = {
 			enable = true;
 			package = pkgs.gnomeExtensions.gsconnect;
@@ -385,9 +384,11 @@
 
 	nix = {
 		nixPath = options.nix.nixPath.default ++ [ "nixpkgs-overlays=/etc/nixos/overlays-compat/" ];
+
 		extraOptions = ''
 			experimental-features = nix-command flakes ca-references ca-derivations
 		'';
+
 		package = pkgs.nixFlakes;
 	};
 
