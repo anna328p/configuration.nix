@@ -3,7 +3,7 @@
 	home = {
 		file = {
 			bin = {
-				source = ./bin;
+				source = files/bin;
 				target = ".local/bin";
 				recursive = true;
 			};
@@ -77,7 +77,7 @@
 				setopt GLOB_DOTS
 
 				for i in util autopushd escesc; do
-					source ${./zsh/snippets}/$i.zsh
+					source ${files/zsh/snippets}/$i.zsh
 				done
 			'';
 
@@ -194,7 +194,7 @@
 			enable = true;
 			enableZshIntegration = true;
 
-			extraConfig = (builtins.readFile ./dircolors);
+			extraConfig = (builtins.readFile files/dircolors);
 		};
 
 		direnv = {

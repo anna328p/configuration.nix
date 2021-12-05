@@ -4,13 +4,14 @@
   inputs = {
     nixpkgs.url = github:nixos/nixpkgs/nixos-unstable-small;
     nur.url = github:nix-community/NUR;
-
     nixos-hardware.url = github:nixos/nixos-hardware;
+    impermanence.url = github:nix-community/impermanence;
 
     home-manager = {
       url = github:nix-community/home-manager;
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
 
     wayland = {
       url = github:nix-community/nixpkgs-wayland;
@@ -33,13 +34,18 @@
     , nur
     , neovim
     , nixos-hardware
+    , impermanence
   }: let
-    localOverlay = import ./overlay.nix;
+    localOverlay = import overlays/local.nix;
 
     overlays = [ wayland.overlay nur.overlay neovim.overlay localOverlay ];
 
-    baseSystem = extraModules: nixpkgs.lib.nixosSystem rec {
-      system = "x86_64-linux";
+    mkDerived = base: modules: extraModules: base (modules ++ extraModules);
+
+    mkSystem = base: modules: mkDerived base modules [];
+
+    baseSystem = system: extraModules: nixpkgs.lib.nixosSystem rec {
+      inherit system;
 
       pkgs = import nixpkgs {
         inherit system overlays;
@@ -48,22 +54,31 @@
 
       modules = [
         ./configuration.nix
-        home-manager.nixosModule
 
         ({ ... }: {
-          home-manager = {
-            users.anna = (import ./home.nix { inherit (pkgs) neovim; });
-            useUserPackages = true;
-            useGlobalPkgs = true;
-          };
+          nix.registry.nixpkgs.flake = nixpkgs;
 
           system.configurationRevision = nixpkgs.lib.mkIf (self ? rev) self.rev;
         })
       ] ++ extraModules;
     };
-  in {
-    nixosConfigurations.hermes = baseSystem [
-      nixos-hardware.nixosModules.lenovo-thinkpad-t14-amd-gen1
+
+    basePhysical = mkDerived (baseSystem "x86_64-linux") [
+      common/physical.nix
     ];
+
+    baseDesktop = mkDerived basePhysical [
+      common/desktop.nix
+      home-manager.nixosModule
+    ];
+
+  in {
+    nixosConfigurations = {
+      hermes = mkSystem baseDesktop [
+        systems/hermes
+        impermanence.nixosModules.impermanence
+        nixos-hardware.nixosModules.lenovo-thinkpad-t14-amd-gen1
+      ];
+    };
   };
 }
