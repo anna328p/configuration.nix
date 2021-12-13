@@ -26,7 +26,7 @@
 	};
 
 	environment.systemPackages = with pkgs; [
-		nmap 
+		nmap dnsutils
 		mullvad-vpn
 		piper
 		ffmpeg imagemagick
@@ -73,6 +73,7 @@
 			nix-prefetch-git cachix direnv
 			nixpkgs-review
 			adoptopenjdk-openj9-bin-16 ruby_3_0 python3 mono
+			jq
 
 			appimage-run
 
@@ -124,7 +125,7 @@
 							favorite-apps=[ ${genList names} ]
 						'';
 					in overrideList [
-						"firefox" "Discord" "telegramdesktop"
+						"firefox" "discord" "telegramdesktop"
 						"org.gnome.Nautilus" "org.gnome.Terminal"
 					];
 				};
@@ -138,10 +139,18 @@
 			libinput.enable = true;
 			wacom.enable = true;
 
-			extraLayouts.semimak-jq = {
-				description = "English (Semimak JQ)";
-				languages = [ "eng" ];
-				symbolsFile = files/symbols/semimak;
+			extraLayouts = {
+				semimak-jq = {
+					description = "English (Semimak JQ)";
+					languages = [ "eng" ];
+					symbolsFile = files/symbols/semimak-jq;
+				};
+
+				semimak-jqa = {
+					description = "English (Semimak JQa)";
+					languages = [ "eng" ];
+					symbolsFile = files/symbols/semimak-jqa;
+				};
 			};
 		};
 

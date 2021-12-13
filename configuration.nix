@@ -17,7 +17,7 @@
 
 	environment.systemPackages = with pkgs; [
 		zsh tmux neovim
-		exa dfc ripgrep file pv neofetch
+		exa dfc ripgrep file pv neofetch tree
 		speedtest-cli wget
 		git
 
