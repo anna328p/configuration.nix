@@ -19,16 +19,11 @@
 		package = neovim;
 
 		extraConfig = ''
-			filetype plugin indent on
-
-			set autoread
-			set backspace=indent,eol,start
 			set clipboard+=unnamed
 			set formatoptions+=j
 
 			set hlsearch
 			set ignorecase
-			set incsearch
 
 			set mouse=a
 			set ttimeoutlen=50
@@ -52,7 +47,6 @@
 			set sidescrolloff=5
 			set wrap
 
-			set autoindent
 			set copyindent
 			set tabstop=4
 			set shiftwidth=4
@@ -62,12 +56,13 @@
 			set undolevels=1000
 			set undoreload=10000
 
-			syntax on
+			set completeopt=menu,menuone,noselect
 
 			command! W :w
 			command! Q :q
 
 
+			" nord color scheme
 			let g:nord_cursor_line_number_background = 1
 			let g:nord_italic = 1
 			let g:nord_italic_comments = 1
@@ -76,58 +71,77 @@
 			colorscheme nord
 			set background=dark
 
-			"when entering a terminal enter in insert mode
-			autocmd BufWinEnter,WinEnter term://* startinsert
-
-			"airline
+			" airline
 			let g:airline_powerline_fonts = 1
 			let g:airline#extensions#tabline#enabled = 1
 			let g:airline_detect_paste=1
+			let g:airline_theme='nord'
 
 			" Required after having changed the colorscheme
 			hi clear SignColumn
 			let g:airline#extensions#hunks#non_zero_only = 1
 
-			nmap <silent> <leader>t :NERDTreeTabsToggle<CR>
-			"let g:nerdtree_tabs_open_on_console_startup = 1
+			" nvim tree
+			nnoremap <leader>t :NvimTreeToggle<CR>
+			nnoremap <leader>r :NvimTreeRefresh<CR>
+			nnoremap <leader>n :NvimTreeFindFile<CR>
 
-			let g:syntastic_error_symbol = 'E'
-			let g:syntastic_warning_symbol = "W"
-			augroup mySyntastic
-				au!
-				au FileType tex let b:syntastic_mode = "passive"
-			augroup END
+			let g:nvim_tree_icons = {
+				\ 'folder': {'default': '▸', 'open': '▾', 'empty': '▸', 'empty_open': '▾'},
+				\ }
 
-			" ----- xolox/vim-easytags settings -----
-			" Where to look for tags files
-			set tags=./tags;,~/.vimtags
-			" Sensible defaults
-			let g:easytags_events = ['BufReadPost', 'BufWritePost']
-			let g:easytags_async = 1
-			let g:easytags_dynamic_files = 2
-			let g:easytags_resolve_links = 1
-			let g:easytags_suppress_ctags_warning = 1
-
-			nmap <silent> <leader>b :TagbarToggle<CR>
-			let g:tagbar_ctags_bin = "${pkgs.universal-ctags}/bin/ctags"
-
-
-			" ----- Raimondi/delimitMate settings -----
-			let delimitMate_expand_cr = 1
-			augroup mydelimitMate
-				au!
-				au FileType markdown let b:delimitMate_nesting_quotes = ["`"]
-				au FileType tex let b:delimitMate_quotes = ""
-				au FileType tex let b:delimitMate_matchpairs = "(:),[:],{:},`:'"
-				au FileType python let b:delimitMate_nesting_quotes = ['"', "'"]
-			augroup END"'"'"]"'"`
-
-			call neomake#configure#automake('rw', 1000)
+			let g:nvim_tree_show_icons = {
+				\ 'git': 0,
+				\ 'folders': 1,
+				\ 'files': 0,
+				\ 'folder_arrows': 0,
+				\ }
 
 			lua <<EOF
 				require'lspconfig'.solargraph.setup {}
 				require'lspconfig'.hls.setup {}
 				require'lspconfig'.rnix.setup {}
+
+				local cmp = require'cmp'
+
+				cmp.setup {
+					snippet = {
+						expand = function(args)
+							require('luasnip').lsp_expand(args.body)
+						end,
+					},
+
+					mapping = {
+						["<C-e>"] = cmp.mapping.close(),
+
+						["<Tab>"] = cmp.mapping(function(fallback)
+							if cmp.visible() then
+								cmp.select_next_item()
+							elseif has_words_before() then
+								cmp.complete()
+							else
+								fallback()
+							end
+						end, {"i", "s"}),
+						
+						["<S-Tab>"] = cmp.mapping(function()
+							if cmp.visible() then
+								cmp.select_prev_item()
+							else
+								fallback()
+							end
+						end, {"i", "s"}),
+					},
+
+					sources = cmp.config.sources(
+						{ { name = 'nvim_lsp' }, { name = 'luasnip'} }, 
+						{ { name = 'treesitter' }, },
+						{ { name = 'buffer' }, { name = 'tmux' }, },
+						{ { name = 'emoji' }, }
+					),
+
+					experimental = { native_menu = true, ghost_text = true },
+				}
 
 				require'nvim-treesitter.configs'.setup {
 					ensure_installed = "maintained",
@@ -147,17 +161,26 @@
 				}
 
 				require'treesitter-context.config'.setup { enable = true, }
+
+				require'nvim-tree'.setup {
+					auto_close = true,
+					hijack_cursor = true,
+				}
+
+				require'nvim-autopairs'.setup {
+					check_ts = true,
+					enable_check_bracket_line = true,
+				}
+
+				require'gitsigns'.setup {}
+
+				require'indent_blankline'.setup {
+					use_treesitter = true,
+					show_trailing_blankline_indent = false,
+				}
 EOF
 
-			let g:deoplete#enable_at_startup = 1
-			let g:deoplete#buffer#require_same_filetype = 0
-			inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-			autocmd CompleteDone * pclose
-
-			if executable('rg')
-				let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
-				set grepprg=rg\ --vimgrep
-			endif
+			au BufWritePost <buffer> lua require('lint').try_lint()
 
 			nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
 			nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
@@ -165,27 +188,27 @@ EOF
 			nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
 		'';
 		plugins = with pkgs.vimPlugins; [
-			base16-vim vim-gitgutter nord-vim
+			nord-vim gitsigns-nvim 
 
-			# completions/neomake
-			deoplete-nvim neco-vim nvim-lspconfig neomake neoinclude-vim neco-syntax
-			deoplete-github deoplete-zsh deoplete-lsp
+			# completions
+			nvim-lspconfig nvim-cmp
+			cmp-nvim-lsp cmp-buffer cmp-tmux cmp-emoji cmp-treesitter
+			luasnip cmp_luasnip
 
 			copilot-vim
 
-			vim-autoformat colorizer vim-airline vim-airline-themes
+			colorizer vim-airline
 
 			# languages
-			syntastic vim-nix nvim-treesitter nvim-ts-rainbow nvim-treesitter-context
-			vim-rails vim-endwise delimitMate
+			nvim-lint nvim-treesitter nvim-ts-rainbow nvim-treesitter-context
+			vim-endwise nvim-autopairs
 
 			# misc
-			nerdtree vim-nerdtree-tabs
+			nvim-tree-lua indent-blankline-nvim
 			popup-nvim plenary-nvim telescope-nvim
-			vim-dispatch vim-fugitive vim-rhubarb vim-sensible
+			vim-sensible vim-bracketed-paste
 
-			vim-sneak vim-surround vim-easytags vim-startify bclose-vim
-			tmux-complete-vim vim-misc tagbar a-vim
+			vim-sneak vim-startify bclose-vim a-vim
 		];
 		viAlias = true;
 		vimAlias = true;

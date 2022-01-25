@@ -9,6 +9,12 @@
 		userEmail = "anna328p@gmail.com";
 
 		ignores = [ "tags" ];
+
+		includes = [
+			{ contents = {
+					pull.ff = "only";
+			}; }
+		];
 	};
 }
 
