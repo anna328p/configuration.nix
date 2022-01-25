@@ -5,12 +5,10 @@
 		enable = true;
 		enableAutosuggestions = true;
 		enableCompletion = true;
-		# enableVteIntegration = true;
 		autocd = true;
 		dotDir = ".config/zsh";
 
 		envExtra = ''
-			export PATH=$HOME/bin:$HOME/.local/bin:$PATH
 			export CDPATH=.:$HOME:$CDPATH
 
 			export DEFAULT_USER=$(whoami)
@@ -34,17 +32,6 @@
 
 		dirHashes = {
 			w = "$HOME/work";
-		};
-
-		shellAliases = {
-			ls = "exa";
-			open = "xdg-open";
-			":w" = "sync";
-			":q" = "exit";
-			":wq" = "sync; exit";
-			nbs = "time sudo nixos-rebuild switch";
-			nbsu = "time sudo nixos-rebuild switch --upgrade";
-			nsn = "nix search nixpkgs";
 		};
 
 		prezto = {
