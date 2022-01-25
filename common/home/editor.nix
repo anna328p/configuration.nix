@@ -19,6 +19,8 @@
 		package = neovim;
 
 		extraConfig = ''
+			set autoindent
+
 			set clipboard+=unnamed
 			set formatoptions+=j
 
@@ -98,6 +100,7 @@
 				\ }
 
 			lua <<EOF
+				-- completions
 				require'lspconfig'.solargraph.setup {}
 				require'lspconfig'.hls.setup {}
 				require'lspconfig'.rnix.setup {}
@@ -117,8 +120,6 @@
 						["<Tab>"] = cmp.mapping(function(fallback)
 							if cmp.visible() then
 								cmp.select_next_item()
-							elseif has_words_before() then
-								cmp.complete()
 							else
 								fallback()
 							end
@@ -143,6 +144,7 @@
 					experimental = { native_menu = true, ghost_text = true },
 				}
 
+				-- treesitter
 				require'nvim-treesitter.configs'.setup {
 					ensure_installed = "maintained",
 					rainbow = { enable = true, extended_mode = true, },
@@ -162,33 +164,45 @@
 
 				require'treesitter-context.config'.setup { enable = true, }
 
+				-- statusline
+				require'lualine'.setup {
+					options = {
+						icons_enabled = false,
+						theme = 'nord',
+					},
+				}
+
+				-- file explorer
 				require'nvim-tree'.setup {
 					auto_close = true,
 					hijack_cursor = true,
 				}
 
-				require'nvim-autopairs'.setup {
-					check_ts = true,
-					enable_check_bracket_line = true,
-				}
+				-- bracket matching
+				require'pears'.setup()
 
-				require'gitsigns'.setup {}
+				-- git gutter
+				require'gitsigns'.setup { }
 
+				-- show indentation levels
 				require'indent_blankline'.setup {
 					use_treesitter = true,
 					show_trailing_blankline_indent = false,
 				}
 EOF
-
+			" lint on file write
 			au BufWritePost <buffer> lua require('lint').try_lint()
 
+			" telescope mappings
 			nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
 			nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
 			nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
 			nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
 		'';
 		plugins = with pkgs.vimPlugins; [
-			nord-vim gitsigns-nvim 
+			# visual
+			nord-vim gitsigns-nvim lualine-nvim
+			nvim-colorizer-lua indent-blankline-nvim
 
 			# completions
 			nvim-lspconfig nvim-cmp
@@ -197,17 +211,16 @@ EOF
 
 			copilot-vim
 
-			colorizer vim-airline
-
 			# languages
 			nvim-lint nvim-treesitter nvim-ts-rainbow nvim-treesitter-context
-			vim-endwise nvim-autopairs
+			vim-endwise pears-nvim
+
+			# navigation
+			nvim-tree-lua
+			popup-nvim plenary-nvim telescope-nvim
 
 			# misc
-			nvim-tree-lua indent-blankline-nvim
-			popup-nvim plenary-nvim telescope-nvim
 			vim-sensible vim-bracketed-paste
-
 			vim-sneak vim-startify bclose-vim a-vim
 		];
 		viAlias = true;
