@@ -15,8 +15,7 @@
 		kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
 
 		kernelParams = [ "iomem=relaxed" "iwlwifi.swcrypto=0" "bluetooth.disable_ertm=1" ];
-		kernelModules = [ "kvm-amd" "snd-seq" "snd-rawmidi" "nct6775" "v4l2loopback" ];
-		extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
+		kernelModules = [ "kvm-amd" "snd-seq" "snd-rawmidi" "nct6775"  ];
 
 		supportedFilesystems = [ "zfs" ];
 	};

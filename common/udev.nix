@@ -29,7 +29,7 @@
   '' + builtins.readFile (builtins.fetchurl {
     url = "https://raw.githubusercontent.com/Yubico/libu2f-host/master/70-u2f.rules";
     sha256 = "0whfqh0m3ps7l9w00s8l6yy0jkjkssqnsk2kknm497p21cs43wnm";
-  });
+  }) + builtins.readFile "${pkgs.ddcutil}/share/ddcutil/data/45-ddcutil-i2c.rules";
 
   packages = with pkgs; [ gnome.gnome-settings-daemon ];
 }

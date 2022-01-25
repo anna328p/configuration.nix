@@ -4,6 +4,9 @@
 	boot = {
 		plymouth.enable = true;
 		supportedFilesystems = [ "ntfs" "exfat" ];
+
+		kernelModules = [ "i2c-dev" "v4l2loopback" ];
+		extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
 	};
 
 	networking = {
@@ -26,10 +29,12 @@
 	};
 
 	environment.systemPackages = with pkgs; [
-		nmap dnsutils
+		nmap dnsutils mosh
 		mullvad-vpn
 		piper
 		ffmpeg imagemagick
+
+		ddcutil xclip
 
 		firefox-devedition-bin transgui libreoffice
 		discord tdesktop
@@ -39,6 +44,7 @@
 		espeak-ng 
 
 		gnomeExtensions.gsconnect
+		gnomeExtensions.brightness-control-using-ddcutil
 	];
 
 	fonts.fonts = with pkgs; [
@@ -48,16 +54,20 @@
 	];
 
 	home-manager = {
-		users.anna = (import ./home.nix { inherit (pkgs) neovim; });
+		users.anna = import ./home;
 
 		useUserPackages = true;
 		useGlobalPkgs = true;
+
+		extraSpecialArgs = { inherit (pkgs) neovim; };
 	};
+
+	users.groups.i2c = {};
 
 	users.users.anna = {
 		extraGroups = [
 			"networkmanager" "dialout" "audio" "video" "adbusers"
-			"jackaudio" "scanner" "lp"
+			"jackaudio" "scanner" "lp" "i2c"
 		];
 		
 		packages = with pkgs; [
@@ -80,7 +90,7 @@
 			gcolor3
 
 			myWine winetricks
-			steam steam-run multimc sidequest
+			steam steam-run polymc sidequest
 
 			calibre
 			anki
@@ -93,7 +103,7 @@
 
 	services = {
 		mopidy = {
-			enable = true;
+			# enable = true; # broken
 			extensionPackages = with pkgs; [
 				mopidy-mpd mopidy-iris mopidy-scrobbler
 				mopidy-ytmusic mopidy-somafm
@@ -178,8 +188,9 @@
 		zerotierone = {
 			enable = true;
 			joinNetworks = [
-				"abfd31bd4777d83c"
-				"abfd31bd479dc978"
+				"abfd31bd4777d83c" # annanet
+				"abfd31bd479dc978" # linda
+				"565799d8f678b97f" # mcserver
 			];
 		};
 
@@ -208,6 +219,14 @@
 			alsa = {
 				enable = true;
 				support32Bit = true;
+			};
+
+			config.pipewire = {
+				"context.properties.default.clock" = {
+					quantum = 32;
+					min-quantum = 32;
+					max-quantum = 8192;
+				};
 			};
 
 			config.pipewire-pulse = {
