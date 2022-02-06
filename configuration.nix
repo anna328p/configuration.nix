@@ -21,7 +21,7 @@
 		speedtest-cli wget
 		git
 
-		linuxConsoleTools
+		linuxConsoleTools bc
 		zip unzip _7zz zstd xz pigz
 	];
 

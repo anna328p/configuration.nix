@@ -6,6 +6,7 @@
 			solargraph
 			haskell-language-server
 			rnix-lsp
+			vale
 		];
 
 		sessionVariables = {
@@ -65,23 +66,15 @@
 
 
 			" nord color scheme
+			set termguicolors
+
 			let g:nord_cursor_line_number_background = 1
 			let g:nord_italic = 1
 			let g:nord_italic_comments = 1
 			let g:nord_underline = 1
-			set termguicolors
+
 			colorscheme nord
 			set background=dark
-
-			" airline
-			let g:airline_powerline_fonts = 1
-			let g:airline#extensions#tabline#enabled = 1
-			let g:airline_detect_paste=1
-			let g:airline_theme='nord'
-
-			" Required after having changed the colorscheme
-			hi clear SignColumn
-			let g:airline#extensions#hunks#non_zero_only = 1
 
 			" nvim tree
 			nnoremap <leader>t :NvimTreeToggle<CR>
@@ -101,9 +94,9 @@
 
 			lua <<EOF
 				-- completions
-				require'lspconfig'.solargraph.setup {}
-				require'lspconfig'.hls.setup {}
-				require'lspconfig'.rnix.setup {}
+				require'lspconfig'.solargraph.setup { }
+				require'lspconfig'.hls.setup { }
+				require'lspconfig'.rnix.setup { }
 
 				local cmp = require'cmp'
 
@@ -132,6 +125,8 @@
 								fallback()
 							end
 						end, {"i", "s"}),
+
+						['<C-Space>'] = cmp.mapping.confirm({ select = true }),
 					},
 
 					sources = cmp.config.sources(
@@ -172,6 +167,13 @@
 					},
 				}
 
+				require'tabline'.setup {
+					options = {
+						show_devicons = false,
+						show_filename_only = true,
+					},
+				}
+
 				-- file explorer
 				require'nvim-tree'.setup {
 					auto_close = true,
@@ -188,6 +190,7 @@
 				require'indent_blankline'.setup {
 					use_treesitter = true,
 					show_trailing_blankline_indent = false,
+					show_current_context = true,
 				}
 EOF
 			" lint on file write
@@ -201,7 +204,7 @@ EOF
 		'';
 		plugins = with pkgs.vimPlugins; [
 			# visual
-			nord-vim gitsigns-nvim lualine-nvim
+			nord-vim gitsigns-nvim lualine-nvim tabline-nvim
 			nvim-colorizer-lua indent-blankline-nvim
 
 			# completions

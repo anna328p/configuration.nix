@@ -1,6 +1,10 @@
 { config, pkgs, lib, ... }:
 
 {
+	imports = [
+		./pipewire.nix
+	];
+
 	boot = {
 		plymouth.enable = true;
 		supportedFilesystems = [ "ntfs" "exfat" ];
@@ -39,7 +43,7 @@
 		firefox-devedition-bin transgui libreoffice
 		discord tdesktop
 		mpv vlc gnome.gnome-sound-recorder gnome.gnome-tweaks
-		helvum
+		helvum vcv-rack
 		virtmanager spice_gtk
 		espeak-ng 
 
@@ -47,10 +51,16 @@
 		gnomeExtensions.brightness-control-using-ddcutil
 	];
 
+	environment.variables = {
+		MOZ_USE_XINPUT2 = "1";
+	};
+
 	fonts.fonts = with pkgs; [
 		source-code-pro source-sans-pro source-serif-pro
 		noto-fonts noto-fonts-cjk noto-fonts-emoji-blob-bin
 		liberation_ttf
+
+		(nerdfonts.override { fonts = [ "SourceCodePro" ]; })
 	];
 
 	home-manager = {
@@ -98,6 +108,8 @@
 
 			fd osu-lazer freemind guvcview ydotool
 			fontforge-gtk nodePackages.svgo
+
+			solaar
 		];
 	};
 
@@ -209,40 +221,6 @@
 		};
 
 		udev = import ./udev.nix { inherit pkgs; };
-
-		pipewire = {
-			enable = true;
-			pulse.enable = true;
-			jack.enable = true;
-			media-session.enable = true;
-
-			alsa = {
-				enable = true;
-				support32Bit = true;
-			};
-
-			config.pipewire = {
-				"context.properties.default.clock" = {
-					quantum = 32;
-					min-quantum = 32;
-					max-quantum = 8192;
-				};
-			};
-
-			config.pipewire-pulse = {
-				"context.modules" = [
-					{ name = "libpipewire-module-rtkit";
-					  flags = [ "ifexists" "nofail" ]; }
-					{ name = "libpipewire-module-protocol-native"; }
-					{ name = "libpipewire-module-client-node"; }
-					{ name = "libpipewire-module-adapter"; }
-					{ name = "libpipewire-module-metadata"; }
-					{ name = "libpipewire-module-protocol-pulse";
-					  args = { "server.address" = [ "unix:native" "tcp:4713" ];
-				               "vm.overrides" = { "pulse.min.quantum" = "1024/48000"; }; }; }
-				];
-			};
-		};
 	};
 
 	systemd.user.services.mpdris2 = {

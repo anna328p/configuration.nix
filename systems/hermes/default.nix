@@ -50,9 +50,12 @@
 	environment.systemPackages = with pkgs; [
 		powertop
 		opensc pcsctools
+		quartus-prime-lite
 	];
 
 	virtualisation.libvirtd.enable = true;
+
+	virtualisation.podman.enable = true;
 
 	system.stateVersion = "20.09";
 }

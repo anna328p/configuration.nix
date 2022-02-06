@@ -24,17 +24,6 @@
 
 		sessionPath = [ "$HOME/.local/bin" ];
 
-		shellAliases = {
-			ls = "exa";
-			open = "xdg-open";
-			":w" = "sync";
-			":q" = "exit";
-			":wq" = "sync; exit";
-			nbs = "time sudo nixos-rebuild switch";
-			nbsu = "time sudo nixos-rebuild switch --upgrade";
-			nsn = "nix search nixpkgs";
-		};
-
 		username = "anna";
 	};
 

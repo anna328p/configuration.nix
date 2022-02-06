@@ -1,47 +1,78 @@
-{ ... }:
+{ config, pkgs, ... }:
 
 {
+	home.shellAliases = {
+		ls = "exa";
+		open = "xdg-open";
+		":w" = "sync";
+		":q" = "exit";
+		":wq" = "sync; exit";
+		nbs = "time sudo nixos-rebuild switch";
+		nbsu = "time sudo nixos-rebuild switch --upgrade";
+		nsn = "nix search nixpkgs";
+	};
+
+	home.file.".config/zsh/.p10k.zsh".source = files/zsh/p10k.zsh;
+
 	programs.zsh = {
 		enable = true;
-		enableAutosuggestions = true;
-		enableCompletion = true;
-		autocd = true;
 		dotDir = ".config/zsh";
 
-		envExtra = ''
-			export CDPATH=.:$HOME:$CDPATH
+		cdpath = [ "$HOME" ];
 
+		enableCompletion = true;
+		enableVteIntegration = true;
+
+		sessionVariables = {
+			EDITOR = "nvim";
+			VISUAL = "nvim";
+		};
+
+		envExtra = ''
 			export DEFAULT_USER=$(whoami)
 			export GPG_TTY=$(tty)
 		'';
 
 		history = {
+			expireDuplicatesFirst = true;
 			extended = true;
 			path = ".local/share/zsh/zsh_history";
 			save = 100000;
 			size = 100000;
 		};
 
-		initExtra = ''
-			setopt GLOB_DOTS
+		initExtraFirst = ''
+			source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme;
 
-			for i in util autopushd escesc; do
+			zmodload zsh/zprof
+		'';
+
+		initExtra = ''
+			zmodload zsh/attr
+			zmodload zsh/stat
+			zmodload zsh/zpty
+			
+			autoload zmv
+			autoload zargs
+			
+			setopt GLOB_DOTS
+			for i in util escesc; do
 				source ${files/zsh/snippets}/$i.zsh
 			done
+			
+			zprof
 		'';
 
 		dirHashes = {
 			w = "$HOME/work";
+			en = "/etc/nixos";
 		};
 
 		prezto = {
 			enable = true;
-			extraModules = [ "attr" "stat" "zpty" ];
-			extraFunctions = [ "zargs" "zmv" ];
 
 			pmodules = [
 				"environment"
-				"terminal"
 				"editor"
 				"history"
 				"directory"
@@ -49,32 +80,19 @@
 				"helper"
 				"utility"
 				"completion"
-				"prompt"
-				"autosuggestions"
-				"directory"
-				"git"
-				"history-substring-search"
-				"rails"
-				"ruby"
-				"ssh"
 				"syntax-highlighting"
+				"history-substring-search"
+				"autosuggestions"
 				"tmux"
 			];
 
 			autosuggestions.color = "fg=blue";
 			editor.dotExpansion = true;
-			prompt.theme = "agnoster";
 			syntaxHighlighting.highlighters = [ "main" "brackets" "pattern" "line" "root" ];
-
-			terminal = {
-				autoTitle = true;
-				multiplexerTitleFormat = "%s";
-			};
 
 			tmux = {
 				autoStartLocal = true;
 				autoStartRemote = true;
-				defaultSessionName = "theseus";
 			};
 
 			utility.safeOps = false;
@@ -83,9 +101,7 @@
 	
 	programs.direnv = {
 		enable = true;
-		nix-direnv = {
-		  enable = true;
-		};
+		nix-direnv.enable = true;
 		enableZshIntegration = true;
 	};
 }
