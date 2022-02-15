@@ -11,6 +11,7 @@
 
 	environment.systemPackages = with pkgs; [
 		acpi usbutils pciutils lm_sensors efibootmgr multipath-tools iotop
+		dmidecode
 	];
 
 	services.gpm.enable = true;

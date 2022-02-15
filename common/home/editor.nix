@@ -7,6 +7,7 @@
 			haskell-language-server
 			rnix-lsp
 			vale
+			nodePackages.diagnostic-languageserver
 		];
 
 		sessionVariables = {
@@ -20,50 +21,41 @@
 		package = neovim;
 
 		extraConfig = ''
-			set autoindent
-
-			set clipboard+=unnamed
-			set formatoptions+=j
-
-			set hlsearch
-			set ignorecase
-
+			" integration
 			set mouse=a
-			set ttimeoutlen=50
+			set clipboard+=unnamed
+			set title
+
+			" searching
+			set ignorecase
 			set smartcase
 
+			" view
 			set number
-			set background=dark
 			set cursorline
-			set ruler
+			set scrolloff=3
+			set sidescrolloff=5
 
-			set title
+			" don't show mode twice
 			set noshowmode
-			set showcmd
-			set hidden
-			set laststatus=2
 
+			" splits
 			set splitbelow
 			set splitright
 
-			set scrolloff=3
-			set sidescrolloff=5
-			set wrap
-
+			" indentation
 			set copyindent
 			set tabstop=4
 			set shiftwidth=4
 			set noexpandtab
 
+			" misc
 			set undofile
-			set undolevels=1000
-			set undoreload=10000
-
 			set completeopt=menu,menuone,noselect
 
+			" typo protection
 			command! W :w
 			command! Q :q
-
 
 			" nord color scheme
 			set termguicolors
@@ -92,11 +84,14 @@
 				\ 'folder_arrows': 0,
 				\ }
 
+			let g:nvim_tree_disable_window_picker = 1
+
 			lua <<EOF
 				-- completions
 				require'lspconfig'.solargraph.setup { }
 				require'lspconfig'.hls.setup { }
 				require'lspconfig'.rnix.setup { }
+				require'lspconfig'.diagnosticls.setup { }
 
 				local cmp = require'cmp'
 

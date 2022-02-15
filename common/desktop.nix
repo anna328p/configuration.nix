@@ -3,6 +3,7 @@
 {
 	imports = [
 		./pipewire.nix
+		./udev.nix
 	];
 
 	boot = {
@@ -47,9 +48,12 @@
 		virtmanager spice_gtk
 		espeak-ng 
 
-		gnomeExtensions.gsconnect
-		gnomeExtensions.brightness-control-using-ddcutil
-	];
+	] ++ (with pkgs.gnomeExtensions; [
+		gsconnect
+		brightness-control-using-ddcutil
+		sensory-perception
+		compiz-windows-effect
+	]);
 
 	environment.variables = {
 		MOZ_USE_XINPUT2 = "1";
@@ -219,8 +223,6 @@
 			dataDir = "/home/anna";
 			configDir = "/home/anna/.config/syncthing";
 		};
-
-		udev = import ./udev.nix { inherit pkgs; };
 	};
 
 	systemd.user.services.mpdris2 = {
