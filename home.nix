@@ -199,10 +199,7 @@
 
 		direnv = {
 			enable = true;
-            nix-direnv = {
-              enable = true;
-              enableFlakes = true;
-            };
+            nix-direnv.enable = true;
 			enableZshIntegration = true;
 		};
 
@@ -428,7 +425,7 @@ EOF
 
 				# completions/neomake
 				deoplete-nvim neco-vim nvim-lspconfig neomake neoinclude-vim neco-syntax
-				deoplete-emoji deoplete-github deoplete-zsh deoplete-lsp
+				deoplete-github deoplete-zsh deoplete-lsp
 
 				vim-autoformat colorizer vim-airline vim-airline-themes
 
@@ -438,7 +435,7 @@ EOF
 
 				# misc
 				nerdtree vim-nerdtree-tabs
-				popup-nvim plenary-nvim telescope-nvim
+				popup-nvim plenary-nvim # telescope-nvim
 				vim-dispatch vim-fugitive vim-rhubarb vim-sensible
 
 				vim-sneak vim-surround vim-easytags vim-startify bclose-vim

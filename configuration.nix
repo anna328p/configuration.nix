@@ -176,9 +176,9 @@
 				rpc-password = (builtins.readFile ./transmission-password.txt);
 				rpc-bind-address = "0.0.0.0";
 				rpc-whitelist-enabled = false;
+				rpc-port = 9091;
 				peer-port = 25999;
 			};
-			port = 9091;
 		};
 		# Enable the X11 windowing system.
 		xserver = {
@@ -300,16 +300,19 @@
 
 		zerotierone = {
 			enable = true;
-			joinNetworks = [ "159924d6306c2686" ];
+			joinNetworks = [ "159924d6306c2686" "abfd31bd4777d83c" ];
 		};
 	};
 
 	virtualisation = {
 		libvirtd = {
 			enable = true;
-			qemuOvmf = true;
-			qemuRunAsRoot = false;
 			onShutdown = "shutdown";
+
+			qemu = {
+				ovmf.enable = true;
+				runAsRoot = false;
+			};
 		};
 		docker.enable = true;
 	};
@@ -371,8 +374,6 @@
 			{ domain = "@audio"; type = "-"; item = "nice"; value = "-20"; }
 			{ domain = "@audio"; type = "-"; item = "rtprio"; value = "99"; }
 		];
-
-		wrappers.spice-client-glib-usb-acl-helper.source = "${pkgs.spice_gtk}/bin/spice-client-glib-usb-acl-helper";
 	};
 
 	system = {
@@ -409,8 +410,6 @@
 				vaSupport = true;
 			};
 
-			winetricks = super.winetricks.override { wine = self.myWine; };
-
 			neovim-unwrapped = super.neovim-unwrapped.overrideAttrs (oa: {
 				version = "0.5.0-dev";
 
@@ -430,14 +429,6 @@
 
 			bundler' = super.bundler.override { ruby = super.ruby_2_7; };
 			bundix' = super.bundix.override { bundler = self.bundler'; };
-
-			gnome = super.gnome.overrideScope' (gself: gsuper: {
-				mutter = gsuper.mutter.overrideAttrs (oa: {
-					patches = oa.patches ++ [
-						./mutter-fix-tablet.patch
-					];
-				});
-			});
 		})
 	];
 
