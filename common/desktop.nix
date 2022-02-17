@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, pkgsMaster, lib, ... }:
 
 {
 	imports = [
@@ -42,7 +42,7 @@
 		ddcutil xclip
 
 		firefox-devedition-bin transgui libreoffice
-		discord tdesktop
+		tdesktop pkgsMaster.discord
 		mpv vlc gnome.gnome-sound-recorder gnome.gnome-tweaks
 		helvum vcv-rack
 		virtmanager spice_gtk
@@ -89,7 +89,7 @@
 
 			zoom-us
 			prusa-slicer openscad solvespace
-			kicad-with-packages3d
+			#kicad-with-packages3d
 			mpdris2
 			gimp inkscape krita
 

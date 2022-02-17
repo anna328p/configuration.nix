@@ -14,10 +14,10 @@
 		  serverBlocks = lib.foldr (a: b: a // b) {} (builtins.map serverBlock servers);
 
 		in serverBlocks // {
-			"theseus-remote" = {
+			"theseus" = {
 				user = "anna";
-				hostname = "ddns.dk0.us";
-				port = 2225;
+				hostname = "10.255.1.5";
+				port = 22;
 			};
 
 			"github" = {

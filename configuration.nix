@@ -1,4 +1,4 @@
-{ config, pkgs, lib, options, ... }:
+{ config, pkgs, lib, options, flakes, ... }:
 
 {
 	boot.tmpOnTmpfs = true;
@@ -71,10 +71,14 @@
 
 	nix = {
 		extraOptions = ''
-			experimental-features = nix-command flakes ca-references ca-derivations
+			experimental-features = nix-command flakes
 		'';
 
 		package = pkgs.nixFlakes;
+
+		registry.nixpkgs.flake = flakes.nixpkgs;
 	};
+
+	system.configurationRevision = flakes.nixpkgs.lib.mkIf (flakes.self ? rev) flakes.self.rev;
 }
 # vim: noet:ts=4:sw=4:ai:mouse=a
