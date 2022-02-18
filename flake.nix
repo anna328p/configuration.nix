@@ -14,7 +14,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-
     wayland = {
       url = github:nix-community/nixpkgs-wayland;
       inputs.nixpkgs.follows = "nixpkgs";
@@ -25,19 +24,25 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    musnix = {
+      url = github:musnix/musnix;
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     flake-utils.url = github:numtide/flake-utils;
   };
 
   outputs = { self
-    , flake-utils
     , nixpkgs
     , nixpkgs-master
-    , home-manager
-    , wayland
     , nur
-    , neovim
     , nixos-hardware
     , impermanence
+    , home-manager
+    , wayland
+    , neovim
+    , musnix
+    , flake-utils
     , ...
   }@flakes: let
     localOverlay = import overlays/local.nix;
@@ -80,12 +85,17 @@
     nixosConfigurations = {
       hermes = mkSystem baseDesktop [
         systems/hermes
-        impermanence.nixosModules.impermanence
+
+        impermanence.nixosModule
         nixos-hardware.nixosModules.lenovo-thinkpad-t14-amd-gen1
       ];
 
       theseus = mkSystem baseDesktop [
       	systems/theseus
+
+      	nixos-hardware.nixosModules.common-cpu-amd
+      	nixos-hardware.nixosModules.common-gpu-amd
+      	nixos-hardware.nixosModules.common-pc-ssd
       ];
     };
   };

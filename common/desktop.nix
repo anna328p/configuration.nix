@@ -10,8 +10,10 @@
 		plymouth.enable = true;
 		supportedFilesystems = [ "ntfs" "exfat" ];
 
-		kernelModules = [ "i2c-dev" "v4l2loopback" ];
-		extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
+		kernelParams = [ "iomem=relaxed" ];
+
+		kernelModules = [ "i2c-dev" "v4l2loopback" "snd-seq" "snd-rawmidi" "ddcci" ];
+		extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ddcci-driver ];
 	};
 
 	networking = {
@@ -57,15 +59,18 @@
 
 	environment.variables = {
 		MOZ_USE_XINPUT2 = "1";
+		CALIBRE_USE_DARK_PALETTE = "1";
 	};
 
-	fonts.fonts = with pkgs; [
-		source-code-pro source-sans-pro source-serif-pro
-		noto-fonts noto-fonts-cjk noto-fonts-emoji-blob-bin
-		liberation_ttf
+	fonts = {
+		enableDefaultFonts = true;
 
-		(nerdfonts.override { fonts = [ "SourceCodePro" ]; })
-	];
+		fonts = with pkgs; [
+			source-code-pro source-sans-pro source-serif-pro
+			noto-fonts noto-fonts-cjk noto-fonts-emoji-blob-bin
+			liberation_ttf opensans-ttf corefonts
+		];
+	};
 
 	home-manager = {
 		users.anna = import ./home;
@@ -89,28 +94,30 @@
 
 			zoom-us
 			prusa-slicer openscad solvespace
-			#kicad-with-packages3d
+			kicad-with-packages3d
 			mpdris2
-			gimp inkscape krita
 
-			gh gnupg1 nodejs
-			nix-prefetch-git cachix direnv
-			nixpkgs-review
-			adoptopenjdk-openj9-bin-16 ruby_3_0 python3 mono
-			jq
+			gimp inkscape krita
+			kdenlive audacity guvcview 
+
+			nixpkgs-review nix-prefetch-git cachix
+			direnv
+
+			gh gnupg1 nodejs jq fd
+			adoptopenjdk-openj9-bin-16 ruby_3_1 python3 mono
 
 			appimage-run
 
-			gcolor3
+			gcolor3 ydotool
 
-			myWine winetricks
-			steam steam-run polymc sidequest
+			myWine winetricks protontricks
+
+			steam steam-run polymc sidequest osu-lazer
 
 			calibre
 			anki
 			plover.dev
 
-			fd osu-lazer freemind guvcview ydotool
 			fontforge-gtk nodePackages.svgo
 
 			solaar
@@ -190,6 +197,8 @@
 			enable = true;
 			ipv6 = true;
 			reflector = true;
+			nssmdns = true;
+
 			publish = {
 				enable = true;
 				userServices = true;
@@ -198,8 +207,9 @@
 				workstation = true;
 				domain = true;
 			};
-			nssmdns = true;
 		};
+
+		mullvad-vpn.enable = true;
 
 		zerotierone = {
 			enable = true;
@@ -210,19 +220,19 @@
 			];
 		};
 
-		mullvad-vpn.enable = true;
-
-		usbmuxd.enable = true;
-		ratbagd.enable = true;
-		flatpak.enable = true;
-		fstrim.enable = true;
-
 		syncthing = {
 			enable = true;
 			user = "anna";
 			dataDir = "/home/anna";
 			configDir = "/home/anna/.config/syncthing";
 		};
+
+		flatpak.enable = true;
+
+		usbmuxd.enable = true;
+		ratbagd.enable = true;
+		fstrim.enable = true;
+		fwupd.enable = true;
 	};
 
 	systemd.user.services.mpdris2 = {
@@ -244,6 +254,7 @@
 
 		adb.enable = true;
 		steam.enable = true;
+		geary.enable = true;
 
 		kdeconnect = {
 			enable = true;
@@ -263,7 +274,7 @@
 		pulseaudio.enable = false;
 		bluetooth.enable = true;
 
-		opengl.extraPackages = with pkgs; [ libva1-full vaapiVdpau libvdpau-va-gl vulkan-tools ];
+		opengl.extraPackages = with pkgs; [ libva1-full vaapiVdpau libvdpau-va-gl ];
 
 		sane = {
 			enable = true;

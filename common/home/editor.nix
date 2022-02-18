@@ -84,8 +84,6 @@
 				\ 'folder_arrows': 0,
 				\ }
 
-			let g:nvim_tree_disable_window_picker = 1
-
 			lua <<EOF
 				-- completions
 				require'lspconfig'.solargraph.setup { }
@@ -207,7 +205,8 @@ EOF
 			cmp-nvim-lsp cmp-buffer cmp-tmux cmp-emoji cmp-treesitter
 			luasnip cmp_luasnip
 
-			copilot-vim
+			# currently broken
+			# copilot-vim
 
 			# languages
 			nvim-lint nvim-treesitter nvim-ts-rainbow nvim-treesitter-context

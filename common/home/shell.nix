@@ -56,7 +56,7 @@
 			autoload zargs
 			
 			setopt GLOB_DOTS
-			for i in util escesc; do
+			for i in util escesc autopushd; do
 				source ${files/zsh/snippets}/$i.zsh
 			done
 			
