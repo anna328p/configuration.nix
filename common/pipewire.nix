@@ -6,16 +6,8 @@
 		pulse.enable = true;
 		jack.enable = true;
 
-		media-session = {
-			enable = true;
-
-			config.alsa-monitor = {
-				properties = {
-					"api.alsa.period-size" = 6;
-					"api.alsa.disable-batch" = true;
-				};
-			};
-		};
+		media-session.enable = false;
+		wireplumber.enable = true;
 
 		alsa = {
 			enable = true;
