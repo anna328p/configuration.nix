@@ -2,4 +2,4 @@
 
 My Nix config files.
 
-Currently just for theseus.
+This repo is a flake containing two system configurations.
