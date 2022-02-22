@@ -32,18 +32,20 @@
 			enable = true;
 
 			settings = {
-				download-dir = "/media/storage/torrents";
-				incomplete-dir = "/media/storage/torrents/incomplete";
-				incomplete-dir-enabled = true;
+				rpc-port = 9091;
+				rpc-bind-address = "0.0.0.0";
+				rpc-whitelist-enabled = false;
+
 				rpc-authentication-required = "true";
 				rpc-username = "anna";
 				rpc-password = (builtins.readFile ./transmission-password.txt);
-				rpc-bind-address = "0.0.0.0";
-				rpc-whitelist-enabled = false;
-				peer-port = 25999;
-			};
 
-			port = 9091;
+				peer-port = 25999;
+
+				download-dir = "/media/storage/torrents";
+				incomplete-dir = "/media/storage/torrents/incomplete";
+				incomplete-dir-enabled = true;
+			};
 		};
 
 		atftpd.enable = true;
@@ -57,6 +59,8 @@
 		};
 
 		gpsd.enable = true;
+
+		xserver.displayManager.gdm.autoSuspend = false;
 	};
 
 	virtualisation = {
