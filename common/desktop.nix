@@ -1,4 +1,4 @@
-{ config, pkgs, pkgsMaster, lib, ... }:
+{ config, pkgs, pkgsMaster, lib, specialArgs, ... }:
 
 {
 	imports = [
@@ -55,6 +55,7 @@
 		brightness-control-using-ddcutil
 		sensory-perception
 		compiz-windows-effect
+		appindicator
 	]);
 
 	environment.variables = {
@@ -66,9 +67,11 @@
 		enableDefaultFonts = true;
 
 		fonts = with pkgs; [
-			source-code-pro source-sans-pro source-serif-pro
+			source-code-pro source-sans source-serif
 			noto-fonts noto-fonts-cjk noto-fonts-emoji-blob-bin
 			liberation_ttf opensans-ttf corefonts
+
+			google-fonts
 		];
 	};
 
@@ -78,7 +81,7 @@
 		useUserPackages = true;
 		useGlobalPkgs = true;
 
-		extraSpecialArgs = { inherit (pkgs) neovim; };
+		extraSpecialArgs = specialArgs;
 	};
 
 	users.groups.i2c = {};
@@ -105,6 +108,7 @@
 
 			gh gnupg1 nodejs jq fd
 			adoptopenjdk-openj9-bin-16 ruby_3_1 python3 mono
+			cabal-install cabal2nix
 
 			appimage-run
 

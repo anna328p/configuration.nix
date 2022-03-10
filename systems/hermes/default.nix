@@ -12,7 +12,7 @@
 			supportedFilesystems = [ "zfs" ];
 		};
 
-		kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
+		kernelPackages = pkgs.linuxPackages_xanmod;
 
 		kernelParams = [ "iwlwifi.swcrypto=0" "bluetooth.disable_ertm=1" ];
 
@@ -23,6 +23,8 @@
 		hostName = "hermes";
 		hostId = "cda8da64";
 	};
+
+	hardware.bluetooth.powerOnBoot = false;
 
 	time.timeZone = "America/Chicago";
 

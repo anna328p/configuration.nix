@@ -1,4 +1,4 @@
-{ pkgs, neovim, ... }:
+{ pkgs, flakes, tcs, ... }:
 
 {
 	home = {
@@ -6,8 +6,12 @@
 			solargraph
 			haskell-language-server
 			rnix-lsp
-			vale
 			nodePackages.diagnostic-languageserver
+			nodePackages.vscode-langservers-extracted
+
+			deadnix
+			rubyPackages_3_1.rubocop
+			proselint
 		];
 
 		sessionVariables = {
@@ -18,7 +22,7 @@
 
 	programs.neovim = {
 		enable = true;
-		package = neovim;
+		package = tcs flakes.neovim.defaultPackage;
 
 		extraConfig = ''
 			" integration
@@ -91,6 +95,13 @@
 				require'lspconfig'.rnix.setup { }
 				require'lspconfig'.diagnosticls.setup { }
 
+				local css_capabilities = vim.lsp.protocol.make_client_capabilities()
+				css_capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+				require'lspconfig'.cssls.setup {
+					capabilities = css_capabilities,
+				}
+
 				local cmp = require'cmp'
 
 				cmp.setup {
@@ -131,6 +142,20 @@
 
 					experimental = { native_menu = true, ghost_text = true },
 				}
+
+				-- linting
+
+				require'null-ls'.setup {
+					sources = {
+						require'null-ls'.builtins.diagnostics.deadnix,
+						require'null-ls'.builtins.diagnostics.rubocop,
+						require'null-ls'.builtins.formatting.rubocop,
+						require'null-ls'.builtins.diagnostics.proselint,
+					},
+				}
+
+				-- colors
+				require'colorizer'.setup()
 
 				-- treesitter
 				require'nvim-treesitter.configs'.setup {
@@ -174,7 +199,9 @@
 				}
 
 				-- bracket matching
-				require'pears'.setup()
+				require'pears'.setup(function(conf)
+					conf.remove_pair_on_outer_backspace(false)
+				end)
 
 				-- git gutter
 				require'gitsigns'.setup { }
@@ -195,7 +222,22 @@ EOF
 			nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
 			nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
 		'';
-		plugins = with pkgs.vimPlugins; [
+		plugins = with pkgs.vimPlugins; let
+			vim-slim = pkgs.vimUtils.buildVimPlugin {
+				name = "vim-slim";
+
+				src = pkgs.fetchFromGitHub {
+					owner = "slim-template";
+					repo = "vim-slim";
+					rev = "f0758ea1c585d53b9c239177a8b891d8bbbb6fbb";
+					sha256 = "dkFTxBi0JAPuIkJcVdzE8zUswHP0rVZqiCE6NMywDm8=";
+				};
+			};
+
+			nvim-treesitter-all = nvim-treesitter.withPlugins (plugins:
+				pkgs.tree-sitter.allGrammars
+			);
+		in [
 			# visual
 			nord-vim gitsigns-nvim lualine-nvim tabline-nvim
 			nvim-colorizer-lua indent-blankline-nvim
@@ -205,12 +247,17 @@ EOF
 			cmp-nvim-lsp cmp-buffer cmp-tmux cmp-emoji cmp-treesitter
 			luasnip cmp_luasnip
 
-			# currently broken
-			# copilot-vim
+			# copilot-vim # currently broken
+
+			# linting
+			null-ls-nvim
+
+			# syntax
+			nvim-treesitter-all nvim-ts-rainbow nvim-treesitter-context
+			vim-endwise pears-nvim
 
 			# languages
-			nvim-lint nvim-treesitter nvim-ts-rainbow nvim-treesitter-context
-			vim-endwise pears-nvim
+			vim-slim
 
 			# navigation
 			nvim-tree-lua
