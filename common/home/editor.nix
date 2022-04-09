@@ -8,8 +8,8 @@
 			rnix-lsp
 			nodePackages.diagnostic-languageserver
 			nodePackages.vscode-langservers-extracted
+			nodePackages.bash-language-server
 
-			deadnix
 			rubyPackages_3_1.rubocop
 			proselint
 		];
@@ -88,12 +88,16 @@
 				\ 'folder_arrows': 0,
 				\ }
 
+			" nvim tree auto close if it's the last window
+			autocmd BufEnter * ++nested if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif
+
 			lua <<EOF
 				-- completions
 				require'lspconfig'.solargraph.setup { }
 				require'lspconfig'.hls.setup { }
 				require'lspconfig'.rnix.setup { }
 				require'lspconfig'.diagnosticls.setup { }
+				require'lspconfig'.bashls.setup { }
 
 				local css_capabilities = vim.lsp.protocol.make_client_capabilities()
 				css_capabilities.textDocument.completion.completionItem.snippetSupport = true
@@ -140,14 +144,15 @@
 						{ { name = 'emoji' }, }
 					),
 
-					experimental = { native_menu = true, ghost_text = true },
+					view = { entries = "native", },
+
+					experimental = { ghost_text = true },
 				}
 
 				-- linting
 
 				require'null-ls'.setup {
 					sources = {
-						require'null-ls'.builtins.diagnostics.deadnix,
 						require'null-ls'.builtins.diagnostics.rubocop,
 						require'null-ls'.builtins.formatting.rubocop,
 						require'null-ls'.builtins.diagnostics.proselint,
@@ -194,7 +199,6 @@
 
 				-- file explorer
 				require'nvim-tree'.setup {
-					auto_close = true,
 					hijack_cursor = true,
 				}
 
@@ -213,9 +217,6 @@
 					show_current_context = true,
 				}
 EOF
-			" lint on file write
-			au BufWritePost <buffer> lua require('lint').try_lint()
-
 			" telescope mappings
 			nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
 			nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>

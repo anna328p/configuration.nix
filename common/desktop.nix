@@ -35,7 +35,17 @@
  		};
 	};
 
-	environment.systemPackages = with pkgs; [
+	environment.systemPackages = with pkgs; let
+		discord' = pkgs.symlinkJoin {
+			name = "discord-ptb-wrapped";
+			paths = [ pkgsMaster.discord-ptb ];
+			buildInputs = [ pkgs.makeWrapper ];
+			postBuild = ''
+				wrapProgram $out/bin/DiscordPTB \
+				--add-flags "--disable-smooth-scrolling"
+			'';
+		};
+	in [
 		nmap dnsutils mosh
 		mullvad-vpn
 		piper
@@ -44,10 +54,10 @@
 		ddcutil xclip
 
 		firefox-devedition-bin transgui libreoffice
-		tdesktop pkgsMaster.discord
+		tdesktop discord'
 		mpv vlc gnome.gnome-sound-recorder gnome.gnome-tweaks
 		helvum vcv-rack
-		virtmanager spice_gtk
+		# virtmanager spice-gtk
 		espeak-ng 
 
 	] ++ (with pkgs.gnomeExtensions; [
@@ -60,7 +70,13 @@
 
 	environment.variables = {
 		MOZ_USE_XINPUT2 = "1";
+		# MOZ_ENABLE_WAYLAND = "1"; # currently breaks windowing
+
+		QT_QPA_PLATFORM = "wayland";
+
 		CALIBRE_USE_DARK_PALETTE = "1";
+
+		SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS = "0";
 	};
 
 	fonts = {
@@ -69,7 +85,7 @@
 		fonts = with pkgs; [
 			source-code-pro source-sans source-serif
 			noto-fonts noto-fonts-cjk noto-fonts-emoji-blob-bin
-			liberation_ttf opensans-ttf corefonts
+			liberation_ttf open-sans corefonts
 
 			google-fonts
 		];
@@ -97,7 +113,7 @@
 
 			zoom-us
 			prusa-slicer openscad solvespace
-			kicad-with-packages3d
+			# kicad-with-packages3d # broken
 			mpdris2
 
 			gimp inkscape krita
@@ -162,7 +178,7 @@
 							favorite-apps=[ ${genList names} ]
 						'';
 					in overrideList [
-						"firefox" "discord" "telegramdesktop"
+						"firefox" "discord-ptb" "telegramdesktop"
 						"org.gnome.Nautilus" "org.gnome.Terminal"
 					];
 				};
@@ -194,23 +210,12 @@
 		gnome = {
 			glib-networking.enable = true;
 			sushi.enable = true;
-			experimental-features.realtime-scheduling = true;
 		};
 
 		avahi = {
 			enable = true;
 			ipv6 = true;
-			reflector = true;
 			nssmdns = true;
-
-			publish = {
-				enable = true;
-				userServices = true;
-				addresses = true;
-				hinfo = true;
-				workstation = true;
-				domain = true;
-			};
 		};
 
 		mullvad-vpn.enable = true;
@@ -266,12 +271,8 @@
 			enable = true;
 			package = pkgs.gnomeExtensions.gsconnect;
 		};
-	};
-
-	environment.variables = {
-		MOZ_ENABLE_WAYLAND = "1";
-		SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS = "0";
-		QT_QPA_PLATFORM = "wayland";
+		
+		gnome-terminal.enable = true;
 	};
 
 	sound.enable = true;
@@ -280,7 +281,7 @@
 		pulseaudio.enable = false;
 		bluetooth.enable = true;
 
-		opengl.extraPackages = with pkgs; [ libva1-full vaapiVdpau libvdpau-va-gl ];
+		opengl.extraPackages = with pkgs; [ libva1 vaapiVdpau libvdpau-va-gl ];
 
 		sane = {
 			enable = true;

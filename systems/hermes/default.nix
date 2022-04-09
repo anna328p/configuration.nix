@@ -12,7 +12,7 @@
 			supportedFilesystems = [ "zfs" ];
 		};
 
-		kernelPackages = pkgs.linuxPackages_xanmod;
+		kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
 
 		kernelParams = [ "iwlwifi.swcrypto=0" "bluetooth.disable_ertm=1" ];
 
@@ -40,7 +40,7 @@
 	environment.systemPackages = with pkgs; [
 		powertop
 		opensc pcsctools
-		quartus-prime-lite
+		virt-manager
 	];
 
 	virtualisation.libvirtd.enable = true;

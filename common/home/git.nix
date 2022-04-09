@@ -13,6 +13,7 @@
 		includes = [
 			{ contents = {
 					pull.ff = "only";
+					init.defaultBranch = "main";
 			}; }
 		];
 	};

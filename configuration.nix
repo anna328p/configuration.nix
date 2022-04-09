@@ -75,6 +75,11 @@
 		package = pkgs.nixFlakes;
 
 		registry.nixpkgs.flake = flakes.nixpkgs;
+
+		nixPath = [
+			"nixpkgs=${flakes.nixpkgs}"
+			"nixos=${flakes.nixpkgs}"
+		];
 	};
 
 	system.configurationRevision = flakes.nixpkgs.lib.mkIf (flakes.self ? rev) flakes.self.rev;

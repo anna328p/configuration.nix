@@ -8,7 +8,6 @@
 		":q" = "exit";
 		":wq" = "sync; exit";
 		nbs = "time sudo nixos-rebuild switch";
-		nbsu = "time sudo nixos-rebuild switch --upgrade";
 		nsn = "nix search nixpkgs";
 	};
 
@@ -42,9 +41,7 @@
 		};
 
 		initExtraFirst = ''
-			source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme;
-
-			zmodload zsh/zprof
+			source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
 		'';
 
 		initExtra = ''
@@ -59,8 +56,6 @@
 			for i in util escesc autopushd; do
 				source ${files/zsh/snippets}/$i.zsh
 			done
-			
-			zprof
 		'';
 
 		dirHashes = {
