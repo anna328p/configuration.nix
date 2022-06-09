@@ -26,7 +26,7 @@
 
 	hardware.bluetooth.powerOnBoot = false;
 
-	time.timeZone = "America/Chicago";
+	time.timeZone = "America/Los_Angeles";
 
 	powerManagement = {
 		enable = true;
@@ -35,12 +35,15 @@
 
 	services = {
 		pcscd.enable = true;
+		postgresql.enable = true;
 	};
 
 	environment.systemPackages = with pkgs; [
 		powertop
 		opensc pcsctools
 		virt-manager
+
+		tetrio-desktop
 	];
 
 	virtualisation.libvirtd.enable = true;

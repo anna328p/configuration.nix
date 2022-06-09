@@ -19,9 +19,7 @@
 	networking = {
 		networkmanager = {
 			enable = true;
-			dhcp = "dhclient";
 			dns = "dnsmasq";
-			packages = [ pkgs.dnsmasq ];
 		};
 
 		firewall.enable = false;
@@ -37,11 +35,11 @@
 
 	environment.systemPackages = with pkgs; let
 		discord' = pkgs.symlinkJoin {
-			name = "discord-ptb-wrapped";
-			paths = [ pkgsMaster.discord-ptb ];
+			name = "discord-wrapped";
+			paths = [ pkgsMaster.discord ];
 			buildInputs = [ pkgs.makeWrapper ];
 			postBuild = ''
-				wrapProgram $out/bin/DiscordPTB \
+				wrapProgram $out/bin/Discord \
 				--add-flags "--disable-smooth-scrolling"
 			'';
 		};
@@ -53,7 +51,7 @@
 
 		ddcutil xclip
 
-		firefox-devedition-bin transgui libreoffice
+		firefox-devedition-bin transgui # libreoffice # broken
 		tdesktop discord'
 		mpv vlc gnome.gnome-sound-recorder gnome.gnome-tweaks
 		helvum vcv-rack
@@ -124,7 +122,7 @@
 
 			gh gnupg1 nodejs jq fd
 			adoptopenjdk-openj9-bin-16 ruby_3_1 python3 mono
-			cabal-install cabal2nix
+			cabal-install cabal2nix ghc
 
 			appimage-run
 
@@ -178,7 +176,7 @@
 							favorite-apps=[ ${genList names} ]
 						'';
 					in overrideList [
-						"firefox" "discord-ptb" "telegramdesktop"
+						"firefox" "discord" "telegramdesktop"
 						"org.gnome.Nautilus" "org.gnome.Terminal"
 					];
 				};

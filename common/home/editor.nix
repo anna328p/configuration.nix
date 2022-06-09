@@ -93,16 +93,18 @@
 
 			lua <<EOF
 				-- completions
-				require'lspconfig'.solargraph.setup { }
-				require'lspconfig'.hls.setup { }
-				require'lspconfig'.rnix.setup { }
-				require'lspconfig'.diagnosticls.setup { }
-				require'lspconfig'.bashls.setup { }
+				local lspconfig = require'lspconfig'
+
+				lspconfig.solargraph.setup { }
+				lspconfig.hls.setup { }
+				lspconfig.rnix.setup { }
+				lspconfig.diagnosticls.setup { }
+				lspconfig.bashls.setup { }
 
 				local css_capabilities = vim.lsp.protocol.make_client_capabilities()
 				css_capabilities.textDocument.completion.completionItem.snippetSupport = true
 
-				require'lspconfig'.cssls.setup {
+				lspconfig.cssls.setup {
 					capabilities = css_capabilities,
 				}
 
@@ -151,11 +153,11 @@
 
 				-- linting
 
-				require'null-ls'.setup {
+				local null_ls = require'null-ls'
+
+				null_ls.setup {
 					sources = {
-						require'null-ls'.builtins.diagnostics.rubocop,
-						require'null-ls'.builtins.formatting.rubocop,
-						require'null-ls'.builtins.diagnostics.proselint,
+						null_ls.builtins.diagnostics.proselint,
 					},
 				}
 
@@ -164,7 +166,7 @@
 
 				-- treesitter
 				require'nvim-treesitter.configs'.setup {
-					ensure_installed = "maintained",
+					ensure_installed = "all",
 					rainbow = { enable = true, extended_mode = true, },
 					highlight = { enable = true, },
 					indent = { enable = true, },
@@ -180,7 +182,7 @@
 					},
 				}
 
-				require'treesitter-context.config'.setup { enable = true, }
+				require'treesitter-context'.setup { enable = true, }
 
 				-- statusline
 				require'lualine'.setup {
