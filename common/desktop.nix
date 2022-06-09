@@ -133,7 +133,7 @@
 			steam steam-run polymc sidequest osu-lazer
 
 			calibre
-			anki
+			# anki
 			plover.dev
 
 			fontforge-gtk nodePackages.svgo
