@@ -19,6 +19,8 @@
 		kernelModules = [ "nct6775" ];
 	};
 
+	hardware.nvidia.prime.offload.enable = false;
+
 	musnix.enable = true;
 
 	networking.hostName = "theseus";
@@ -59,6 +61,10 @@
 		};
 
 		gpsd.enable = true;
+
+		xserver.deviceSection = ''
+			Option "Coolbits" "31"
+		'';
 
 		xserver.displayManager.gdm.autoSuspend = false;
 	};
