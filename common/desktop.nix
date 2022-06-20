@@ -52,7 +52,7 @@
 		ddcutil xclip
 
 		firefox-devedition-bin transgui # libreoffice # broken
-		tdesktop discord'
+		tdesktop discord' element-desktop
 		mpv vlc gnome.gnome-sound-recorder gnome.gnome-tweaks
 		helvum vcv-rack
 		# virtmanager spice-gtk

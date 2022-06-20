@@ -7,7 +7,7 @@
 		":w" = "sync";
 		":q" = "exit";
 		":wq" = "sync; exit";
-		nbs = "time sudo nixos-rebuild switch";
+		nbs = "time nixos-rebuild switch --use-remote-sudo";
 		nsn = "nix search nixpkgs";
 	};
 
