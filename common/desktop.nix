@@ -202,6 +202,12 @@
 					languages = [ "eng" ];
 					symbolsFile = files/symbols/semimak-jqa;
 				};
+
+				canary = {
+					description = "English (Canary)";
+					languages = [ "eng" ];
+					symbolsFile = files/symbols/canary;
+				};
 			};
 		};
 
