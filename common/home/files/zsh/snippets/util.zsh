@@ -13,5 +13,6 @@ function psgrep {
 }
 
 function nrn {
-	nix run --impure "nixpkgs#""$*"
+	name="$1"; shift
+	nix run --impure "nixpkgs#""$name" -- "$@"
 }
