@@ -19,7 +19,10 @@
 		kernelModules = [ "nct6775" ];
 	};
 
-	hardware.nvidia.prime.offload.enable = false;
+	hardware.nvidia = {
+		prime.offload.enable = false;
+		package = config.boot.kernelPackages.nvidiaPackages.beta;
+	};
 
 	musnix.enable = true;
 
@@ -66,7 +69,10 @@
 			Option "Coolbits" "31"
 		'';
 
-		xserver.displayManager.gdm.autoSuspend = false;
+		xserver.displayManager.gdm = {
+			autoSuspend = false;
+			wayland = true;
+		};
 	};
 
 	virtualisation = {

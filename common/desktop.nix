@@ -19,7 +19,7 @@
 	networking = {
 		networkmanager = {
 			enable = true;
-			dns = "dnsmasq";
+			wifi.backend = "iwd";
 		};
 
 		firewall.enable = false;
@@ -36,7 +36,7 @@
 	environment.systemPackages = with pkgs; let
 		discord' = pkgs.symlinkJoin {
 			name = "discord-wrapped";
-			paths = [ pkgsMaster.discord ];
+			paths = [ (pkgsMaster.discord.override { withOpenASAR = true; }) ];
 			buildInputs = [ pkgs.makeWrapper ];
 			postBuild = ''
 				wrapProgram $out/bin/Discord \
@@ -110,7 +110,8 @@
 			pavucontrol
 
 			zoom-us
-			prusa-slicer openscad solvespace
+			# prusa-slicer # broken
+			openscad solvespace
 			# kicad-with-packages3d # broken
 			mpdris2
 

@@ -12,23 +12,6 @@
 
 		plugins = with pkgs.tmuxPlugins; [
 			sensible yank
-
-			{
-				plugin = resurrect;
-				extraConfig = ''
-					set -g @resurrect-strategy-nvim 'session'
-					set -g @resurrect-processes 'ssh telnet mosh-client nvim dmesg nix'
-					set -g @resurrect-capture-pane-contents 'on'
-				'';
-			}
-
-			{
-				plugin = continuum;
-				extraConfig = ''
-					set -g @continuum-restore on
-					set -g @continuum-save-interval '10' # minutes
-				'';
-			}
 		];
 
 		terminal = "xterm-256color";

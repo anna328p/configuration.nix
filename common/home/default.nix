@@ -25,6 +25,8 @@
 		sessionPath = [ "$HOME/.local/bin" ];
 
 		username = "anna";
+
+		stateVersion = "22.05";
 	};
 
 	xdg = {
