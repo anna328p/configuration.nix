@@ -51,10 +51,10 @@
 
 		ddcutil xclip
 
-		firefox-devedition-bin transgui # libreoffice # broken
+		firefox-devedition-bin transgui libreoffice
 		tdesktop discord' element-desktop
 		mpv vlc gnome.gnome-sound-recorder gnome.gnome-tweaks
-		helvum vcv-rack
+		helvum #vcv-rack
 		# virtmanager spice-gtk
 		espeak-ng 
 
@@ -138,8 +138,6 @@
 			plover.dev
 
 			fontforge-gtk nodePackages.svgo
-
-			solaar
 		];
 	};
 

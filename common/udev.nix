@@ -21,8 +21,7 @@
 
 			# Miscellaneous
 			+ (builtins.readFile "${pkgs.ddcutil}/share/ddcutil/data/45-ddcutil-i2c.rules")
-			+ (builtins.readFile "${pkgs.libfido2}/etc/udev/rules.d/70-u2f.rules")
-			+ (builtins.readFile "${pkgs.solaar}/etc/udev/rules.d/42-logitech-unify-permissions.rules");
+			+ (builtins.readFile "${pkgs.libfido2}/etc/udev/rules.d/70-u2f.rules");
 
 		packages = with pkgs; [ gnome.gnome-settings-daemon ];
 	};
