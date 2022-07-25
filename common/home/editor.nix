@@ -23,6 +23,7 @@
 	programs.neovim = {
 		enable = true;
 		package = tcs flakes.neovim.defaultPackage;
+		withRuby = false;
 
 		extraConfig = ''
 			" integration
@@ -77,17 +78,6 @@
 			nnoremap <leader>r :NvimTreeRefresh<CR>
 			nnoremap <leader>n :NvimTreeFindFile<CR>
 
-			let g:nvim_tree_icons = {
-				\ 'folder': {'default': '▸', 'open': '▾', 'empty': '▸', 'empty_open': '▾'},
-				\ }
-
-			let g:nvim_tree_show_icons = {
-				\ 'git': 0,
-				\ 'folders': 1,
-				\ 'files': 0,
-				\ 'folder_arrows': 0,
-				\ }
-
 			" nvim tree auto close if it's the last window
 			autocmd BufEnter * ++nested if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif
 
@@ -95,7 +85,10 @@
 				-- completions
 				local lspconfig = require'lspconfig'
 
-				lspconfig.solargraph.setup { }
+				lspconfig.solargraph.setup {
+					cmd = { 'bash', '-c', 'exec bundle exec solargraph stdio || solargraph stdio' },
+				}
+
 				lspconfig.hls.setup { }
 				lspconfig.rnix.setup { }
 				lspconfig.diagnosticls.setup { }
@@ -202,6 +195,13 @@
 				-- file explorer
 				require'nvim-tree'.setup {
 					hijack_cursor = true,
+
+					renderer = {
+						icons = {
+							glyphs = { folder = { default = '▸', open = '▾', empty = '▸', empty_open = '▾' }, },
+							show = { file = false, folder = true, folder_arrow = false, git = false },
+						},
+					},
 				}
 
 				-- bracket matching
@@ -267,8 +267,8 @@ EOF
 			popup-nvim plenary-nvim telescope-nvim
 
 			# misc
-			vim-sensible vim-bracketed-paste
-			vim-sneak vim-startify bclose-vim a-vim
+			vim-sensible vim-bracketed-paste vim-surround
+			vim-startify bclose-vim a-vim
 		];
 		viAlias = true;
 		vimAlias = true;
