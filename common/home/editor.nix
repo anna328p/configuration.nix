@@ -159,7 +159,7 @@
 
 				-- treesitter
 				require'nvim-treesitter.configs'.setup {
-					ensure_installed = "all",
+					ensure_installed = { },
 					rainbow = { enable = true, extended_mode = true, },
 					highlight = { enable = true, },
 					indent = { enable = true, },

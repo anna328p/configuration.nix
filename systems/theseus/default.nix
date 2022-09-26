@@ -6,6 +6,7 @@
 		flakes.musnix.nixosModule
 	];
 
+	# Hardware support
 	boot = {
 		kernelPackages = pkgs.linuxPackages_latest;
 
@@ -19,16 +20,19 @@
 		kernelModules = [ "nct6775" ];
 	};
 
-	hardware.nvidia = {
-		prime.offload.enable = false;
-		package = config.boot.kernelPackages.nvidiaPackages.beta;
-	};
-
 	musnix.enable = true;
+
+	# Nvidia driver support
+	hardware.nvidia = {
+		package = config.boot.kernelPackages.nvidiaPackages.beta;
+
+		prime.offload.enable = false;
+		modesetting.enable = true;
+	};
 
 	networking.hostName = "theseus";
 
-	time.timeZone = "America/Los_Angeles";
+	time.timeZone = "America/Chicago";
 
 	systemd.services.transmission.serviceConfig.BindPaths = [ "/media/storage" ];
 
@@ -65,9 +69,7 @@
 
 		gpsd.enable = true;
 
-		xserver.deviceSection = ''
-			Option "Coolbits" "31"
-		'';
+		xserver.videoDrivers = lib.mkForce [ "nvidia" ];
 
 		xserver.displayManager.gdm = {
 			autoSuspend = false;

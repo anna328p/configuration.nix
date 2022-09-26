@@ -36,7 +36,7 @@
 	environment.systemPackages = with pkgs; let
 		discord' = pkgs.symlinkJoin {
 			name = "discord-wrapped";
-			paths = [ (pkgsMaster.discord.override { withOpenASAR = true; }) ];
+			paths = [ pkgsMaster.discord ];
 			buildInputs = [ pkgs.makeWrapper ];
 			postBuild = ''
 				wrapProgram $out/bin/Discord \
@@ -68,13 +68,15 @@
 
 	environment.variables = {
 		MOZ_USE_XINPUT2 = "1";
-		# MOZ_ENABLE_WAYLAND = "1"; # currently breaks windowing
+		MOZ_ENABLE_WAYLAND = "1"; # currently breaks windowing
 
 		QT_QPA_PLATFORM = "wayland";
 
 		CALIBRE_USE_DARK_PALETTE = "1";
 
 		SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS = "0";
+
+		WEBKIT_DISABLE_COMPOSITING_MODE = "1";
 	};
 
 	fonts = {
@@ -125,6 +127,8 @@
 			adoptopenjdk-openj9-bin-16 ruby_3_1 python3 mono
 			cabal-install cabal2nix ghc
 
+			man-pages man-pages-posix stdman linux-manual
+
 			appimage-run
 
 			gcolor3 ydotool
@@ -154,7 +158,7 @@
 
 		printing = {
 			enable = true;
-			drivers = with pkgs; [ brlaser brgenml1cupswrapper ];
+			drivers = with pkgs; [ hll2390dw-cups ];
 		};
 
 		xserver = {
@@ -210,10 +214,7 @@
 			};
 		};
 
-		gnome = {
-			glib-networking.enable = true;
-			sushi.enable = true;
-		};
+		gnome.core-developer-tools.enable = true;
 
 		avahi = {
 			enable = true;
@@ -224,7 +225,7 @@
 		mullvad-vpn.enable = true;
 
 		zerotierone = {
-			enable = true;
+			# enable = true; # TODO: broken in nixpkgs / reenable when fixed!!!!
 			joinNetworks = [
 				"abfd31bd4777d83c" # annanet
 				"abfd31bd479dc978" # linda
@@ -299,6 +300,10 @@
 		];
 
 		rtkit.enable = true;
+	};
+
+	documentation = {
+		dev.enable = true;
 	};
 
 	system.autoUpgrade.enable = false;

@@ -1,0 +1,12 @@
+diff --git a/libyelp/yelp-view.c b/libyelp/yelp-view.c
+index 32ae131e..2ae92065 100644
+--- a/libyelp/yelp-view.c
++++ b/libyelp/yelp-view.c
+@@ -148,6 +148,7 @@ yelp_view_get_global_settings (void)
+ 
+     if (!websettings)
+         websettings = webkit_settings_new_with_settings ("default-charset", "utf-8",
++        												 "enable-smooth-scrolling", FALSE,
+ #if WEBKIT_CHECK_VERSION(2, 23, 4)
+                                                          "enable-back-forward-navigation-gestures", TRUE,
+ #endif

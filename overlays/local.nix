@@ -17,4 +17,10 @@ in
 	calibre = super.calibre.overrideAttrs (oa: {
 		buildInputs = oa.buildInputs ++ [ super.python3Packages.pycryptodome ];
 	});
+
+	gnome = super.gnome.overrideScope' (gself: gsuper: {
+		yelp = gsuper.yelp.overrideAttrs (_: {
+			patches = [ ./yelp-no-smooth-scrolling.patch ];
+		});
+	});
 }
