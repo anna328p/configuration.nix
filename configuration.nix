@@ -23,6 +23,7 @@
 		zsh tmux neovim
 		exa dfc ripgrep file pv neofetch units bc
 		zip unzip _7zz zstd xz pigz
+		jq fd tree
 
 		speedtest-cli wget nmap git
 	];

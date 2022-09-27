@@ -1,0 +1,145 @@
+# Laptop setup procedure
+
+# tmpfs on home/root. encrypted zfs for persistent data
+
+# Partition drive using cgdisk:
+# NAME          SIZE FSTYPE     PARTLABEL PARTCODE
+# nvme0n1     931.5G            
+# ├─nvme0n1p1   512M vfat       EFI       EF00
+# ├─nvme0n1p2   128G ntfs       Windows   0700
+# └─nvme0n1p3   803G zfs_member rpool     BF00
+
+# Get partition UUIDs
+ESPUUID=$(lsblk -no partuuid /dev/nvme0n1p1)
+WINUUID=$(lsblk -no partuuid /dev/nvme0n1p2)
+ZFSUUID=$(lsblk -no partuuid /dev/nvme0n1p3)
+
+SWAPVOL='rpool/encrypt/volatile/swap'
+
+# Format ESP
+mkfs.fat -F32 -n EFI /dev/disk/by-partuuid/$ESPUUID
+
+# Format Windows root
+mkfs.ntfs \
+	--quick --label Windows \
+	/dev/disk/by-partuuid/$WINUUID
+
+# Create zpool
+zpool create \
+	-o ashift=12 \
+	-o autotrim=on \
+	-O acltype=posixacl \
+	-O xattr=sa \
+	-O relatime=on \
+	-O canmount=off \
+	-O mountpoint=none \
+	-O compression=zstd \
+	rpool \
+	/dev/disk/by-partuuid/$ZFSUUID
+
+# Create encrypted container dataset
+zfs create \
+	-o canmount=off \
+	-o encryption=on \
+	-o keylocation=prompt \
+	-o keyformat=passphrase \
+	rpool/encrypt
+
+## Organization
+#
+# two main zfs datasets.
+#
+# - safe is for data that can't be recreated.
+# 	e.g. documents, projects, configuration, etc.
+#   it's backed up and auto-snapshotted.
+
+zfs create \
+	-o canmount=off \
+	-o mountpoint=legacy \
+	rpool/encrypt/safe
+
+# - volatile is for data that can be easily recreated or downloaded.
+#   e.g. the Nix store, caches, media, etc.
+#   it's not backed up or snapshotted.
+#   data in here is considered disposable.
+
+zfs create \
+	-o canmount=off \
+	-o mountpoint=legacy \
+	rpool/encrypt/volatile
+
+# Datasets for safe, persistent data
+zfs create -o canmount=on rpool/encrypt/safe/home
+zfs create -o canmount=on rpool/encrypt/safe/system
+
+# Datasets for volatile data
+zfs create -o canmount=on rpool/encrypt/volatile/nix
+zfs create -o canmount=on rpool/encrypt/volatile/cache
+zfs create -o canmount=on rpool/encrypt/volatile/media
+zfs create -o canmount=on rpool/encrypt/volatile/steam
+
+# Create swap zvol
+zfs create \
+	-V 32G \
+	-b $(getconf PAGESIZE) \
+	-o compression=zle \
+	-o logbias=throughput \
+	-o sync=standard \
+	-o primarycache=metadata -o secondarycache=none \
+	-o com.sun:auto-snapshot=false \
+	rpool/encrypt/volatile/swap
+
+# Format swap zvol
+SWAPVOL=/dev/zvol/rpool/encrypt/volatile/swap
+mkswap $SWAPVOL
+
+# Reserve space to prevent performance loss with a full drive
+zfs create \
+	-o refreservation=10G \
+	-o mountpoint=none \
+	rpool/reserved
+
+# Mount tmpfs on root
+# Using huge pages should improve performance and reduce overhead
+mount -t tmpfs none \
+	-o size=100%,huge=within_size \
+	/mnt
+
+# Create directories under root, for initial mountpoints
+mkdir -p /mnt/{boot,nix,etc/nixos,safe/{system,home}}
+mkdir -p /mnt/{volatile/{cache,media,steam}}
+
+# Mount ESP
+mount /dev/disk/by-partuuid/$ESPUUID /mnt/boot
+
+# Mount /nix
+mount -t zfs rpool/encrypt/volatile/nix /mnt/nix
+
+# Mount persist stores
+for path in safe/{system,home}; do
+	mount -t zfs rpool/encrypt/$path /mnt/$path
+done
+
+# Enable swap
+SWAPVOL=/dev/zvol/rpool/encrypt/volatile/swap
+swapon -v $SWAPVOL
+
+# Generate a hardware config
+nixos-generate-config --root /mnt
+cp -av /mnt/etc/nixos/hardware-configuration.nix /mnt/safe/system/hw-config.orig.nix
+rm -rf /mnt/etc/nixos
+
+# Temporarily bind-mount the configuration directory
+mkdir -p /mnt/{safe/system,}/etc/nixos
+mount -o bind /mnt/{safe/system,}/etc/nixos
+
+# Clone the unified configuration
+pushd /mnt/etc/nixos
+git clone https://github.com/anna328p/configuration.nix .
+git remote remove origin
+git remote add origin git@github.com:anna328p/configuration.nix
+
+# Hand off for configuration
+echo 'Done!'
+
+# vim: ft=bash

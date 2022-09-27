@@ -1,8 +1,10 @@
 { ... }:
 
 {
-	environment.persistence."/persist" = {
+	environment.persistence."/safe/system" = {
 		directories = [
+			"/etc/nixos"
+
 			"/etc/mullvad-vpn"
 			"/etc/NetworkManager/system-connections"
 			"/etc/ssh"

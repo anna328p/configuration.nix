@@ -1,12 +1,12 @@
-{ pkgs, ... }:
+{ pkgs, flakes, ... }:
 
 {
 	fonts.fontconfig.enable = true;
 
 	gtk = {
 		font = {
-			package = pkgs.source-sans-pro;
-			name = "Source Sans Pro 11";
+			package = pkgs.source-sans;
+			name = "Source Sans 3 10.8";
 		};
 		theme.name = "Adwaita-dark";
 	};
@@ -26,6 +26,8 @@
 
 		extraConfig = (builtins.readFile files/dircolors);
 	};
+
+	colorScheme = flakes.nix-colors.colorSchemes.nord;
 }
 
 # vim: set ts=4 sw=4 noet :

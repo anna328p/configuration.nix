@@ -1,13 +1,19 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, flakes, ... }:
 
 {
 	imports = [
-		 ./editor.nix
-		 ./shell.nix
-		 ./tmux.nix
-		 ./themes.nix
-		 ./ssh.nix
-		 ./git.nix
+		flakes.nix-colors.homeManagerModule
+
+		./themes.nix
+
+		./terminal.nix
+
+		./tmux.nix
+		./shell.nix
+		./editor.nix
+
+		./ssh.nix
+		./git.nix
 	];
 
 	home = {

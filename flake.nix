@@ -12,6 +12,8 @@
 		nixos-hardware.url = github:nixos/nixos-hardware;
 		impermanence.url = github:nix-community/impermanence;
 
+		nix-colors.url = github:misterio77/nix-colors;
+
 		home-manager = {
 			url = github:nix-community/home-manager;
 			inputs.nixpkgs.follows = "nixpkgs";
@@ -24,11 +26,8 @@
 
 		neovim = {
 			url = github:neovim/neovim?dir=contrib;
-
-			inputs = {
-				nixpkgs.follows = "nixpkgs";
-				flake-utils.follows = "flake-utils";
-			};
+			inputs.nixpkgs.follows = "nixpkgs";
+			inputs.flake-utils.follows = "flake-utils";
 		};
 
 		musnix = {

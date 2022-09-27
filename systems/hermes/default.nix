@@ -1,8 +1,9 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 {
 	imports = [
 		./hardware-configuration.nix
-		./persist.nix
+		./persist-system.nix
+		./persist-home.nix
 	];
 
 	boot = {
@@ -14,19 +15,24 @@
 
 		kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
 
-		kernelParams = [ "iwlwifi.swcrypto=0" "bluetooth.disable_ertm=1" ];
+		kernelParams = [
+			"iwlwifi.swcrypto=0" "bluetooth.disable_ertm=1"
+			"zswap.enabled=1" "zswap.compressor=zstd"
+		];
 
 		supportedFilesystems = [ "zfs" ];
+
+		plymouth.enable = lib.mkForce false;
 	};
 
 	networking = {
 		hostName = "hermes";
-		hostId = "cda8da64";
+		hostId = "6a5a4b0b";
 	};
 
 	hardware.bluetooth.powerOnBoot = false;
 
-	time.timeZone = "America/Los_Angeles";
+	time.timeZone = "America/Chicago";
 
 	powerManagement = {
 		enable = true;
@@ -38,17 +44,17 @@
 		postgresql.enable = true;
 	};
 
+	home-manager.users.anna = import ./home;
+
 	environment.systemPackages = with pkgs; [
 		powertop
 		opensc pcsctools
 		virt-manager
-
-		tetrio-desktop
 	];
 
 	virtualisation.libvirtd.enable = true;
 	virtualisation.podman.enable = true;
 
-	system.stateVersion = "20.09";
+	system.stateVersion = "22.05";
 }
 # vim: noet:ts=4:sw=4:ai:mouse=a

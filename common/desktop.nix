@@ -111,6 +111,8 @@
 		packages = with pkgs; [
 			pavucontrol
 
+			kitty
+
 			zoom-us
 			# prusa-slicer # broken
 			openscad solvespace
@@ -123,7 +125,7 @@
 			nixpkgs-review nix-prefetch-git cachix
 			direnv
 
-			gh gnupg1 nodejs jq fd
+			gh gnupg1 nodejs
 			adoptopenjdk-openj9-bin-16 ruby_3_1 python3 mono
 			cabal-install cabal2nix ghc
 
