@@ -47,7 +47,7 @@
 		nmap dnsutils mosh
 		mullvad-vpn
 		piper
-		ffmpeg imagemagick
+		ffmpeg imagemagick ghostscript
 
 		ddcutil xclip
 
@@ -160,7 +160,11 @@
 
 		printing = {
 			enable = true;
-			drivers = with pkgs; [ hll2390dw-cups ];
+			drivers = with pkgs; [
+				gutenprint gutenprintBin
+				brlaser
+				hll2390dw-cups
+			];
 		};
 
 		xserver = {
@@ -227,7 +231,7 @@
 		mullvad-vpn.enable = true;
 
 		zerotierone = {
-			# enable = true; # TODO: broken in nixpkgs / reenable when fixed!!!!
+			enable = true;
 			joinNetworks = [
 				"abfd31bd4777d83c" # annanet
 				"abfd31bd479dc978" # linda

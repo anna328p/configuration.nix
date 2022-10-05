@@ -2,8 +2,7 @@
 	description = "NixOS system configuration";
 
 	inputs = {
-		#nixpkgs.url = github:nixos/nixpkgs/nixos-unstable-small;
-		nixpkgs.url = github:nixos/nixpkgs/766cb44450fe7592c9ad6a94a19275006bcae20d;
+		nixpkgs.url = github:nixos/nixpkgs/nixos-unstable-small;
 		nixpkgs-master.url = github:nixos/nixpkgs/master;
 
 		flake-utils.url = github:numtide/flake-utils;

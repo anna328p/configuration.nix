@@ -14,11 +14,11 @@
 			sensible yank
 		];
 
-		terminal = "xterm-256color";
+		terminal = "tmux-256color";
 
 		extraConfig = ''
 			setw -g alternate-screen on
-			set-option -ga terminal-overrides ",xterm-256color:Tc"
+			set-option -ga terminal-overrides ",xterm-256color:RGB"
 			set-option -ga status-style fg=black,bg=blue
 			set-option -ga clock-mode-colour white
 			bind-key -n C-j detach

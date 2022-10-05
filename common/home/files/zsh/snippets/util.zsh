@@ -13,6 +13,14 @@ function psgrep {
 }
 
 function nrn {
-	name="$1"; shift
+	local name="$1"; shift
 	nix run --impure "nixpkgs#""$name" -- "$@"
+}
+
+function gman {
+	local filename=$(basename $(man -w "$@"))
+	local tmp=$(mktemp -t gman-"${filename%*.}"-XXXXXX.pdf)
+
+	man -Tps "$@" | ps2pdf - "$tmp"
+	evince "$tmp"
 }

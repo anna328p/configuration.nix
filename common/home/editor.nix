@@ -81,6 +81,10 @@
 			" nvim tree auto close if it's the last window
 			autocmd BufEnter * ++nested if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif
 
+			" open diagnostic float on cursor hover
+			autocmd CursorHold * lua vim.diagnostic.open_float()
+			set updatetime=300
+
 			lua <<EOF
 				-- completions
 				local lspconfig = require'lspconfig'
@@ -143,6 +147,22 @@
 
 					experimental = { ghost_text = true },
 				}
+
+				-- diagnostics
+
+				vim.diagnostic.config({
+					virtual_text = false, -- Turn off inline diagnostics
+					underline = true,
+					signs = true,
+					severity_sort = true,
+
+					float = {
+						source = 'if_many',
+						show_header = true,
+						focusable = false,
+						max_width = 80,
+					},
+				})
 
 				-- linting
 
