@@ -1,21 +1,32 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
-	programs.kitty = {
+	programs.gnome-terminal = let
+		scheme = config.colorScheme;
+	in {
 		enable = true;
-		theme = "Nord";
 
-		font = {
-			package = pkgs.hasklig;
-			name = "Hasklig";
+		themeVariant = scheme.kind;
+
+		profile.${scheme.slug} = {
+			visibleName = scheme.name;
+			default = true;
+
+			colors = with scheme.colors; {
+				backgroundColor = base00;
+				foregroundColor = base04;
+
+				cursor.background = base04;
+				cursor.foreground = base01;
+
+				highlight.background = base08;
+				highlight.foreground = base00;
+
+				palette = [
+					base01 base0B base0E base0D base09 base0F base08 base05
+					base03 base0B base0E base0D base09 base0F base07 base06
+				];
+			};
 		};
-
-		extraConfig = ''
-			font_size 11.8
-			cursor none
-			scrollback_lines 0
-
-			wayland_titlebar_color system
-		'';
 	};
 }

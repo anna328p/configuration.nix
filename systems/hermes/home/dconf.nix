@@ -78,6 +78,8 @@
 			sort-column = "modified";
 			sort-order = "descending";
 		};
+
+		"ca/desrt/dconf-editor".show-warning = false;
 	};
 }
 
