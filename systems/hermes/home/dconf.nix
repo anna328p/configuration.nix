@@ -61,6 +61,23 @@
 				"terminate:ctrl_alt_bksp" "caps:escape"
 			];
 		};
+
+		"org/gnome/nautilus/preferences" = {
+			default-folder-viewer = "list-view";
+			show-create-link = true;
+			show-delete-permanently = true;
+		};
+
+		"org/gnome/nautilus/list-view" = {
+			default-zoom-level = "small";
+			use-tree-view = true;
+		};
+
+		"org/gtk/settings/file-chooser" = {
+			sort-directories-first = true;
+			sort-column = "modified";
+			sort-order = "descending";
+		};
 	};
 }
 
