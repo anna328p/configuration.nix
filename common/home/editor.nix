@@ -247,7 +247,8 @@ EOF
 		'';
 		plugins = with pkgs.vimPlugins; let
 			vim-slim = pkgs.vimUtils.buildVimPlugin {
-				name = "vim-slim";
+				pname = "vim-slim";
+				version = "unstable";
 
 				src = pkgs.fetchFromGitHub {
 					owner = "slim-template";
