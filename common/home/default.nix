@@ -7,6 +7,7 @@
 		./themes.nix
 
 		./terminal.nix
+		./media.nix
 
 		./tmux.nix
 		./shell.nix

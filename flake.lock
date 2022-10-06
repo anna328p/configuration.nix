@@ -114,6 +114,18 @@
         "type": "github"
       }
     },
+    "keydb": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-wWpl/xEccSjs67pTkpvKQ1LG17r/H/5xYwPljAIaIwU=",
+        "type": "tarball",
+        "url": "http://fvonline-db.bplaced.net/export/keydb_eng.zip"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "http://fvonline-db.bplaced.net/export/keydb_eng.zip"
+      }
+    },
     "lib-aggregate": {
       "inputs": {
         "flake-utils": "flake-utils_2",
@@ -294,6 +306,7 @@
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
         "impermanence": "impermanence",
+        "keydb": "keydb",
         "musnix": "musnix",
         "neovim": "neovim",
         "nix-colors": "nix-colors",

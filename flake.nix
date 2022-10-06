@@ -33,6 +33,11 @@
 			url = github:musnix/musnix;
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
+
+		keydb = {
+			url = "http://fvonline-db.bplaced.net/export/keydb_eng.zip";
+			flake = false;
+		};
 	};
 
 	outputs = { self

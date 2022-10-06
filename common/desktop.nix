@@ -53,7 +53,7 @@
 
 		firefox-devedition-bin transgui libreoffice
 		tdesktop discord' element-desktop
-		mpv vlc libaacs
+		mpv vlc
 		gnome.gnome-sound-recorder gnome.gnome-tweaks
 		helvum #vcv-rack
 		# virtmanager spice-gtk

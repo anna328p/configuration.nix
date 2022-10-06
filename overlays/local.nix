@@ -4,6 +4,14 @@ self: super: let
 in 
 	disableCheck "virt-manager" //
 {
+	vlc = super.vlc.override {
+		libbluray = self.libbluray.override {
+			withJava = true;
+			withAACS = true;
+			withBDplus = true;
+		};
+	};
+
 	transgui = super.transgui.overrideAttrs (oldAttrs: {
 		patches = [ ./0001-dedup-requestinfo-params.patch ];
 	});
