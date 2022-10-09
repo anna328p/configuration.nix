@@ -115,9 +115,9 @@
 			kitty
 
 			zoom-us
-			# prusa-slicer # broken
+			prusa-slicer
 			openscad solvespace
-			# kicad-with-packages3d # broken
+			kicad
 			mpdris2
 
 			gimp inkscape krita
