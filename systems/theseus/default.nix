@@ -10,7 +10,7 @@
 	boot = {
 		kernelPackages = pkgs.linuxPackages_latest;
 
-		kernelParams = [ "pcie_aspm=off" ];
+		kernelParams = [ "pcie_aspm=off" "mitigations=off" ];
 
 		initrd.availableKernelModules = [
 			"xhci_pci" "ehci_pci" "ahci" "nvme"
@@ -25,6 +25,7 @@
 	# Nvidia driver support
 	hardware.nvidia = {
 		package = config.boot.kernelPackages.nvidiaPackages.beta;
+		open = true;
 
 		prime.offload.enable = false;
 		modesetting.enable = true;
