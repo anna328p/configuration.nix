@@ -100,6 +100,7 @@
 
 				impermanence.nixosModule
 				nixos-hardware.nixosModules.lenovo-thinkpad-t14-amd-gen1
+				nixos-hardware.nixosModules.common-cpu-amd-pstate
 			];
 
 			theseus = mkSystem baseDesktop [

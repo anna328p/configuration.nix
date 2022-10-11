@@ -10,7 +10,7 @@
 		plymouth.enable = true;
 		supportedFilesystems = [ "ntfs" "exfat" ];
 
-		kernelParams = [ "iomem=relaxed" ];
+		kernelParams = [ "iomem=relaxed" "mitigations=off" ];
 
 		kernelModules = [ "i2c-dev" "v4l2loopback" "snd-seq" "snd-rawmidi" "ddcci" ];
 		extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ddcci-driver ];

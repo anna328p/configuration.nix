@@ -10,7 +10,7 @@
 	boot = {
 		kernelPackages = pkgs.linuxPackages_latest;
 
-		kernelParams = [ "pcie_aspm=off" "mitigations=off" ];
+		kernelParams = [ "pcie_aspm=off" ];
 
 		initrd.availableKernelModules = [
 			"xhci_pci" "ehci_pci" "ahci" "nvme"
@@ -77,6 +77,9 @@
 			wayland = true;
 		};
 	};
+	
+	# disable wayland for Qt apps
+	environment.variables.QT_QPA_PLATFORM = lib.mkForce "xcb";
 
 	virtualisation = {
 		libvirtd = {
