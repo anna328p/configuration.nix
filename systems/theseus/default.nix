@@ -22,15 +22,6 @@
 
 	musnix.enable = true;
 
-	# Nvidia driver support
-	hardware.nvidia = {
-		package = config.boot.kernelPackages.nvidiaPackages.beta;
-		open = true;
-
-		prime.offload.enable = false;
-		modesetting.enable = true;
-	};
-
 	networking.hostName = "theseus";
 
 	time.timeZone = "America/Chicago";
@@ -70,12 +61,7 @@
 
 		gpsd.enable = true;
 
-		xserver.videoDrivers = lib.mkForce [ "nvidia" ];
-
-		xserver.displayManager.gdm = {
-			autoSuspend = false;
-			wayland = true;
-		};
+		xserver.displayManager.gdm.autoSuspend = false;
 	};
 	
 	# disable wayland for Qt apps
