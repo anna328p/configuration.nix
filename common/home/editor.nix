@@ -170,7 +170,7 @@
 
 				null_ls.setup {
 					sources = {
-						null_ls.builtins.diagnostics.proselint,
+						-- null_ls.builtins.diagnostics.proselint,
 					},
 				}
 

@@ -52,7 +52,7 @@
 		ddcutil xclip
 
 		firefox-devedition-bin transgui libreoffice
-		tdesktop discord' element-desktop
+		tdesktop discord' element-desktop nheko
 		mpv vlc
 		gnome.gnome-sound-recorder gnome.gnome-tweaks
 		helvum #vcv-rack
@@ -117,7 +117,7 @@
 			zoom-us
 			prusa-slicer
 			openscad solvespace
-			kicad
+			kicad libxslt
 			mpdris2
 
 			gimp inkscape krita
@@ -138,7 +138,7 @@
 
 			myWine winetricks protontricks
 
-			steam steam-run polymc sidequest osu-lazer
+			steam steam-run prismlauncher sidequest osu-lazer
 
 			calibre
 			# anki
