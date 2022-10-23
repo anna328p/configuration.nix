@@ -141,8 +141,9 @@
 			steam steam-run prismlauncher sidequest osu-lazer
 
 			calibre
-			# anki
+			anki
 			plover.dev
+			logseq
 
 			fontforge-gtk nodePackages.svgo
 		];
