@@ -64,9 +64,6 @@
 		xserver.displayManager.gdm.autoSuspend = false;
 	};
 	
-	# disable wayland for Qt apps
-	environment.variables.QT_QPA_PLATFORM = lib.mkForce "xcb";
-
 	virtualisation = {
 		libvirtd = {
 			enable = true;
