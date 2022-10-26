@@ -1,18 +1,23 @@
-{ pkgs, config, ... }:
+{ pkgs, lib, config, ... }:
 
 {
 	programs.gnome-terminal = let
 		scheme = config.colorScheme;
+		profileUUID = "7dc9e410-f2aa-47f5-9bf1-e65d55f704a9"; # uuidgen
+
+		colorsPrefixed = lib.mapAttrs (_: val: "#${val}") scheme.colors;
 	in {
 		enable = true;
 
 		themeVariant = scheme.kind;
 
-		profile.${scheme.slug} = {
+		profile.${profileUUID} = {
 			visibleName = scheme.name;
 			default = true;
 
-			colors = with scheme.colors; {
+			showScrollbar = false;
+
+			colors = with colorsPrefixed; {
 				backgroundColor = base00;
 				foregroundColor = base04;
 
@@ -23,8 +28,8 @@
 				highlight.foreground = base00;
 
 				palette = [
-					base01 base0B base0E base0D base09 base0F base08 base05
-					base03 base0B base0E base0D base09 base0F base07 base06
+					base01 base08 base0B base0A base0D base0E base0C base05
+					base03 base08 base0B base0A base0D base0E base07 base06
 				];
 			};
 		};
