@@ -3,6 +3,7 @@
 {
 	imports = [
 		./hardware-configuration.nix
+		./transmission.nix
 		flakes.musnix.nixosModule
 	];
 
@@ -26,31 +27,7 @@
 
 	time.timeZone = "America/Chicago";
 
-	users.users.anna.extraGroups = [ "transmission" "libvirtd" ];
-
-	systemd.services.transmission.serviceConfig.BindPaths = [ "/media/storage" ];
-
 	services = {
-		transmission = {
-			enable = true;
-
-			settings = {
-				rpc-port = 9091;
-				rpc-bind-address = "0.0.0.0";
-				rpc-whitelist-enabled = false;
-
-				rpc-authentication-required = "true";
-				rpc-username = "anna";
-				rpc-password = (builtins.readFile ./transmission-password.txt);
-
-				peer-port = 25999;
-
-				download-dir = "/media/storage/torrents";
-				incomplete-dir = "/media/storage/torrents/incomplete";
-				incomplete-dir-enabled = true;
-			};
-		};
-
 		atftpd.enable = true;
 
 		vsftpd = {
@@ -65,6 +42,10 @@
 
 		xserver.displayManager.gdm.autoSuspend = false;
 	};
+
+	# virtualisation
+
+	users.users.anna.extraGroups = [ "libvirtd" ];
 	
 	virtualisation = {
 		libvirtd = {
