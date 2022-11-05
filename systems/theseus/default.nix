@@ -26,6 +26,8 @@
 
 	time.timeZone = "America/Chicago";
 
+	users.users.anna.extraGroups = [ "transmission" "libvirtd" ];
+
 	systemd.services.transmission.serviceConfig.BindPaths = [ "/media/storage" ];
 
 	services = {

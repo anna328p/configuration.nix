@@ -90,7 +90,7 @@
 				pkgsMaster = mkNixpkgs nixpkgs-master;
 			};
 
-			modules = [ common/base.nix ] ++ extraModules;
+			modules = [ common/base ] ++ extraModules;
 		};
 
 		basePhysical = mkDerived baseConfig [
@@ -98,7 +98,7 @@
 		];
 
 		baseWorkstation = mkDerived basePhysical [
-			common/workstation.nix
+			common/workstation
 			home-manager.nixosModule
 		];
 
@@ -107,6 +107,8 @@
 			hermes = mkConfig "x86_64-linux" baseWorkstation [
 				systems/hermes
 
+				common/amd.nix
+
 				impermanence.nixosModule
 				nixos-hardware.nixosModules.lenovo-thinkpad-t14-amd-gen1
 				nixos-hardware.nixosModules.common-cpu-amd-pstate
@@ -114,6 +116,8 @@
 
 			theseus = mkConfig "x86_64-linux" baseWorkstation [
 				systems/theseus
+
+				common/amd.nix
 
 				nixos-hardware.nixosModules.common-cpu-amd
 				nixos-hardware.nixosModules.common-gpu-amd

@@ -10,8 +10,18 @@
 	};
 
 	environment.systemPackages = with pkgs; [
-		acpi usbutils pciutils lm_sensors efibootmgr multipath-tools iotop
+		acpi
+
+		# Query hardware configuration
+		usbutils
+		pciutils
 		dmidecode
+
+		# Sensors
+		lm_sensors
+
+		# Firmware integration
+		efibootmgr
 	];
 
 	services.gpm.enable = true;

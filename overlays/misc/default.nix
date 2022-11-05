@@ -1,5 +1,15 @@
 final: prev: 
 {
+	wrapDiscord = discordPkg: final.symlinkJoin {
+		name = "${discordPkg.pname}-wrapped";
+		paths = [ discordPkg ];
+		buildInputs = [ final.makeWrapper ];
+		postBuild = ''
+			wrapProgram $out/bin/${discordPkg.meta.mainProgram} \
+				--add-flags "--disable-smooth-scrolling"
+		'';
+	};
+
 	vlc = prev.vlc.override {
 		libbluray = final.libbluray.override {
 			withJava = true;
