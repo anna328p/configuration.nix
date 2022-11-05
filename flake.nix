@@ -53,32 +53,35 @@
 		, musnix
 		, ...
 	}@flakes: let
-		localOverlay = import overlays/local.nix;
-
-		overlays = [ wayland.overlay nur.overlay localOverlay ];
-
 		mkDerived = base: modules: extraModules: base (modules ++ extraModules);
 		mkSystem = base: modules: mkDerived base modules [];
 
-		toSystem = system: x: x."${system}";
+		forSystem' = system: x: x."${system}";
 
-		baseSystem = system: extraModules: nixpkgs.lib.nixosSystem rec {
-			inherit system;
+		baseSystem = system: extraModules: let
+			forSystem = forSystem' system;
 
-			pkgs = import nixpkgs {
+			overlays = let
+				local = import ./overlays { inherit (nixpkgs) lib; };
+			in [
+				wayland.overlay
+				nur.overlay
+				local.overlay
+			];
+
+			mkNixpkgs = flake: import flake {
 				inherit system overlays;
 				config.allowUnfree = true;
 			};
+		in nixpkgs.lib.nixosSystem {
+			inherit system;
+
+			pkgs = mkNixpkgs nixpkgs;
 
 			specialArgs = {
-				inherit flakes;
+				inherit flakes forSystem;
 
-				tcs = toSystem system;
-
-				pkgsMaster = import nixpkgs-master {
-					inherit system overlays;
-					config.allowUnfree = true;
-				};
+				pkgsMaster = mkNixpkgs nixpkgs-master;
 			};
 
 			modules = [ ./configuration.nix ] ++ extraModules;

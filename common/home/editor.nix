@@ -1,4 +1,4 @@
-{ pkgs, flakes, tcs, ... }:
+{ pkgs, flakes, forSystem, ... }:
 
 {
 	home = {
@@ -22,7 +22,7 @@
 
 	programs.neovim = {
 		enable = true;
-		package = tcs flakes.neovim.defaultPackage;
+		package = forSystem flakes.neovim.defaultPackage;
 		withRuby = false;
 
 		extraConfig = ''
