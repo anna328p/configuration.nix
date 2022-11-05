@@ -59,7 +59,7 @@
 		# virtmanager spice-gtk
 		espeak-ng 
 
-	] ++ (with pkgs.gnomeExtensions; [
+	] ++ (with pkgsMaster.gnomeExtensions; [
 		gsconnect
 		brightness-control-using-ddcutil
 		sensory-perception
