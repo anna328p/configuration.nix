@@ -53,12 +53,19 @@
 		, musnix
 		, ...
 	}@flakes: let
-		mkDerived = base: modules: extraModules: base (modules ++ extraModules);
-		mkSystem = base: modules: mkDerived base modules [];
+		# Library
+
+		mkDerived = base: modules: (extra: base (modules ++ extra));
+
+		mkFinal = base: mkDerived base [];
+
+		mkConfig = sys: base: mods: (mkFinal base mods) sys;
 
 		forSystem' = system: x: x."${system}";
 
-		baseSystem = system: extraModules: let
+		# Infrastructure
+
+		baseConfig = extraModules: system: let
 			forSystem = forSystem' system;
 
 			overlays = let
@@ -80,25 +87,24 @@
 
 			specialArgs = {
 				inherit flakes forSystem;
-
 				pkgsMaster = mkNixpkgs nixpkgs-master;
 			};
 
-			modules = [ ./configuration.nix ] ++ extraModules;
+			modules = [ common/base.nix ] ++ extraModules;
 		};
 
-		basePhysical = mkDerived (baseSystem "x86_64-linux") [
+		basePhysical = mkDerived baseConfig [
 			common/physical.nix
 		];
 
-		baseDesktop = mkDerived basePhysical [
-			common/desktop.nix
+		baseWorkstation = mkDerived basePhysical [
+			common/workstation.nix
 			home-manager.nixosModule
 		];
 
 	in {
 		nixosConfigurations = {
-			hermes = mkSystem baseDesktop [
+			hermes = mkConfig "x86_64-linux" baseWorkstation [
 				systems/hermes
 
 				impermanence.nixosModule
@@ -106,7 +112,7 @@
 				nixos-hardware.nixosModules.common-cpu-amd-pstate
 			];
 
-			theseus = mkSystem baseDesktop [
+			theseus = mkConfig "x86_64-linux" baseWorkstation [
 				systems/theseus
 
 				nixos-hardware.nixosModules.common-cpu-amd

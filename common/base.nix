@@ -19,7 +19,7 @@
 	};
 
 	environment.systemPackages = with pkgs; [
-		linuxConsoleTools
+		linuxConsoleTools moreutils
 		zsh tmux neovim
 		exa dfc ripgrep file pv neofetch units bc
 		zip unzip _7zz zstd xz pigz

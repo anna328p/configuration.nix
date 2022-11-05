@@ -4,10 +4,16 @@
 	home.shellAliases = {
 		ls = "exa";
 		open = "xdg-open";
+
 		":w" = "sync";
 		":q" = "exit";
 		":wq" = "sync; exit";
+
 		nbs = "time nixos-rebuild switch --use-remote-sudo";
+		nbst = "time nixos-rebuild switch --use-remote-sudo --show-trace";
+		nbsk = "time nixos-rebuild switch --use-remote-sudo --keep-going";
+		nbsf = "time nixos-rebuild switch --use-remote-sudo --fast";
+
 		nsn = "nix search nixpkgs";
 	};
 
