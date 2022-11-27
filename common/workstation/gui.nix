@@ -54,7 +54,7 @@
 			noto-fonts noto-fonts-cjk noto-fonts-emoji-blob-bin
 			liberation_ttf open-sans corefonts
 
-			google-fonts
+			# google-fonts # builder broken?
 		];
 	};
 

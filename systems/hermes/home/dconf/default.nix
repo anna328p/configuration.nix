@@ -1,9 +1,18 @@
 { lib, ... }:
 
 {
+	imports = [
+		./gsconnect.nix
+	];
+
 	dconf.settings = with lib.hm.gvariant; {
 		"org/gnome/shell" = {
 			welcome-dialog-last-shown-version = "99.0.0";
+
+			enabled-extensions = mkArray type.string [
+				"appindicatorsupport@rgcjonas.gmail.com"
+				"gsconnect@andyholmes.github.io"
+			];
 		};
 
 		"org/gnome/desktop/interface" = {
@@ -16,6 +25,8 @@
 
 			color-scheme = "prefer-dark";
 			gtk-theme = "Adwaita-dark";
+
+			enable-animations = false;
 		};
 
 		"org/gnome/desktop/wm/preferences" = {

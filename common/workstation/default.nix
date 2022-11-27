@@ -29,7 +29,7 @@
 		useUserPackages = true;
 		useGlobalPkgs = true;
 
-		extraSpecialArgs = specialArgs;
+		extraSpecialArgs = specialArgs // { systemConfig = config; };
 	};
 
 	# Don't interfere with home-manager's zsh config

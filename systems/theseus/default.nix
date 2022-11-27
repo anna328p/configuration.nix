@@ -25,6 +25,8 @@
 
 	networking.hostName = "theseus";
 
+	misc.uuid = "134829a8-d5f1-4f69-b500-35ebdf4d2ffb";
+
 	time.timeZone = "America/Chicago";
 
 	services = {

@@ -94,7 +94,7 @@
 		};
 
 		basePhysical = mkDerived baseConfig [
-			common/physical.nix
+			common/physical
 		];
 
 		baseWorkstation = mkDerived basePhysical [

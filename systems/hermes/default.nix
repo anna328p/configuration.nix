@@ -25,10 +25,14 @@
 		plymouth.enable = lib.mkForce false;
 	};
 
+	# identity
+
 	networking = {
 		hostName = "hermes";
 		hostId = "6a5a4b0b";
 	};
+
+	misc.uuid = "46397c55-410c-4b6c-9050-5fbedb77e303";
 
 	hardware.bluetooth.powerOnBoot = false;
 
