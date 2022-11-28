@@ -8,12 +8,17 @@
 			package = pkgs.source-sans;
 			name = "Source Sans 3 10.8";
 		};
-		theme.name = "Adwaita-dark";
+
+		theme = {
+			package = pkgs.adw-gtk3;
+			name = "adw-gtk3-dark";
+		};
 	};
 
 	qt = {
 		enable = true;
 		platformTheme = "gnome";
+
 		style = {
 			package = pkgs.adwaita-qt;
 			name = "adwaita-dark";

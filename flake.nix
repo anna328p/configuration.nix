@@ -107,7 +107,7 @@
 			hermes = mkConfig "x86_64-linux" baseWorkstation [
 				systems/hermes
 
-				common/amd.nix
+				common/misc/amd
 
 				impermanence.nixosModule
 				nixos-hardware.nixosModules.lenovo-thinkpad-t14-amd-gen1
@@ -117,7 +117,7 @@
 			theseus = mkConfig "x86_64-linux" baseWorkstation [
 				systems/theseus
 
-				common/amd.nix
+				common/misc/amd
 
 				nixos-hardware.nixosModules.common-cpu-amd
 				nixos-hardware.nixosModules.common-gpu-amd
