@@ -30,10 +30,10 @@ let
 		view_bg_color = base01;
 		view_fg_color = base05;
 
-		headerbar_bg_color = base02;
+		headerbar_bg_color = base01;
 		headerbar_fg_color = base05;
 		headerbar_border_color = base04;
-		headerbar_backdrop_color = base01;
+		headerbar_backdrop_color = base00;
 
 		card_bg_color = base01;
 		card_fg_color = base05;
