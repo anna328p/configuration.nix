@@ -4,6 +4,7 @@
 	imports = [
 		./witchhazel.nix
 		./adwaita.nix
+		./terminal.nix
 	];
 
 	fonts.fontconfig.enable = true;
@@ -34,7 +35,7 @@
 		enable = true;
 		enableZshIntegration = true;
 
-		extraConfig = (builtins.readFile files/dircolors);
+		extraConfig = (builtins.readFile ./dircolors);
 	};
 }
 

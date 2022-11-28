@@ -4,9 +4,8 @@
 	imports = [
 		flakes.nix-colors.homeManagerModule
 
-		./themes.nix
+		./theming
 
-		./terminal.nix
 		./media.nix
 
 		./tmux.nix

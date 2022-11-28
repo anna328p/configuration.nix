@@ -38,10 +38,10 @@ let
 		card_bg_color = base01;
 		card_fg_color = base05;
 
-		dialog_bg_color = base03;
+		dialog_bg_color = base01;
 		dialog_fg_color = base05;
 
-		popover_bg_color = base03;
+		popover_bg_color = base01;
 		popover_fg_color = base05;
 	};
 
