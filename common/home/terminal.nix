@@ -5,7 +5,7 @@
 		scheme = config.colorScheme;
 		profileUUID = "7dc9e410-f2aa-47f5-9bf1-e65d55f704a9"; # uuidgen
 
-		colorsPrefixed = lib.mapAttrs (_: val: "#${val}") scheme.colors;
+		colorsPrefixed = lib.mapAttrs (_: v: "#${v}") scheme.colors;
 	in {
 		enable = true;
 
@@ -19,17 +19,17 @@
 
 			colors = with colorsPrefixed; {
 				backgroundColor = base00;
-				foregroundColor = base04;
+				foregroundColor = base05;
 
-				cursor.background = base04;
-				cursor.foreground = base01;
+				cursor.background = base05;
+				cursor.foreground = base02;
 
-				highlight.background = base08;
-				highlight.foreground = base00;
+				highlight.background = base04;
+				highlight.foreground = base05;
 
 				palette = [
-					base01 base08 base0B base0A base0D base0E base0C base05
-					base03 base08 base0B base0A base0D base0E base07 base06
+					base00 base08 base0B base0A base0D base0E base0C base05
+					base03 base08 base0B base0A base0D base0E base0C base07
 				];
 			};
 		};

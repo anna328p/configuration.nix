@@ -1,6 +1,6 @@
-{ pkgs, flakes, forSystem, ... }:
+{ pkgs, lib, config, flakes, forSystem, ... }:
 
-{
+{ # testing...
 	home = {
 		packages = with pkgs; [
 			solargraph
@@ -62,15 +62,8 @@
 			command! W :w
 			command! Q :q
 
-			" nord color scheme
+			" color scheme
 			set termguicolors
-
-			let g:nord_cursor_line_number_background = 1
-			let g:nord_italic = 1
-			let g:nord_italic_comments = 1
-			let g:nord_underline = 1
-
-			colorscheme nord
 			set background=dark
 
 			" nvim tree
@@ -86,6 +79,13 @@
 			set updatetime=300
 
 			lua <<EOF
+				-- colors
+				require('base16-colorscheme').setup({${
+					lib.concatStringsSep ", " (lib.mapAttrsToList
+						(name: val: "${name} = '#${val}'")
+						config.colorScheme.colors)
+				}})
+
 				-- completions
 				local lspconfig = require'lspconfig'
 
@@ -201,7 +201,7 @@
 				require'lualine'.setup {
 					options = {
 						icons_enabled = false,
-						theme = 'nord',
+						theme = 'base16',
 					},
 				}
 
@@ -263,7 +263,7 @@ EOF
 			);
 		in [
 			# visual
-			nord-vim gitsigns-nvim lualine-nvim tabline-nvim
+			nvim-base16 gitsigns-nvim lualine-nvim tabline-nvim
 			nvim-colorizer-lua indent-blankline-nvim
 
 			# completions

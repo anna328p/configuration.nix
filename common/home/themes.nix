@@ -1,6 +1,10 @@
-{ pkgs, flakes, ... }:
+{ pkgs, lib, flakes, ... }:
 
 {
+	imports = [
+		./witchhazel.nix
+	];
+
 	fonts.fontconfig.enable = true;
 
 	gtk = {
@@ -31,8 +35,6 @@
 
 		extraConfig = (builtins.readFile files/dircolors);
 	};
-
-	colorScheme = flakes.nix-colors.colorSchemes.nord;
 }
 
 # vim: set ts=4 sw=4 noet :
