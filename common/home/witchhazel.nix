@@ -15,7 +15,7 @@
 				brick      = "#DC7070";
 				pink       = "#FFB8D1";
 				sunflower  = "#FFF352";
-				mint       = "#81FFBE";
+				mint       = "#C2FFDF";
 				turquoise  = "#81EEFF";
 
 				lightgrey  = "#BFBFBF";
