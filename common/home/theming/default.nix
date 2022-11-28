@@ -5,6 +5,7 @@
 		./witchhazel.nix
 		./adwaita.nix
 		./terminal.nix
+		./firefox.nix
 	];
 
 	fonts.fontconfig.enable = true;
