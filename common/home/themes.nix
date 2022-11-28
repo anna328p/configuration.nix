@@ -3,6 +3,7 @@
 {
 	imports = [
 		./witchhazel.nix
+		./adwaita.nix
 	];
 
 	fonts.fontconfig.enable = true;

@@ -22,6 +22,9 @@
 
 		# GNOME addons
 		gnome.gnome-sound-recorder gnome.gnome-tweaks
+
+		# GTK theme
+		adw-gtk3
 	] ++ (with pkgsMaster.gnomeExtensions; [
 		gsconnect
 		brightness-control-using-ddcutil

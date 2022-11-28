@@ -41,7 +41,7 @@
 		history = {
 			expireDuplicatesFirst = true;
 			extended = true;
-			path = ".local/share/zsh/zsh_history";
+			path = "${config.xdg.dataHome}/zsh/zsh_history";
 			save = 100000;
 			size = 100000;
 		};

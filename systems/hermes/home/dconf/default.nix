@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, config, ... }:
 
 {
 	imports = [
@@ -23,8 +23,15 @@
 			font-antialiasing = "rgba";
 			font-hinting = "slight";
 
-			color-scheme = "prefer-dark";
-			gtk-theme = "Adwaita-dark";
+			color-scheme = {
+				light = "default";
+				dark = "prefer-dark";
+			}.${config.colorScheme.kind};
+
+			gtk-theme = {
+				light = "adw-gtk3";
+				dark = "adw-gtk3-dark";
+			}.${config.colorScheme.kind};
 
 			enable-animations = false;
 		};
