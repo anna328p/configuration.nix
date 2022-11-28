@@ -25,7 +25,7 @@
 				cursor.foreground = base02;
 
 				highlight.background = base04;
-				highlight.foreground = base05;
+				highlight.foreground = base01;
 
 				palette = [
 					base00 base08 base0B base0A base0D base0E base0C base05

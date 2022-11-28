@@ -6,6 +6,7 @@
 		./adwaita.nix
 		./terminal.nix
 		./firefox.nix
+		./discord.nix
 	];
 
 	fonts.fontconfig.enable = true;
