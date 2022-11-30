@@ -34,7 +34,7 @@ let
 
 		background-primary = base01;
 		background-secondary = base00;
-		background-secondary-alt = base02 + "cc";
+		background-secondary-alt = base02 + "aa";
 		background-tertiary = base00;
 		background-accent = base02;
 		background-floating = base02;

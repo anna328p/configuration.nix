@@ -8,6 +8,7 @@
 		firefox-devedition-bin
 
 		# Messengers
+		(wrapDiscord pkgsMaster.discord)
 		tdesktop
 		element-desktop nheko
 
