@@ -9,12 +9,16 @@
 		./discord.nix
 	];
 
+	# for testing other themes:
+	# colorScheme = flakes.nix-colors.colorSchemes.solarized-light;
+
 	fonts.fontconfig.enable = true;
 
 	gtk = {
 		font = {
 			package = pkgs.source-sans;
-			name = "Source Sans 3 10.8";
+			name = "Source Sans 3";
+			size = 11;
 		};
 
 		theme = {

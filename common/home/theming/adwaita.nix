@@ -1,9 +1,10 @@
-{ lib, config, ... }:
+{ lib, config, L, ... }:
 
 let
-	defs = let
-		formatted = lib.mapAttrs (_: v: "#${v}") config.colorScheme.colors;
-	in with formatted; rec {
+	scheme = config.colorScheme;
+	formatted = L.colors.prefixHash scheme.colors;
+
+	defs = with formatted; rec {
 		accent_color    = base0C;
 		accent_bg_color = accent_color;
 		accent_fg_color = base05;
@@ -45,14 +46,7 @@ let
 		popover_fg_color = base05;
 	};
 
-	css' = builtins.concatStringsSep "\n"
-		(lib.mapAttrsToList
-			(name: val: "@define-color ${name} ${val};")
-			defs);
-	
-	css = ''
-		${css'}
-	'';
+	css = L.colors.genDecls (k: v: "@define-color ${k} ${v};") defs;
 in {
 	xdg.configFile = {
 		"gtk-3.0/gtk.css".text = css;

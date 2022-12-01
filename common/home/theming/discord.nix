@@ -1,7 +1,11 @@
-{ lib, config, pkgs, pkgsMaster, ... }:
+{ lib, config, pkgs, pkgsMaster, L, ... }:
 
 let
-	formatted = lib.mapAttrs (_: v: "#${v}") config.colorScheme.colors;
+	scheme = config.colorScheme;
+
+	byKind' = L.colors.byKind scheme.kind;
+
+	formatted = L.colors.prefixHash scheme.colors;
 
 	defs = with formatted; rec {
 		header-primary = base05;
@@ -163,14 +167,9 @@ let
 		spoiler-revealed-background = base02;
 	};
 
-	vars = builtins.concatStringsSep "\n"
-		(lib.mapAttrsToList
-			(name: val: "--${name}: ${val} !important;")
-			defs);
-	
 	css = ''
 		:root {
-			${vars}
+			${L.colors.genVarDecls defs}
 		}
 
 		div[class^='divider'], div[class*=' divider'] {
@@ -186,7 +185,7 @@ let
 		}
 
 		:is(nav[class^='guilds-'], nav[class*=' guilds-']) > ul {
-			background-color: #000000 !important;
+			background-color: ${byKind' "#FFFFFF" "#000000"} !important;
 		}
 
 		:is(nav[class^='guilds-'], nav[class*=' guilds-']) :is(div[class^='scrollerBase'], div[class*=' scrollerBase']) {

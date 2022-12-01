@@ -1,97 +1,150 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, config, L, ... }:
 
-{
-	programs.firefox.enable = true;
-	programs.firefox.package = pkgs.firefox-devedition-bin;
+let
+	scheme = config.colorScheme;
+	formatted = L.colors.prefixHash scheme.colors;
 
-	programs.firefox.profiles.dev-edition-default = {
-		name = "dev-edition-default";
-		path = "dev-edition-default";
-		id = 0;	
+	rootDefs = with formatted; {
+		# Popup panels
+		arrowpanel-background = base01;
+		arrowpanel-border-color = base02;
+		arrowpanel-color = base05;
+		arrowpanel-dimmed = base00;
 
-		userChrome = let
-			formatted = lib.mapAttrs (_: v: "#${v}") config.colorScheme.colors;
-		in with formatted; ''
-			/* github.com/MrOtherGuy/firefox-csshacks Mozilla Public License v. 2.0 */
+		# window and toolbar background
+		lwt-accent-color = base02;
+		lwt-accent-color-inactive = base01;
+		toolbar-bgcolor = base01;  
 
-			:root {
-			  /* Popup panels */
-			  --arrowpanel-background: ${base01} !important;
-			  --arrowpanel-border-color: ${base02} !important;
-			  --arrowpanel-color: ${base05} !important;
-			  --arrowpanel-dimmed: ${base00} !important;
+		# tabs with system theme - text is not controlled by variable
+		tab-selected-bgcolor = base01;
 
-			  /* window and toolbar background */
-			  --lwt-accent-color: ${base02} !important;
-			  --lwt-accent-color-inactive: ${base01} !important;
-			  --toolbar-bgcolor: ${base01} !important;  
+		# tabs with any other theme
+		lwt-text-color = base05;
+		lwt-selected-tab-background-color = base01;
 
-			  /* tabs with system theme - text is not controlled by variable */
-			  --tab-selected-bgcolor: ${base01} !important;
+		# toolbar area
+		toolbarbutton-icon-fill = base05;
+		lwt-toolbarbutton-hover-background = base02;
+		lwt-toolbarbutton-active-background = base03;
 
-			  /* tabs with any other theme */
-			  --lwt-text-color: ${base05} !important;
-			  --lwt-selected-tab-background-color: ${base01} !important;
+		# urlbar
+		toolbar-field-border-color = base03;
+		toolbar-field-focus-border-color = base04;
+		urlbar-popup-url-color = base05;
 
-			  /* toolbar area */
-			  --toolbarbutton-icon-fill: ${base05} !important;
-			  --lwt-toolbarbutton-hover-background: ${base02} !important;
-			  --lwt-toolbarbutton-active-background: ${base03} !important;
+		# urlbar Firefox < 92
+		lwt-toolbar-field-background-color = base02;
+		lwt-toolbar-field-focus = base02;
+		lwt-toolbar-field-color = base05;
+		lwt-toolbar-field-focus-color = base05;
 
-			  /* urlbar */
-			  --toolbar-field-border-color: ${base03} !important;
-			  --toolbar-field-focus-border-color: ${base04} !important;
-			  --urlbar-popup-url-color: ${base05} !important;
+		# urlbar Firefox 92+
+		toolbar-field-background-color = base02;
+		toolbar-field-focus-background-color = base02;
+		toolbar-field-color = base05;
+		toolbar-field-focus-color = base05;
 
-			  /* urlbar Firefox < 92 */
-			  --lwt-toolbar-field-background-color: ${base02} !important;
-			  --lwt-toolbar-field-focus: ${base02} !important;
-			  --lwt-toolbar-field-color: ${base05} !important;
-			  --lwt-toolbar-field-focus-color: ${base05} !important;
+		# sidebar - note the sidebar-box rule for the header-area
+		lwt-sidebar-background-color = base01;
+		lwt-sidebar-text-color = base05;
 
-			  /* urlbar Firefox 92+ */
-			  --toolbar-field-background-color: ${base02} !important;
-			  --toolbar-field-focus-background-color: ${base02} !important;
-			  --toolbar-field-color: ${base05} !important;
-			  --toolbar-field-focus-color: ${base05} !important;
+		autocomplete-popup-highlight-background = base04;
+		autocomplete-popup-highlight-color = base01;
+	};
 
-			  /* sidebar - note the sidebar-box rule for the header-area */
-			  --lwt-sidebar-background-color: ${base01} !important;
-			  --lwt-sidebar-text-color: ${base05} !important;
+	userChrome = with formatted; ''
+		/* github.com/MrOtherGuy/firefox-csshacks Mozilla Public License v. 2.0 */
 
-			  --autocomplete-popup-highlight-background: ${base04} !important;
-			  --autocomplete-popup-highlight-color: ${base01} !important;
+		:root {
+			${L.colors.genVarDecls rootDefs}
+		}
+
+		/* line between nav-bar and tabs toolbar,
+			also fallback color for border around selected tab */
+		#navigator-toolbox { --lwt-tabs-border-color: ${base03} !important; }
+
+		/* Line above tabs */
+		#tabbrowser-tabs { --lwt-tab-line-color: ${base02} !important; }
+
+		/* the header-area of sidebar needs this to work */
+		#sidebar-box { --sidebar-background-color: ${base01} !important; }
+
+		::selection, ::-moz-selection, p::selection, p::-moz-selection {
+			color: ${base01} !important;
+			background-color: ${base04} !important;
+		}
+	'';
+
+	# Sidebery
+	sbDefs = with formatted; {
+		bg = base00;
+		bg-img = "none";
+
+		title-fg = base05;
+		sub-title-fg = base05;
+		label-fg = base05;
+		label-fg-hover = base06;
+		label-fg-click = base04;
+		info-fg = base05;
+		true-fg = base0B;
+		false-fg = base09;
+		active-fg = base05;
+		inactive-fg = base04;
+		favicons-placeholder-bg = base02;
+
+		btn-bg = base02;
+		btn-bg-hover = base01;
+		btn-bg-active = base03;
+		btn-fg = base05;
+		btn-fg-hover = base04;
+		btn-fg-active = base06;
+
+		scroll-progress-bg = base0E;
+
+		tabs-height = "22px";
+		tabs-font = "${builtins.toString config.gtk.font.size}pt " + 
+						"\"${config.gtk.font.name}\"";
+		tabs-fg = base04;
+		tabs-fg-hover = base05;
+		tabs-fg-active = base05;
+		tabs-bg-hover = base01;
+		tabs-bg-active = base03;
+		tabs-activated-bg = base02;
+		tabs-activated-fg = base05;
+		tabs-selected-bg = base04;
+		tabs-selected-fg = base01;
+		tabs-lvl-indicator-bg = base03;
+	};
+
+	sideberyUUID = "d928e2f1-387c-43e8-9e0f-828d9ce3ff7e";
+
+	userContent = with formatted; ''
+		/* Sidebery color theme */
+		@-moz-document url("moz-extension://${sideberyUUID}/sidebar/index.html") {
+			#root {
+				${L.colors.genVarDecls sbDefs}
 			}
+		}
+	'';
+in {
+	programs.firefox = {
+		enable = true;
+		package = pkgs.firefox-devedition-bin;
 
-			/* line between nav-bar and tabs toolbar,
-				also fallback color for border around selected tab */
-			#navigator-toolbox { --lwt-tabs-border-color: ${base03} !important; }
+		profiles.dev-edition-default = {
+			name = "dev-edition-default";
+			path = "dev-edition-default";
+			id = 0;	
 
-			/* Line above tabs */
-			#tabbrowser-tabs { --lwt-tab-line-color: ${base02} !important; }
+			inherit userChrome userContent;
 
-			/* the header-area of sidebar needs this to work */
-			#sidebar-box { --sidebar-background-color: ${base01} !important; }
-
-			::selection {
-				color: ${base01} !important;
-				background-color: ${base04} !important;
-			}
-
-			::-moz-selection {
-				color: ${base01} !important;
-				background-color: ${base04} !important;
-			}
-
-			p::selection {
-				color: ${base01} !important;
-				background-color: ${base04} !important;
-			}
-			
-			p::-moz-selection {
-				color: ${base01} !important;
-				background-color: ${base04} !important;
-			}
-		'';
+			settings = {
+				"general.smoothScroll" = false;
+				"devtools.chrome.enabled" = true;
+				"devtools.debugger.remote-enabled" = true;
+				"toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+			};
+		};
 	};
 }

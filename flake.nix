@@ -80,7 +80,7 @@
 				inherit system overlays;
 				config.allowUnfree = true;
 			};
-		in nixpkgs.lib.nixosSystem {
+		in nixpkgs.lib.nixosSystem rec {
 			inherit system;
 
 			pkgs = mkNixpkgs nixpkgs;
@@ -88,6 +88,8 @@
 			specialArgs = {
 				inherit flakes forSystem;
 				pkgsMaster = mkNixpkgs nixpkgs-master;
+
+				L = pkgs.callPackage common/misc/helpers { };
 			};
 
 			modules = [ common/base ] ++ extraModules;
