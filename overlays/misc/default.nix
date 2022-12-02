@@ -19,9 +19,10 @@ final: prev:
 	};
 
 	myWine = prev.wineWowPackages.full.override {
-		# wineRelease = "staging"; # breaks FL Studio
+		wineRelease = "staging";
 		gtkSupport = true;
 		vaSupport = true;
+		waylandSupport = true;
 	};
 
 	calibre = prev.calibre.overrideAttrs (oa: {

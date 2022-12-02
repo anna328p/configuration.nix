@@ -178,6 +178,10 @@
 				require'colorizer'.setup()
 
 				-- treesitter
+
+				-- make sure parsers can compile
+				require"nvim-treesitter.install".compilers = { "${pkgs.stdenv.cc}/bin/cc" }
+
 				require'nvim-treesitter.configs'.setup {
 					ensure_installed = { },
 					rainbow = { enable = true, extended_mode = true, },
