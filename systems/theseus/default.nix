@@ -4,7 +4,7 @@
 	imports = [
 		./hardware-configuration.nix
 		./transmission.nix
-		flakes.musnix.nixosModule
+		flakes.musnix.nixosModules.default
 	];
 
 	# Hardware support
@@ -40,7 +40,10 @@
 			chrootlocalUser = false;
 		};
 
-		gpsd.enable = true;
+		gpsd = {
+			enable = true;
+			device = "/dev/ttyACM0";
+		};
 
 		xserver.displayManager.gdm.autoSuspend = false;
 	};
