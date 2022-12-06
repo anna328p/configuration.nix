@@ -102,9 +102,10 @@ let
 
 		scroll-progress-bg = base0E;
 
+		tabs-font = let F = config.misc.fonts.ui;
+			in "${builtins.toString F.size}pt ${F.name}";
+
 		tabs-height = "22px";
-		tabs-font = "${builtins.toString config.gtk.font.size}pt " + 
-						"\"${config.gtk.font.name}\"";
 		tabs-fg = base04;
 		tabs-fg-hover = base05;
 		tabs-fg-active = base05;

@@ -5,20 +5,7 @@
 		./gsconnect.nix
 	];
 
-	dconf.settings = with lib.hm.gvariant; let
-		scheme = config.colorScheme;
-
-		nix-colors-lib = flakes.nix-colors.lib-contrib { inherit pkgs; };
-
-		wallpaper-path = nix-colors-lib.nixWallpaperFromScheme {
-			inherit scheme;
-			width = 1920;
-			height = 1080;
-			logoScale = 2.0;
-		};
-
-		byKind' = L.colors.byKind scheme.kind;
-	in let self = {
+	dconf.settings = let self = with lib.hm.gvariant; {
 		"org/gnome/shell" = {
 			welcome-dialog-last-shown-version = "99.0.0";
 
@@ -34,35 +21,12 @@
 		};
 
 		"org/gnome/desktop/interface" = {
-			font-name = "Source Sans 3 10.8";
-			document-font-name = "Source Serif 4 10.8";
-			monospace-font-name = "Source Code Pro 11.8";
-
-			font-antialiasing = "rgba";
-			font-hinting = "slight";
-
-			color-scheme = byKind' "default" "prefer-dark";
-
-			gtk-theme = byKind' "adw-gtk3" "adw-gtk3-dark";
-
 			enable-animations = false;
-		};
-
-		"org/gnome/desktop/background" = rec {
-			picture-uri = "file://${wallpaper-path}";
-			picture-uri-dark = picture-uri;
-			primary-color = "#${scheme.colors.base03}";
-		};
-
-		"org/gnome/desktop/screensaver" = {
-			picture-uri = "file://${wallpaper-path}";
-			primary-color = "#${scheme.colors.base03}";
 		};
 
 		"org/gnome/desktop/wm/preferences" = {
 			focus-mode = "sloppy";
 			resize-with-right-button = true;
-			titlebar-font = "Source Sans 3 Bold 10.8";
 		};
 
 		"org/gnome/desktop/peripherals/mouse" = {

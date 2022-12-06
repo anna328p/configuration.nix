@@ -3,6 +3,7 @@
 {
 	imports = [
 		flakes.nix-colors.homeManagerModule
+		./misc-module.nix
 
 		./dconf
 		./theming
