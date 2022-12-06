@@ -91,7 +91,7 @@ let
 		false-fg = base09;
 		active-fg = base05;
 		inactive-fg = base04;
-		favicons-placeholder-bg = base02;
+		favicons-placeholder-bg = base03;
 
 		btn-bg = base02;
 		btn-bg-hover = base01;
@@ -117,11 +117,10 @@ let
 		tabs-lvl-indicator-bg = base03;
 	};
 
-	sideberyUUID = "d928e2f1-387c-43e8-9e0f-828d9ce3ff7e";
-
 	userContent = with formatted; ''
 		/* Sidebery color theme */
-		@-moz-document url("moz-extension://${sideberyUUID}/sidebar/index.html") {
+		/* Kind of a hack, should ideally be more specific */
+		@-moz-document regexp("^moz-extension://.*/sidebar/index\.html$") {
 			#root {
 				${L.colors.genVarDecls sbDefs}
 			}
