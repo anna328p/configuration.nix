@@ -165,34 +165,59 @@ let
 
 		spoiler-hidden-background = base00;
 		spoiler-revealed-background = base02;
+
+		font-code = config.misc.fonts.monospace.name;
+
+		font-primary = "Lexend";
+		font-display = "Lexend";
+		font-headline = "Lexend";
 	};
 
-	css = ''
+	css = let
+		sel = tag: prefix:
+			":is(${tag}[class^='${prefix}-'], ${tag}[class*=' ${prefix}-'])";
+
+		mkIdSet = names: with lib;
+			listToAttrs (map (x: nameValuePair x x) names);
+
+		tagNames = [ "span" "div" "nav" ];
+
+	in with mkIdSet tagNames; ''
 		:root {
 			${L.colors.genVarDecls defs}
+			font-size: 93.75% !important;
 		}
 
-		div[class^='divider'], div[class*=' divider'] {
+		${sel div "name"} { font-size: 15px !important; }
+
+		code, ${sel span "inlineCode"}, ${sel div "codeLine"} {
+			font-family: ${defs.font-code} !important;
+			font-size: 14px !important;
+		}
+
+		${sel div "divider"} {
 			border-top-color: ${formatted.base02} !important;
 		}
 
-		div[class^='checked-'], div[class*=' checked-'] {
+		${sel div "checked"} {
 			background-color: ${formatted.base0B}88 !important;
 		}
 
-		nav[class^='guilds-'], nav[class*=' guilds-'] {
+		${sel nav "guilds"} {
 			border-right: 1px solid ${formatted.base01} !important;
 		}
 
-		:is(nav[class^='guilds-'], nav[class*=' guilds-']) > ul {
+		${sel nav "guilds"} > ul {
 			background-color: ${byKind' "#FFFFFF" "#000000"} !important;
 		}
 
-		:is(nav[class^='guilds-'], nav[class*=' guilds-']) :is(div[class^='scrollerBase'], div[class*=' scrollerBase']) {
+		${sel nav "guilds"} ${sel div "scrollerBase"} {
 			background-color: ${formatted.base00}bb !important;
 		}
 	'';
 in {
+	home.packages = with pkgs; [ lexend ];
+
 	programs.discocss = {
 		enable = true;
 		discordPackage = (pkgs.wrapDiscord pkgsMaster.discord);

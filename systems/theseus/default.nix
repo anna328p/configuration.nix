@@ -48,6 +48,8 @@
 		xserver.displayManager.gdm.autoSuspend = false;
 	};
 
+	home-manager.users.anna = import ./home;
+
 	# virtualisation
 
 	users.users.anna.extraGroups = [ "libvirtd" ];

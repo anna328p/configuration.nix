@@ -1,7 +1,11 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
 	colors = pkgs.callPackage ./colors.nix { };
 
-	tS = builtins.toString;
+	fontCss = opt: let
+		sizeStr = builtins.toString opt.size;
+	in "${sizeStr}pt ${opt.name}";
+
+	urlencode = import ./urlencode.nix lib;
 }

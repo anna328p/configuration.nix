@@ -1,9 +1,11 @@
 { ... }:
 
 {
-	gtk.gtk3.bookmarks = [
+	misc.bookmarks = {
+		enable = true;
 
-	] ++ (map (d: "file:///home/anna/${d}") [
-		"work"
-	]);
+		home = [
+			"work"
+		];
+	};
 }
