@@ -29,6 +29,10 @@
 			resize-with-right-button = true;
 		};
 
+		"org/gnome/mutter" = {
+			dynamic-workspaces = true;
+		};
+
 		"org/gnome/desktop/peripherals/mouse" = {
 			accel-profile = "flat";
 		};

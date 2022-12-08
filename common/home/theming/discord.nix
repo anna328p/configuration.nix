@@ -51,7 +51,7 @@ let
 		chat-border = base02;
 		chat-input-container-background = base00;
 
-		background-modifier-hover = base01;
+		background-modifier-hover = base03 + "44";
 		background-modifier-active = base02;
 		background-modifier-selected = base02 + "cc";
 		background-modifier-accent = base01;
@@ -72,8 +72,8 @@ let
 		info-help-foreground = base0F;
 		info-help-text = text-normal;
 
-		status-positive-background = text-positive;
-		status-positive-text = text-normal;
+		status-positive-background = button-positive-background;
+		status-positive-text = base02;
 
 		status-warning-background = text-warning;
 		status-warning-text = text-normal;
@@ -168,9 +168,13 @@ let
 
 		font-code = config.misc.fonts.monospace.name;
 
-		font-primary = "Lexend";
-		font-display = "Lexend";
-		font-headline = "Lexend";
+		font-primary = ''
+			Lexend, Whitney, "gg sans", "Noto Sans",
+			"Helvetica Neue", Helvetica, Arial, sans-serif
+		'';
+
+		font-display = font-primary;
+		font-headline = font-primary;
 	};
 
 	css = let
@@ -184,8 +188,11 @@ let
 
 	in with mkIdSet tagNames; ''
 		:root {
-			${L.colors.genVarDecls defs}
 			font-size: 93.75% !important;
+		}
+
+		:root, .theme-dark {
+			${L.colors.genVarDecls defs}
 		}
 
 		${sel div "name"} { font-size: 15px !important; }
