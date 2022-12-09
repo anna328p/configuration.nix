@@ -9,7 +9,7 @@
 
 	# Hardware support
 	boot = {
-		kernelPackages = pkgs.linuxPackages_latest;
+		kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
 
 		kernelParams = [ "pcie_aspm=off" ];
 
@@ -18,12 +18,18 @@
 			"usb_storage" "usbhid" "uas" "sd_mod"
 		];
 
+		supportedFilesystems = [ "zfs" ];
+		initrd.supportedFilesystems = [ "zfs" ];
+
 		kernelModules = [ "nct6775" ];
 	};
 
 	musnix.enable = true;
 
-	networking.hostName = "theseus";
+	networking = {
+		hostName = "theseus";
+		hostId = "3c9184d4";
+	};
 
 	misc.uuid = "134829a8-d5f1-4f69-b500-35ebdf4d2ffb";
 
