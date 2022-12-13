@@ -1,6 +1,8 @@
-{ pkgs, lib, flakes, ... }:
+{ pkgs, config, lib, flakes, L, ... }:
 
-{
+let
+	byKind' = L.colors.byKind config.colorScheme.kind;
+in {
 	imports = [
 		./gnome.nix
 		./witchhazel.nix
@@ -11,7 +13,7 @@
 	];
 
 	# for testing other themes:
-	# colorScheme = flakes.nix-colors.colorSchemes.solarized-light;
+	 #colorScheme = flakes.nix-colors.colorSchemes.solarized-light;
 
 	fonts.fontconfig.enable = true;
 
@@ -38,8 +40,10 @@
 	gtk = {
 		theme = {
 			package = pkgs.adw-gtk3;
-			name = "adw-gtk3-dark";
+			name = byKind' "adw-gtk3" "adw-gtk3-dark";
 		};
+
+		gtk2.extraConfig = "gtk-theme-name=\"${byKind' "Adwaita" "Adwaita-dark"}\"";
 	};
 
 	qt = {
@@ -48,7 +52,7 @@
 
 		style = {
 			package = pkgs.adwaita-qt;
-			name = "adwaita-dark";
+			name = byKind' "adwaita" "adwaita-dark";
 		};
 	};
 

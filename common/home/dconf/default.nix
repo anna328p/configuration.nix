@@ -13,6 +13,7 @@
 				"appindicatorsupport@rgcjonas.gmail.com"
 				"gsconnect@andyholmes.github.io"
 				"display-brightness-ddcutil@themightydeity.github.com"
+				"user-theme@gnome-shell-extensions.gcampax.github.com"
 			];
 		};
 

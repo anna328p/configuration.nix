@@ -1,5 +1,26 @@
+{ flakes, ... }:
+
 final: prev: 
 {
+	mkFlakeVer = flake: prefix: let
+		shortRev = builtins.substring 0 7 flake.rev;
+	in
+		prefix + "-git-" + shortRev;
+
+	usbmuxd = prev.usbmuxd.overrideAttrs (_: rec {
+		src = flakes.usbmuxd;
+
+		version = final.mkFlakeVer src "1.1.2";
+		RELEASE_VERSION = version;
+	});
+
+	idevicerestore = prev.idevicerestore.overrideAttrs (_: rec {
+		src = flakes.idevicerestore;
+
+		version = final.mkFlakeVer src "1.1.0";
+		RELEASE_VERSION = version;
+	});
+
 	wrapDiscord = discordPkg: final.symlinkJoin {
 		name = "${discordPkg.pname}-wrapped";
 		paths = [ discordPkg ];
@@ -10,13 +31,14 @@ final: prev:
 		'';
 	};
 
-	vlc = prev.vlc.override {
-		libbluray = final.libbluray.override {
-			withJava = true;
-			withAACS = true;
-			withBDplus = true;
-		};
+	libbluray_bd = prev.libbluray.override {
+		withJava = true;
+		withAACS = true;
+		withBDplus = true;
 	};
+
+	mpv-unwrapped = prev.mpv-unwrapped.override { libbluray = final.libbluray_bd; };
+	vlc = prev.vlc.override { libbluray = final.libbluray_bd; };
 
 	myWine = prev.wineWowPackages.full.override {
 		wineRelease = "staging";

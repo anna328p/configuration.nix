@@ -1,13 +1,15 @@
 # root overlay, composing all of the smaller overlays here.
 
-{ lib }:
+{ lib, pkgs, ... }@args:
 
-with lib; {
-	overlay = foldl
-		composeExtensions
-		(self: super: {})
-		(map import [
-			./misc
-			./transmission
-		]);
+with lib; let
+	composeOverlays = foldl composeExtensions (final: prev: {});
+	callList = map (a: pkgs.callPackage a args);
+in {
+	overlay = composeOverlays (callList [
+		../packages
+
+		./misc
+		./transmission
+	]);
 }

@@ -21,8 +21,6 @@
 
 			color-scheme = byKind' "default" "prefer-dark";
 
-			gtk-theme = byKind' "adw-gtk3" "adw-gtk3-dark";
-
 			enable-animations = false;
 		};
 

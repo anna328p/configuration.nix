@@ -25,9 +25,9 @@
 		logseq
 
 		# CAD, CAM
-		openscad
+		# openscad # broken: doesn't build 2022-12-09
 		solvespace
-		prusa-slicer
+		# prusa-slicer # broken: doesn't build 2022-12-09
 
 		# EDA
 		kicad libxslt
@@ -43,6 +43,7 @@
 		kdenlive # Video editor
 		# vcv-rack # Virtual modular synth; expensive to build
 		ffmpeg   # Transcoding
+		protoplug
 
 		# Typefaces
 		fontforge-gtk nodePackages.svgo
@@ -99,6 +100,7 @@
 		gnupg1 # Encryption
 		espeak-ng # TTS
 		woeusb # Write Windows install disks
+		idevicerestore # Flash Apple devices
 	];
 
 	# flatpak

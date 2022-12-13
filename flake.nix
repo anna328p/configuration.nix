@@ -34,10 +34,14 @@
 			inputs.nixpkgs.follows = "nixpkgs";
 		};
 
-		keydb = {
-			url = "http://fvonline-db.bplaced.net/export/keydb_eng.zip";
-			flake = false;
-		};
+		keydb.url = "http://fvonline-db.bplaced.net/export/keydb_eng.zip";
+		keydb.flake = false;
+
+		usbmuxd.url = github:libimobiledevice/usbmuxd;
+		usbmuxd.flake = false;
+
+		idevicerestore.url = github:libimobiledevice/idevicerestore;
+		idevicerestore.flake = false;
 	};
 
 	outputs = { self
@@ -69,7 +73,8 @@
 			forSystem = forSystem' system;
 
 			overlays = let
-				local = import ./overlays { inherit (nixpkgs) lib; };
+				inherit (forSystem nixpkgs.legacyPackages) callPackage;
+				local = callPackage ./overlays { inherit flakes; };
 			in [
 				wayland.overlay
 				nur.overlay

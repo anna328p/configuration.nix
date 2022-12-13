@@ -1,3 +1,5 @@
+{ ... }:
+
 final: prev:
 {
 	libdeflate_1_14 = final.libdeflate.overrideAttrs (oa: rec {
@@ -78,6 +80,18 @@ final: prev:
 			sha256 = "+3MYEz++CdPRF42AqUq5NHFAsUPmdhYT83I7NXV2AVk=";
 		};
 
-		patches = [];
+		buildInputs = (final.lib.lists.subtractLists (with prev; [
+			lazarus
+		]) oa.buildInputs) ++ (with final; [
+			(lazarus.override { withQt = true; })
+			libqt5pas
+		]);
+
+		nativeBuildInputs = [ final.qt5.wrapQtAppsHook ];
+		qtWrapperArgs = "--prefix LD_LIBRARY_PATH : ${final.libqt5pas}/lib";
+
+		patches = [ ./transgui-build-qt5.patch ];
+
+		LCL_PLATFORM = "qt5";
 	});
 }

@@ -1,0 +1,22 @@
+From 59c55b5b9a906fdcd434a14db5f593d703316582 Mon Sep 17 00:00:00 2001
+From: anna <anna328p@gmail.com>
+Date: Mon, 12 Dec 2022 18:51:37 -0800
+Subject: [PATCH] Update Makefile.fpc
+
+---
+ Makefile.fpc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile.fpc b/Makefile.fpc
+index 4622c4d4..1042f587 100644
+--- a/Makefile.fpc
++++ b/Makefile.fpc
+@@ -32,7 +32,7 @@ $(info Using Lazarus dir: $(LAZARUS_DIR))
+ LAZRES=$(LAZARUS_DIR)/tools/lazres$(SRCEXEEXT)
+ 
+ # Widgetset
+-LCL_WIDGETSET=gtk2
++LCL_WIDGETSET=qt5
+ ifneq ($(findstring $(OS_TARGET),win32,win64),)
+ LCL_WIDGETSET=win32
+ endif

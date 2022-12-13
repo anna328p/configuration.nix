@@ -98,6 +98,22 @@
         "type": "github"
       }
     },
+    "idevicerestore": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1666161178,
+        "narHash": "sha256-Br0doWmtgU4JCABa1w1Y47i3tDE7QRzxO55QTPcAEt0=",
+        "owner": "libimobiledevice",
+        "repo": "idevicerestore",
+        "rev": "7b89019fbb81ce64e1c1d259c5746544c8e8eeea",
+        "type": "github"
+      },
+      "original": {
+        "owner": "libimobiledevice",
+        "repo": "idevicerestore",
+        "type": "github"
+      }
+    },
     "impermanence": {
       "locked": {
         "lastModified": 1668668915,
@@ -326,6 +342,7 @@
       "inputs": {
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
+        "idevicerestore": "idevicerestore",
         "impermanence": "impermanence",
         "keydb": "keydb",
         "musnix": "musnix",
@@ -335,7 +352,24 @@
         "nixpkgs": "nixpkgs",
         "nixpkgs-master": "nixpkgs-master",
         "nur": "nur",
+        "usbmuxd": "usbmuxd",
         "wayland": "wayland"
+      }
+    },
+    "usbmuxd": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1665184088,
+        "narHash": "sha256-ghHkOKowKwD23RHzDEFULzWWvkbNaKt7c+/PniUaPrw=",
+        "owner": "libimobiledevice",
+        "repo": "usbmuxd",
+        "rev": "bccae83d475ac5a48441001cad3fa8c167ecbb80",
+        "type": "github"
+      },
+      "original": {
+        "owner": "libimobiledevice",
+        "repo": "usbmuxd",
+        "type": "github"
       }
     },
     "utils": {

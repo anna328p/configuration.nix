@@ -21,12 +21,13 @@ let
 		text-danger = base09;
 		text-brand = base0E;
 
+		status-yellow-400 = text-warning;
+		status-green-600 = text-positive;
+
 		brand-experiment = text-brand;
 		brand-experiment-560 = text-brand + "cc";
 		brand-experiment-600 = text-brand + "99";
 		brand-500 = text-brand;
-
-		white-500 = text-normal;
 
 		interactive-normal = base04;
 		interactive-hover = base05;
@@ -38,14 +39,16 @@ let
 
 		background-primary = base01;
 		background-secondary = base00;
-		background-secondary-alt = base02 + "aa";
+		background-secondary-alt = base02 + "77";
 		background-tertiary = base00;
 		background-accent = base02;
-		background-floating = base02;
-		background-nested-floating = base03;
+		background-floating = base01;
+		background-nested-floating = base02;
 
 		background-mobile-primary = base01;
 		background-mobile-secondary = base00;
+
+		deprecated-card-bg = background-secondary;
 
 		chat-background = base01;
 		chat-border = base02;
@@ -56,19 +59,19 @@ let
 		background-modifier-selected = base02 + "cc";
 		background-modifier-accent = base01;
 
-		info-positive-background = base02;
+		info-positive-background = base00;
 		info-positive-foreground = text-positive;
 		info-positive-text = text-normal;
 
-		info-warning-background = base02;
+		info-warning-background = base00;
 		info-warning-foreground = text-warning;
 		info-warning-text = text-normal;
 
-		info-danger-background = base02;
+		info-danger-background = base00;
 		info-danger-foreground = text-danger;
 		info-danger-text = text-normal;
 
-		info-help-background = base02;
+		info-help-background = base00;
 		info-help-foreground = base0F;
 		info-help-text = text-normal;
 
@@ -175,18 +178,44 @@ let
 
 		font-display = font-primary;
 		font-headline = font-primary;
+
+		search-popout-option-fade = "transparent";
+		search-popout-option-fade-hover = "transparent";
+		search-popout-option-user-nickname = text-normal;
+		search-popout-option-user-username = text-muted;
+		search-popout-option-filter-text = base04;
+		search-popout-option-non-text-color = base03;
+		search-popout-option-filter-color = base03;
+		search-popout-option-answer-color = base03;
+
+		search-popout-date-picker-border = "1px solid ${base00}cc";
+		search-popout-date-picker-hint-text = base04;
+		search-popout-date-picker-hint-value-text = base01;
+		search-popout-date-picker-hint-value-background = text-brand;
+		search-popout-date-picker-hint-value-background-hover = text-brand + "cc";
 	};
 
-	css = let
+	css = with lib; let
 		sel = tag: prefix:
 			":is(${tag}[class^='${prefix}-'], ${tag}[class*=' ${prefix}-'])";
+
+		sel' = tag: prefixes: concatMapStrings (sel tag) prefixes;
+
+		sels = tag: prefixes: ":is(${concatMapStringsSep ", " (sel tag) prefixes})";
+
+		color = name: "color: ${name} !important;";
+		bg = name: "background-color: ${name} !important;";
+
+		addOpacity = fn: name: opacity: fn "${name}${opacity}";
+		color' = addOpacity color;
+		bg' = addOpacity bg;
 
 		mkIdSet = names: with lib;
 			listToAttrs (map (x: nameValuePair x x) names);
 
-		tagNames = [ "span" "div" "nav" ];
+		tagNames = [ "span" "div" "nav" "section" "input" "button" ];
 
-	in with mkIdSet tagNames; ''
+	in with mkIdSet tagNames; with formatted; ''
 		:root {
 			font-size: 93.75% !important;
 		}
@@ -203,24 +232,124 @@ let
 		}
 
 		${sel div "divider"} {
-			border-top-color: ${formatted.base02} !important;
+			border-top-color: ${base02} !important;
 		}
 
-		${sel div "checked"} {
-			background-color: ${formatted.base0B}88 !important;
-		}
+		${sel div "checked"} { ${bg' base0B "88"} }
 
 		${sel nav "guilds"} {
-			border-right: 1px solid ${formatted.base01} !important;
+			border-right: 1px solid ${base01} !important;
 		}
 
-		${sel nav "guilds"} > ul {
-			background-color: ${byKind' "#FFFFFF" "#000000"} !important;
-		}
+		${sel nav "guilds"} > ul { ${bg (byKind' "white" "black")} }
 
 		${sel nav "guilds"} ${sel div "scrollerBase"} {
-			background-color: ${formatted.base00}bb !important;
+			background-color: ${base00}aa !important;
 		}
+
+		${sels div [ "autocomplete" "categoryHeader" ]} { ${bg base00} }
+
+		${sel div "rail"} > ${sel div "list"} {
+			${bg' base01 "55"}
+			border-right: 1px solid ${base01};
+		}
+
+		${sel section "background"},
+		${sels div ["background" "fieldList"]} { ${bg base01} }
+
+		${sel div "homeContainer"} { ${bg' base00 "aa"} }
+
+		${sel div "userPanelInner"} > ${sel div "scrollerBase"} {
+			backdrop-filter: brightness(${byKind' "1.4" "0.55"});
+		}
+
+		${sel div "usageWrapper"} > ${sel div "option"} { ${bg base01} }
+
+		${sel span "spoilerText"}:not(${sel span "hidden"}) { ${bg' base02 "77"} }
+
+		${sel' span ["spoilerText" "hidden"]} { opacity: 80% }
+
+		${sel div "chat"}, ${sel section "title"} {
+			box-shadow: inset 1px 0 ${base00}66,
+			            inset 1px 0 ${byKind' "white" "black"};
+		}
+
+		${sel' "*" ["colorBrand" "lookFilled"]} { ${color base01} }
+
+		${sel div "textBadge"} { ${bg base03} }
+		${sel div "akaBadge"} { ${color base00} ${bg base04} }
+
+		${sel div "authedApp"} { ${bg base00} }
+
+		${sel "*" "emptyStateHeader"} { ${color base05} }
+		${sel "*" "emptyStateSubtext"} { ${color base06} }
+
+		${sels div ["payment" "paymentPane" "summaryInfo" "paginator"]} {
+			${bg base00} ${color base05}
+		}
+
+		${sels div ["paymentRow" "bottomDivider"]} {
+			border-bottom-color: ${base01} !important;
+		}
+
+		${sels div ["pageActions" "pageButtonPrev" "pageButtonNext" "pageIndicator"]} {
+			border-color: ${base02} !important;
+		}
+
+		${sel div "codeRedemptionRedirect"} {
+			${color base05} ${bg base00}
+			border-color: ${base02} !important;
+		}
+
+		${sels div ["bar" "markDash"]} { ${bg base02} }
+
+		${sel div "micTest"} ${sel div "progress"} { ${bg base01} }
+
+		${sel div "gameName"}, ${sel input "gameNameInput"} { ${color base05} }
+
+		${sel input "gameNameInput"}:focus,
+		${sel input "gameNameInput"}:hover { ${bg base00} }
+
+		${sel' div ["card" "game"]} {
+			box-shadow: 0 1px 0 0 ${base02} !important;
+		}
+
+		${sel div "nowPlayingAdd"} { ${color base04} }
+
+		${sel div "queryContainer"} {
+			${color base04} ${bg base00}
+			border-bottom: 1px solid ${base02} !important;
+		}
+
+		${sel div "queryContainer"} strong { ${color base05} }
+
+		${sel span "key"} {
+			${color base00}
+			${bg (byKind' base03 base04)}
+			box-shadow: inset 0 -4px 0 ${(byKind' base04 base03)} !important;
+		}
+
+		${sel "*" "colorPrimary"} { ${color base05} }
+		${sel button "lookLink"} { ${color base04} }
+
+		${sel' button ["fieldButton" "lookFilled"]} { ${bg base04} ${color base00} }
+
+		${sel div "folder"} { ${bg base01} }
+		${sel span "expandedFolderBackground"} { ${bg base01} }
+
+		${sel div "feedItemHeader"} {
+			border-bottom: 1px solid ${base02}44 !important;
+		}
+
+		${sel div "headerBarInner"}::after {
+			background: transparent !important;
+		}
+
+		${sel div "emojiAliasPlaceholderContent"} { ${color base05} }
+
+		${sel div "directoryModal"} { ${bg base01} }
+
+		${sel div "userPopoutOuter"} { backdrop-filter: blur(8px); }
 	'';
 in {
 	home.packages = with pkgs; [ lexend ];
