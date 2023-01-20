@@ -270,8 +270,8 @@ let
 		${sel' span ["spoilerText" "hidden"]} { opacity: 80% }
 
 		${sel div "chat"}, ${sel section "title"} {
-			box-shadow: inset 1px 0 ${base00}66,
-			            inset 1px 0 ${byKind' "white" "black"};
+			box-shadow: inset 1px 0 ${base00}44,
+			            inset 1px 0 "white";
 		}
 
 		${sel' "*" ["colorBrand" "lookFilled"]} { ${color base01} }
@@ -301,7 +301,10 @@ let
 			border-color: ${base02} !important;
 		}
 
-		${sels div ["bar" "markDash"]} { ${bg base02} }
+		${sel div "slider"} ${sel div "bar"} { ${bg base02} }
+		${sel div "markDash"} { ${bg base02} }
+
+		${sel' div ["bar" "mention"]} { ${bg base09} }
 
 		${sel div "micTest"} ${sel div "progress"} { ${bg base01} }
 
@@ -350,6 +353,7 @@ let
 		${sel div "directoryModal"} { ${bg base01} }
 
 		${sel div "userPopoutOuter"} { backdrop-filter: blur(8px); }
+		${sel div "menu"} { ${bg base00} }
 	'';
 in {
 	home.packages = with pkgs; [ lexend ];

@@ -13,26 +13,17 @@
 
 		nix-colors.url = github:misterio77/nix-colors;
 
-		home-manager = {
-			url = github:nix-community/home-manager;
-			inputs.nixpkgs.follows = "nixpkgs";
-		};
+		home-manager.url = github:nix-community/home-manager;
+		home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-		wayland = {
-			url = github:nix-community/nixpkgs-wayland;
-			inputs.nixpkgs.follows = "nixpkgs";
-		};
+		wayland.url = github:nix-community/nixpkgs-wayland;
+		wayland.inputs.nixpkgs.follows = "nixpkgs";
 
-		neovim = {
-			url = github:neovim/neovim?dir=contrib;
-			inputs.nixpkgs.follows = "nixpkgs";
-			inputs.flake-utils.follows = "flake-utils";
-		};
+		neovim.url = github:neovim/neovim?dir=contrib;
+		neovim.inputs.flake-utils.follows = "flake-utils";
 
-		musnix = {
-			url = github:musnix/musnix;
-			inputs.nixpkgs.follows = "nixpkgs";
-		};
+		musnix.url = github:musnix/musnix;
+		musnix.inputs.nixpkgs.follows = "nixpkgs";
 
 		keydb.url = "http://fvonline-db.bplaced.net/export/keydb_eng.zip";
 		keydb.flake = false;

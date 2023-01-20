@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, pkgsMaster, ... }:
 
 {
 	networking = {
@@ -16,8 +16,6 @@
 	environment.systemPackages = with pkgs; [
 		nmap dnsutils
 		mosh
-
-		mullvad-vpn
 	];
 
 	users.users.anna.extraGroups = [ "networkmanager" "dialout" ];
@@ -30,7 +28,10 @@
 			nssmdns = true;
 		};
 
-		mullvad-vpn.enable = true;
+		mullvad-vpn = {
+			enable = true;
+			package = pkgsMaster.mullvad-vpn;
+		};
 
 		# Private LAN VPN
 		zerotierone = {
