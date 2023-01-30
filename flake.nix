@@ -25,7 +25,7 @@
 		musnix.url = github:musnix/musnix;
 		musnix.inputs.nixpkgs.follows = "nixpkgs";
 
-		keydb.url = "http://fvonline-db.bplaced.net/export/keydb_eng.zip";
+		keydb.url = "https://github.com/anna328p/mirror/releases/latest/download/keydb_eng.zip";
 		keydb.flake = false;
 
 		usbmuxd.url = github:libimobiledevice/usbmuxd;
