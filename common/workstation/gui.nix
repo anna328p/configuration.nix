@@ -83,8 +83,9 @@
 							favorite-apps=[ ${genList names} ]
 						'';
 					in overrideList [
-						"firefox" "discord" "telegramdesktop"
+						"firefox" "discord" "org.telegram.desktop"
 						"org.gnome.Nautilus" "org.gnome.Terminal"
+						"logseq"
 					];
 				};
 			};
