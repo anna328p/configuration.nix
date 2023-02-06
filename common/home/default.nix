@@ -9,6 +9,7 @@
 		./theming
 
 		./media.nix
+		./transgui.nix
 
 		./tmux.nix
 		./shell.nix

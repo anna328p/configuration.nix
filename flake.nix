@@ -58,6 +58,8 @@
 
 		forSystem' = system: x: x."${system}";
 
+		flakeLib = import ./lib { inherit flakes; };
+
 		# Infrastructure
 
 		baseConfig = extraModules: system: let
@@ -85,7 +87,7 @@
 				inherit flakes forSystem;
 				pkgsMaster = mkNixpkgs nixpkgs-master;
 
-				L = pkgs.callPackage common/misc/helpers { };
+				L = flakeLib;
 			};
 
 			modules = [ common/base ] ++ extraModules;
@@ -101,6 +103,10 @@
 		];
 
 	in {
+		lib = flakeLib;
+
+		inputs = flakes;
+
 		nixosConfigurations = {
 			hermes = mkConfig "x86_64-linux" baseWorkstation [
 				systems/hermes

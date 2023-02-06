@@ -7,6 +7,9 @@
 
 			# Modern, more reliable wifi stack
 			wifi.backend = "iwd";
+
+			# Fix auth issues
+			wifi.scanRandMacAddress = false;
 		};
 
 		# Just gets in the way on workstations
