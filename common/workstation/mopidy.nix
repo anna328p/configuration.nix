@@ -5,7 +5,6 @@
 		mpdris2
 	];
 
-
 	services = {
 		mopidy = {
 			# enable = true; # broken

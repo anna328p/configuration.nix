@@ -2,11 +2,11 @@
 
 {
 	imports = [
+		../module
+
 		./users.nix
 		./hardware.nix
 		./flake-support.nix
-
-		./misc-module.nix
 	];
 
 	networking = {

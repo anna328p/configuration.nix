@@ -98,29 +98,21 @@
 			libinput.enable = true;
 			wacom.enable = true;
 
-			extraLayouts = {
-				semimak-jq = {
-					description = "English (Semimak JQ)";
+			extraLayouts = let
+				mkLayout = desc: file: {
+					description = "English (${desc})";
 					languages = [ "eng" ];
-					symbolsFile = files/symbols/semimak-jq;
+					symbolsFile = file;
 				};
-
-				semimak-jqa = {
-					description = "English (Semimak JQa)";
-					languages = [ "eng" ];
-					symbolsFile = files/symbols/semimak-jqa;
-				};
-
-				canary = {
-					description = "English (Canary)";
-					languages = [ "eng" ];
-					symbolsFile = files/symbols/canary;
-				};
+			in {
+				semimak-jq = mkLayout "Semimak JQ" files/symbols/semimak-jq;
+				semimak-jqa = mkLayout "Semimak JQ, angle mod" files/symbols/semimak-jqa;
+				canary = mkLayout "Canary" files/symbols/canary;
 			};
 		};
 
 		gnome.core-developer-tools.enable = true;
-		gnome.gnome-remote-desktop.enable = false; # # TODO: re-enable. freerdp fails to build
+		gnome.gnome-remote-desktop.enable = false; # TODO: re-enable. freerdp fails to build
 	};
 
 	programs = {

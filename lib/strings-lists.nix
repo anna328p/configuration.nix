@@ -8,7 +8,8 @@ with lib; with L; rec {
 
 		slices' sliceListN sliceStrN
 
-		addStrings concatLines;
+		addStrings
+		concatLines concatMapLines;
 	};
 
 	# genericPad : (T a -> Num) -> (a -> Num -> T a) -> (T a -> T a -> T a) -> a -> Num -> T a -> T a
@@ -60,4 +61,7 @@ with lib; with L; rec {
 
 	# concatLines : [Str] -> Str
 	concatLines = concatStringsSep "\n";
+
+	# concatMapLines : (a -> Str) -> [a] -> Str;
+	concatMapLines = concatMapStringsSep "\n";
 }

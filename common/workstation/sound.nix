@@ -10,7 +10,7 @@
 	# Manage audio server stuff
 	environment.systemPackages = with pkgs; [
 		pavucontrol
-		# helvum # TODO: broken 2023-01-19 https://github.com/NixOS/nixpkgs/issues/211610
+		helvum
 	];
 
 	# Allow audio access (I have no idea if this does anything)

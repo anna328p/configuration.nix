@@ -39,5 +39,6 @@ let
 		_urlencode = ./urlencode.nix;
 		base64 = ./base64.nix;
 		misc = ./misc.nix;
+		types = ./types.nix;
 	} (_: {}));
 in flakeLib
