@@ -11,6 +11,7 @@
 		(wrapDiscord pkgsMaster.discord)
 		tdesktop
 		element-desktop nheko
+		thunderbird
 
 		# Video
 		zoom-us

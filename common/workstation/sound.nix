@@ -10,7 +10,7 @@
 	# Manage audio server stuff
 	environment.systemPackages = with pkgs; [
 		pavucontrol
-		helvum
+		# helvum # TODO: broken 2023-02-08
 	];
 
 	# Allow audio access (I have no idea if this does anything)
