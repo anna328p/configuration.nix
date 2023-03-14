@@ -1,6 +1,9 @@
 { config, pkgs, ... }:
 
 {
+	# Emulate ARM systems for remote deployments
+	boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+
 	# Allow mounting most external drives
 	boot.supportedFilesystems = [ "ntfs" "exfat" ];
 

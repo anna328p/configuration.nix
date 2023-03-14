@@ -47,7 +47,6 @@
 		# Compressors, archivers
 		zstd xz pigz
 		zip unzip
-		_7zz
 
 		## Networking
 		git
@@ -63,7 +62,11 @@
 	};
 
 	# Shell
-	programs.zsh.enable = true;
+	programs.zsh = {
+		enable = true;
+		interactiveShellInit = "bindkey -e";
+	};
+
 	environment.pathsToLink = [ "/share/zsh" ];
 
 	# enable sshd everywhere

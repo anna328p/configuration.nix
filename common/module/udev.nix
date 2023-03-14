@@ -19,6 +19,8 @@ with lib; let
 
 in {
 	options.misc.udev = {
+		enable = mkEnableOption "simplified udev configuration";
+
 		extraRuleFiles = mkOption {
 			description = "List of files containing udev rules to import";
 			type = T.listOf T.str;
@@ -40,7 +42,7 @@ in {
 	config = let
 		cfg = config.misc;
 	in {
-		services.udev = {
+		services.udev = mkIf cfg.udev.enable {
 			extraRules = with L; let
 				denormalize = o cartesianProductOfSets (mapAttrs (_: toList));
 

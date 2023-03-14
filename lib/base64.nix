@@ -6,7 +6,7 @@ using {
 
 	exports = self: { inherit (self)
 		toBitGroups strToBitString strToBitList
-		zeroPadN padSextet toBase64 toBase64Padded;
+		zeroPadN toBase64 toBase64Padded;
 	};
 
 	strToBitList = let

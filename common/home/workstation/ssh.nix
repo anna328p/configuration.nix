@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, config, ... }:
 
 {
 	programs.ssh = {
@@ -8,18 +8,19 @@
 		controlPersist = "30m";
 		forwardAgent = true;
 
-		matchBlocks = let
-		  servers = [ "leonardo" "neo" "iris" "talos" "jason" "heracles" "castor" "pollux" "cyamites" "WebServer" ];
-		  serverBlock = name: { "${name}" = { user = "anna"; hostname = "${name}.dk0.us"; }; };
-		  serverBlocks = lib.foldr (a: b: a // b) {} (builtins.map serverBlock servers);
+		matchBlocks = with lib; let
+			mkServerBlocks = domain:
+				(flip genAttrs) (name: {
+					user = config.home.username;
+					hostname = "${name}.${domain}";
+				});
 
-		in serverBlocks // {
-			"theseus" = {
-				user = "anna";
-				hostname = "10.255.1.5";
-				port = 22;
-			};
+			serverNames = [
+				"leonardo" "neo" "iris" "heracles" "cyamites"
+				"theseus"
+			];
 
+		in (mkServerBlocks "dk0.us" serverNames) // {
 			"github" = {
 				user = "git";
 				hostname = "github.com";
@@ -44,7 +45,7 @@
 			"ghd" = {
 				user = "git";
 				hostname = "github-dev.cs.illinois.edu";
-				identityFile = "/home/anna/.ssh/id_ghd";
+				identityFile = "~/.ssh/id_ghd";
 			};
 		};
 	};

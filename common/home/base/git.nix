@@ -1,13 +1,9 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
 	programs.git = {
 		enable = true;
-		package = pkgs.gitAndTools.gitFull;
 		
-		userName = "Anna Kudriavtsev";
-		userEmail = "anna328p@gmail.com";
-
 		ignores = [ "tags" ];
 
 		includes = [

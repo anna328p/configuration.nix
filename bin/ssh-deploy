@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+declare -x PROGRAM_NAME="ssh-deploy"
+
+declare -g \
+	OPT_target_host \
+	OPT_build_host \
+	OPT_remote_build \
+	ARG_flake_output
+
+declare -g \
+	-a ARGS_passthrough
+
+usage () {
+	>&2 echo "usage: $PROGRAM_NAME [options] [--] <flake output> <nixos-rebuild args...>"
+	>&2 echo
+	>&2 echo "  -h, --help                show this message"
+	>&2 echo "  -t, --target-host <host>  the host to which the closure is deployed"
+	>&2 echo "  -b, --build-host <host>   the host on which the closure is built"
+	>&2 echo "  -r, --remote-build        default to building on the target host"
+	>&2 echo
+}
+
+panic () {
+	>&2 echo
+	>&2 printf "%s :: panic: %s\n" "$PROGRAM_NAME" "$*"
+	
+	return 1
+}
+
+info () {
+	>&2 printf "%s :: info: %s\n" "$PROGRAM_NAME" "$*"
+}
+
+check_res () {
+	return "$1"
+}
+
+script_dir () {
+	cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd
+	check_res "$?"
+	#"
+}
+
+parse_opts () {
+	local opts=$(getopt -n ssh-deploy -l target-host:,build-host:,remote-build,help -o t:b:rh -- "$@")
+	check_res $?
+
+	eval set -- "$opts"
+
+	[[ "$#" -le 1 ]] && { usage; return 1; }
+
+	while true; do
+		case "$1" in
+			-h|--help)         usage; exit 0 ;;
+			-t|--target-host)  OPT_target_host="$2";  shift 2 ;;
+			-b|--build-host)   OPT_build_host="$2";   shift 2 ;;
+			-r|--remote-build) OPT_remote_build=true; shift 1 ;;
+			--)                shift; break ;;
+			*)                 usage; panic 'error parsing options' ;;
+		esac
+	done
+
+	ARG_flake_output="$1" || { usage; panic 'missing flake output argument'; }
+	shift
+
+	[[ -v OPT_target_host ]] || OPT_target_host="${ARG_flake_output}"
+	[[ -v OPT_build_host ]] || { [[ -v OPT_remote_build ]] && OPT_build_host="${OPT_target_host}"; }
+
+	ARGS_passthrough=( "$@" )
+}
+
+main () {
+	parse_opts "$@"
+
+	declare -a cmd=( nixos-rebuild --fast --use-remote-sudo --use-substitutes )
+
+	# flake output
+	local flake_loc=$(realpath $(script_dir)/..)
+	check_res "$?"
+
+	cmd+=( --flake "path:${flake_loc}#${ARG_flake_output}" )
+	
+	if [[ -v OPT_target_host ]]; then
+		cmd+=( --target-host "$OPT_target_host" )
+	fi
+
+	if [[ -v OPT_build_host ]]; then
+		cmd+=( --build-host "$OPT_build_host" )
+	fi
+
+	cmd+=( "${ARGS_passthrough[@]}" )
+
+	info $'running the following command\n  '"${cmd[@]}"$'\n'
+	${cmd[@]}
+}
+
+main "$@"
+
+# vim: ft=tcl

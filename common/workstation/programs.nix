@@ -84,6 +84,7 @@
 		# Misc
 		gh # GitHub CLI
 		direnv
+		_7zz
 
 		## Compatibility tools / Emulators
 

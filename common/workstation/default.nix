@@ -1,4 +1,4 @@
-{ config, pkgs, pkgsMaster, lib, specialArgs, ... }:
+{ ... }:
 
 {
 	imports = [
@@ -6,6 +6,8 @@
 		./hw-support.nix
 		./networking.nix
 		./docs.nix
+
+		./kmscon.nix
 
 		./sound.nix
 		./video.nix
@@ -24,12 +26,7 @@
 
 	# Import home configs
 	home-manager = {
-		users.anna = import ../home;
-
-		useUserPackages = true;
-		useGlobalPkgs = true;
-
-		extraSpecialArgs = specialArgs // { systemConfig = config; };
+		users.anna.imports = [ ../home/workstation ];
 	};
 
 	# Don't interfere with home-manager's zsh config

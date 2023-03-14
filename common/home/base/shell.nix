@@ -3,18 +3,10 @@
 {
 	home.shellAliases = {
 		ls = "exa";
-		open = "xdg-open";
 
 		":w" = "sync";
 		":q" = "exit";
 		":wq" = "sync; exit";
-
-		nbs = "time nixos-rebuild switch --use-remote-sudo";
-		nbst = "time nixos-rebuild switch --use-remote-sudo --show-trace";
-		nbsk = "time nixos-rebuild switch --use-remote-sudo --keep-going";
-		nbsf = "time nixos-rebuild switch --use-remote-sudo --fast";
-
-		nsn = "nix search nixpkgs";
 	};
 
 	home.file.".config/zsh/.p10k.zsh".source = files/zsh/p10k.zsh;
@@ -23,10 +15,7 @@
 		enable = true;
 		dotDir = ".config/zsh";
 
-		cdpath = [ "$HOME" ];
-
 		enableCompletion = true;
-		enableVteIntegration = true;
 
 		sessionVariables = {
 			EDITOR = "nvim";
@@ -35,7 +24,6 @@
 
 		envExtra = ''
 			export DEFAULT_USER=$(whoami)
-			export GPG_TTY=$(tty)
 		'';
 
 		history = {
@@ -64,11 +52,6 @@
 			done
 		'';
 
-		dirHashes = {
-			w = "$HOME/work";
-			en = "/etc/nixos";
-		};
-
 		prezto = {
 			enable = true;
 
@@ -81,29 +64,20 @@
 				"helper"
 				"utility"
 				"completion"
-				"syntax-highlighting"
 				"history-substring-search"
-				"autosuggestions"
-				"tmux"
 			];
 
-			autosuggestions.color = "fg=blue";
 			editor.dotExpansion = true;
-			syntaxHighlighting.highlighters = [ "main" "brackets" "pattern" "line" "root" ];
-
-			tmux = {
-				autoStartLocal = true;
-				autoStartRemote = true;
-			};
 
 			utility.safeOps = false;
 		};
 	};
-	
-	programs.direnv = {
+
+	programs.dircolors = {
 		enable = true;
-		nix-direnv.enable = true;
 		enableZshIntegration = true;
+
+		extraConfig = (builtins.readFile files/dircolors);
 	};
 }
 

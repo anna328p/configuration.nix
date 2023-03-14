@@ -2,19 +2,6 @@
 
 final: prev:
 {
-	libdeflate_1_14 = final.libdeflate.overrideAttrs (oa: rec {
-		version = "1.14";
-
-		src = final.fetchFromGitHub {
-			owner = "ebiggers";
-			repo = "libdeflate";
-			rev = "v${version}";
-			sha256 = "SNs10AI+xdqLWGVmG59U2H78i437j3Lly7eOvWxNxic=";
-		};
-
-		patches = [];
-	});
-
 	libutp' = final.libutp.overrideAttrs (oa: let
 		branch = "post-3.4-transmission";
 	in {
@@ -57,7 +44,7 @@ final: prev:
 			libutp dht
 		]) oa.buildInputs) ++ (with final; [
 			libutp' dht'
-			libdeflate_1_14 libpsl
+			libdeflate libpsl
 		]);
 
 		# Whitelists have not yet updated

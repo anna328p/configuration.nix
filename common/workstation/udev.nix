@@ -2,6 +2,8 @@
 
 {
 	misc.udev = {
+		enable = true;
+
 		usb.uaccessDevices = [
 			# TI Calculators
 			{ vid = "0451"; pid = [ "e001" "e003" "e004" "e008" "e012" ]; }

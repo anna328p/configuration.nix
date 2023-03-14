@@ -1,4 +1,4 @@
-{ config, pkgs, lib, options, flakes, ... }:
+{ config, flakes, ... }:
 
 {
 	imports = [
@@ -54,7 +54,7 @@
 		xserver.displayManager.gdm.autoSuspend = false;
 	};
 
-	home-manager.users.anna = import ./home;
+	home-manager.users.anna.imports = [ ./home ];
 
 	# virtualisation
 

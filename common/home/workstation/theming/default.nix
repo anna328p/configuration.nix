@@ -18,6 +18,8 @@ in {
 	fonts.fontconfig.enable = true;
 
 	misc.fonts = {
+		enable = true;
+
 		ui = {
 			package = pkgs.source-sans;
 			name = "Source Sans 3";
@@ -54,13 +56,6 @@ in {
 			package = pkgs.adwaita-qt;
 			name = byKind' "adwaita" "adwaita-dark";
 		};
-	};
-
-	programs.dircolors = {
-		enable = true;
-		enableZshIntegration = true;
-
-		extraConfig = (builtins.readFile ./dircolors);
 	};
 }
 

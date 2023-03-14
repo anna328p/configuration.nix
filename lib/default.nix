@@ -35,10 +35,12 @@ let
 		base = ./base.nix;
 
 		strings-lists = ./strings-lists.nix;
+		sets = ./sets.nix;
 		colors = ./colors.nix;
 		_urlencode = ./urlencode.nix;
 		base64 = ./base64.nix;
 		misc = ./misc.nix;
 		types = ./types.nix;
+		options = ./options.nix;
 	} (_: {}));
 in flakeLib

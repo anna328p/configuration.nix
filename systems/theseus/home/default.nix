@@ -1,8 +1,7 @@
-{ config, pkgs, lib, ... }:
+{ ... }:
 
 {
 	imports = [
-		../../../common/home
 		./dconf
 		./gtk.nix
 	];

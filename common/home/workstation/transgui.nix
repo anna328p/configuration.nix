@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, config, L, ... }:
 
 let
 	host = {
@@ -6,7 +6,7 @@ let
 		addr = "10.255.1.5";
 		port = 9091;
 
-		username = "anna";
+		username = config.home.username;
 		password-b64 = "TnV4ZVB1d3EwIUNvY2E=";
 		# TODO base64 password converter
 	};
