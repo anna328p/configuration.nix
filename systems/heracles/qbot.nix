@@ -1,6 +1,10 @@
-{ lib, ... }:
+{ lib, flakes, ... }:
 
 {
+	imports = [
+		flakes.qbot.nixosModules.default
+	];
+
 	services.qbot = {
 		enable = true;
 

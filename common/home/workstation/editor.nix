@@ -1,4 +1,4 @@
-{ pkgs, lib, config, flakes, forSystem, ... }:
+{ pkgs, lib, config, flakes, ... }:
 
 { # testing...
 	home = {
@@ -22,7 +22,7 @@
 
 	programs.neovim = {
 		enable = true;
-		package = forSystem flakes.neovim.defaultPackage;
+		package = flakes.neovim.defaultPackage.${pkgs.system};
 		withRuby = false;
 
 		extraConfig = ''

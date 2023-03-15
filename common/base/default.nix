@@ -1,4 +1,4 @@
-{ pkgs, flakes, forSystem, ... }:
+{ pkgs, flakes, ... }:
 
 {
 	imports = [
@@ -21,7 +21,7 @@
 	};
 
 	environment.systemPackages = with pkgs; let
-		neovim' = forSystem flakes.neovim.defaultPackage;
+		neovim' = flakes.neovim.defaultPackage.${pkgs.system};
 	in [
 		## Standard utilities
 

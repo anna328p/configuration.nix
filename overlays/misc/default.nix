@@ -1,23 +1,24 @@
-{ flakes, ... }:
-
 final: prev: 
-{
+let
 	mkFlakeVer = flake: prefix: let
 		shortRev = builtins.substring 0 7 flake.rev;
 	in
 		prefix + "-git-" + shortRev;
 
+	inherit (final) flakes;
+in {
+
 	usbmuxd = prev.usbmuxd.overrideAttrs (_: rec {
 		src = flakes.usbmuxd;
 
-		version = final.mkFlakeVer src "1.1.2";
+		version = mkFlakeVer src "1.1.2";
 		RELEASE_VERSION = version;
 	});
 
 	idevicerestore = prev.idevicerestore.overrideAttrs (_: rec {
 		src = flakes.idevicerestore;
 
-		version = final.mkFlakeVer src "1.1.0";
+		version = mkFlakeVer src "1.1.0";
 		RELEASE_VERSION = version;
 	});
 

@@ -78,9 +78,7 @@
 		, snm
 		, ...
 	}@flakes: let
-		# Library
-
-		mkBaseConfig = callback: rec {
+		mkConfigBuilder = callback: rec {
 			inherit callback;
 
 			modules = [ ];
@@ -95,47 +93,38 @@
 
 		flakeLib = import ./lib { inherit flakes; };
 
-		# Infrastructure
+		localOverlay = import ./overlays {
+			inherit (nixpkgs) lib;
+			inherit flakes;
+		};
+
+		overlays = [
+			localOverlay
+			wayland.overlay
+			nur.overlay
+			qbot.overlay
+		];
 
 		mkNixosSystem = modules: system: let
-			forSystem = builtins.getAttr system;
-
-			overlays = let
-				inherit (forSystem nixpkgs.legacyPackages) callPackage;
-				local = callPackage ./overlays { inherit flakes; };
-			in [
-				wayland.overlay
-				nur.overlay
-				qbot.overlay
-				local.overlay
-			];
-
-			mkNixpkgs = flake: import flake {
+			importPkgs = path: import path {
 				inherit system overlays;
 
 				config.allowUnfree = true;
 				config.allowBroken = true;
 			};
 
-		in nixpkgs.lib.nixosSystem rec {
-			inherit system;
+			pkgs = importPkgs nixpkgs;
+			pkgsMaster = importPkgs nixpkgs-master;
 
-			pkgs = mkNixpkgs nixpkgs;
+			L = flakeLib;
+		in
+			nixpkgs.lib.nixosSystem {
+				inherit system pkgs modules;
 
-			specialArgs = {
-				inherit flakes forSystem;
-				pkgsMaster = mkNixpkgs nixpkgs-master;
-
-				L = flakeLib;
+				specialArgs = { inherit flakes pkgsMaster L; };
 			};
 
-			inherit modules;
-		};
-
-		baseConfig = mkBaseConfig mkNixosSystem [
-			home-manager.nixosModule
-			common/base
-		];
+		baseConfig = mkConfigBuilder mkNixosSystem [ common/base ];
 
 		baseServer = baseConfig [ common/server ];
 		virtualServer = baseServer [ common/virtual ];
@@ -143,54 +132,51 @@
 		basePhysical = baseConfig [ common/physical ];
 		baseWorkstation = basePhysical [ common/workstation ];
 
+		amdWorkstation = baseWorkstation [
+			nixos-hardware.nixosModules.common-cpu-amd
+			nixos-hardware.nixosModules.common-gpu-amd
+			common/misc/amd
+		];
+
 		noBuildFull = { ... }: { misc.buildFull = false; };
-		mkSmall = cfg: cfg [ noBuildFull ];
 
 	in {
 		lib = flakeLib;
 
 		inputs = flakes;
 
-		nixosConfigurations = let
-			hermesConfig = baseWorkstation [
-				common/misc/amd
-				systems/hermes
-
-				impermanence.nixosModule
-				nixos-hardware.nixosModules.lenovo-thinkpad-t14-amd-gen1
-				nixos-hardware.nixosModules.common-cpu-amd-pstate
-			];
-
-			theseusConfig = baseWorkstation [
-				common/misc/amd
-				systems/theseus
-
-				nixos-hardware.nixosModules.common-cpu-amd
-				nixos-hardware.nixosModules.common-gpu-amd
-				nixos-hardware.nixosModules.common-pc-ssd
-			];
-		in {
-			hermes = hermesConfig.realise "x86_64-linux";
-			hermes-small = (mkSmall hermesConfig).realise "x86_64-linux";
-
-			theseus = theseusConfig.realise "x86_64-linux";
-			theseus-small = (mkSmall theseusConfig).realise "x86_64-linux";
-
-			heracles = let
-				config = virtualServer [ qbot.nixosModules.default systems/heracles ];
-			in config.realise "aarch64-linux";
-
-			leonardo = let
-				config = virtualServer [ systems/leonardo ];
-			in config.realise "x86_64-linux";
-
-			neo = let
-				config = virtualServer [ systems/neo ];
-			in config.realise "x86_64-linux";
-
-			iris = let
-				config = virtualServer [ snm.nixosModules.default systems/iris ];
-			in config.realise "x86_64-linux";
+		overlays = rec {
+			local = localOverlay;
+			default = local;
 		};
+
+		nixosConfigurations = let
+			configs = rec {
+				hermes = amdWorkstation [ systems/hermes ];
+				hermes-small = hermes [ noBuildFull ];
+
+				theseus = amdWorkstation [ systems/theseus ];
+				theseus-small = theseus [ noBuildFull ];
+
+				heracles = virtualServer [ systems/heracles ];
+				leonardo = virtualServer [ systems/leonardo ];
+				neo = virtualServer [ systems/neo ];
+				iris = virtualServer [ systems/iris ];
+			};
+
+			systems = {
+				default = "x86_64-linux";
+
+				heracles = "aarch64-linux";
+			};
+
+			systemFor = name: with builtins;
+				if hasAttr name systems
+					then getAttr name systems
+					else systems.default;
+
+		in builtins.mapAttrs
+			(name: config: config.realise (systemFor name))
+			configs;
 	};
 }

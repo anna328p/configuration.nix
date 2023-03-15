@@ -1,4 +1,4 @@
-{ pkgs, config, specialArgs, ... }:
+{ pkgs, flakes, config, specialArgs, ... }:
 
 let
 	passwdHash = "$6$o3HFaJySc0ptEcz$tr5ndkC9HMA0RDVobaLUncgzEiveeWtSJV8"
@@ -7,6 +7,10 @@ let
 	sshPubKey = "ssh-ed25519 " +
 		"AAAAC3NzaC1lZDI1NTE5AAAAINifLOccm6ZB+yCka9dNYGOGHqegiA89/xXjno7g6jF7";
 in {
+	imports = [
+		flakes.home-manager.nixosModule
+	];
+
 	users = {
 		mutableUsers = false;
 		defaultUserShell = pkgs.zsh;

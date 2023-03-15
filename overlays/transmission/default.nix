@@ -1,5 +1,3 @@
-{ ... }:
-
 final: prev:
 {
 	libutp' = final.libutp.overrideAttrs (oa: let
@@ -26,31 +24,24 @@ final: prev:
 		};
 	});
 
-	transmission = prev.transmission.overrideAttrs (oa: let
-		version = "4.0.0-beta.1";
-	in {
-		inherit version;
+	transmission = prev.transmission.overrideAttrs (oa: rec {
+		version = "4.0.1";
 
 		src = final.fetchFromGitHub {
 			owner = "transmission";
 			repo = "transmission";
-			rev = "98cf7d9b3cd66f74b38b16b91be932b005a2b039";
-			sha256 = "mwxbNlhFJxWTrY0MqQrIW/1Z/lURzvHzf9qAkq9Uiec=";
+			rev = version;
+			sha256 = final.lib.fakeSha256;
 
 			fetchSubmodules = true;
 		};
 
-		buildInputs = (final.lib.lists.subtractLists (with prev; [
+		buildInputs = (final.lib.subtractLists (with prev; [
 			libutp dht
 		]) oa.buildInputs) ++ (with final; [
 			libutp' dht'
 			libdeflate libpsl
 		]);
-
-		# Whitelists have not yet updated
-		patches = [
-			./transmission-revert-version.patch
-		];
 
 		cmakeFlags = oa.cmakeFlags ++ [
 			"-DENABLE_TESTS=OFF"
@@ -67,7 +58,7 @@ final: prev:
 			sha256 = "+3MYEz++CdPRF42AqUq5NHFAsUPmdhYT83I7NXV2AVk=";
 		};
 
-		buildInputs = (final.lib.lists.subtractLists (with prev; [
+		buildInputs = (final.lib.subtractLists (with prev; [
 			lazarus
 		]) oa.buildInputs) ++ (with final; [
 			(lazarus.override { withQt = true; })
