@@ -71,11 +71,5 @@
 
 	# enable sshd everywhere
 	services.openssh.enable = true;
-
-	# i don't really care
-	nixpkgs.config = {
-		allowUnfree = true;
-		allowBroken = true;
-	};
 }
 # vim: noet:ts=4:sw=4:ai:mouse=a

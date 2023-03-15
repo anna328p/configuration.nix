@@ -2,7 +2,6 @@
 
 {
 	imports = [
-		../../../common/home
 		./dconf
 		./gtk.nix
 	];

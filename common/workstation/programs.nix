@@ -1,4 +1,4 @@
-{ pkgs, pkgsMaster, ... }:
+{ config, lib, pkgs, pkgsMaster, ... }:
 
 {
 	environment.systemPackages = with pkgs; [
@@ -15,9 +15,6 @@
 
 		# Video
 		zoom-us
-
-		# Misc
-		transgui
 
 		## Creation / Editing tools
 
@@ -49,10 +46,6 @@
 		fontforge-gtk nodePackages.svgo
 
 		## Viewers / Players
-
-		# Media players
-		mpv
-		vlc
 
 		# Books
 		calibre
@@ -88,10 +81,6 @@
 
 		## Compatibility tools / Emulators
 
-		# Wine
-		myWine
-		winetricks
-
 		# Misc
 		appimage-run
 
@@ -102,7 +91,23 @@
 		espeak-ng # TTS
 		woeusb # Write Windows install disks
 		idevicerestore # Flash Apple devices
-	];
+
+	] ++ (if config.misc.buildFull then with pkgs; [
+		# Wine
+		wine-custom
+		winetricks
+
+		# Media players
+		mpv_bd
+		vlc_bd
+
+		# Misc
+		transgui
+	] else with pkgs; [
+		# Media players
+		mpv
+		vlc
+	]);
 
 	# flatpak
 	services.flatpak.enable = true;

@@ -1,10 +1,8 @@
-{ pkgs, ... }:
+{ pkgs, ifFullBuild, ... }:
 
 {
 	environment.systemPackages = with pkgs; [
 		# Steam
-		steam
-		steam-run
 		protontricks
 
 		# Meta Quest app store
@@ -19,5 +17,5 @@
 		linuxConsoleTools
 	];
 
-	programs.steam.enable = true;
+	programs.steam.enable = ifFullBuild true;
 }

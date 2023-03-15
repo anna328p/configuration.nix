@@ -126,6 +126,11 @@ let
 				${L.colors.genVarDecls sbDefs}
 			}
 		}
+
+		::selection, ::-moz-selection, p::selection, p::-moz-selection {
+			color: ${base01};
+			background-color: ${base04};
+		}
 	'';
 in {
 	programs.firefox = {

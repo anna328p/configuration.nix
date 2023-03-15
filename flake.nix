@@ -80,18 +80,18 @@
 	}@flakes: let
 		# Library
 
-		mkBaseConfig = callback: {
-			modules = [ ];
-
-			__functor = self: extraModules:
-				self // { modules = self.modules ++ extraModules; };
-
+		mkBaseConfig = callback: rec {
 			inherit callback;
+
+			modules = [ ];
+			realise = callback modules;
+
+			__functor = self: extraModules: let
+				modules = self.modules ++ extraModules;
+				realise = self.callback modules;
+			in
+				self // { inherit modules realise; };
 		};
-
-		realise = base: base.callback base.modules;
-
-		mkConfig = system: base: modules: realise (base modules) system;
 
 		flakeLib = import ./lib { inherit flakes; };
 
@@ -112,8 +112,11 @@
 
 			mkNixpkgs = flake: import flake {
 				inherit system overlays;
+
 				config.allowUnfree = true;
+				config.allowBroken = true;
 			};
+
 		in nixpkgs.lib.nixosSystem rec {
 			inherit system;
 
@@ -140,51 +143,54 @@
 		basePhysical = baseConfig [ common/physical ];
 		baseWorkstation = basePhysical [ common/workstation ];
 
+		noBuildFull = { ... }: { misc.buildFull = false; };
+		mkSmall = cfg: cfg [ noBuildFull ];
+
 	in {
 		lib = flakeLib;
 
 		inputs = flakes;
 
-		nixosConfigurations = {
-			hermes = mkConfig "x86_64-linux" baseWorkstation [
-				systems/hermes
-
+		nixosConfigurations = let
+			hermesConfig = baseWorkstation [
 				common/misc/amd
+				systems/hermes
 
 				impermanence.nixosModule
 				nixos-hardware.nixosModules.lenovo-thinkpad-t14-amd-gen1
 				nixos-hardware.nixosModules.common-cpu-amd-pstate
 			];
 
-			theseus = mkConfig "x86_64-linux" baseWorkstation [
-				systems/theseus
-
+			theseusConfig = baseWorkstation [
 				common/misc/amd
+				systems/theseus
 
 				nixos-hardware.nixosModules.common-cpu-amd
 				nixos-hardware.nixosModules.common-gpu-amd
 				nixos-hardware.nixosModules.common-pc-ssd
 			];
+		in {
+			hermes = hermesConfig.realise "x86_64-linux";
+			hermes-small = (mkSmall hermesConfig).realise "x86_64-linux";
 
-			heracles = mkConfig "aarch64-linux" virtualServer [
-				systems/heracles
+			theseus = theseusConfig.realise "x86_64-linux";
+			theseus-small = (mkSmall theseusConfig).realise "x86_64-linux";
 
-				qbot.nixosModules.default
-			];
+			heracles = let
+				config = virtualServer [ qbot.nixosModules.default systems/heracles ];
+			in config.realise "aarch64-linux";
 
-			leonardo = mkConfig "x86_64-linux" virtualServer [
-				systems/leonardo
-			];
+			leonardo = let
+				config = virtualServer [ systems/leonardo ];
+			in config.realise "x86_64-linux";
 
-			neo = mkConfig "x86_64-linux" virtualServer [
-				systems/neo
-			];
+			neo = let
+				config = virtualServer [ systems/neo ];
+			in config.realise "x86_64-linux";
 
-			iris = mkConfig "x86_64-linux" virtualServer [
-				systems/iris
-
-				snm.nixosModules.default
-			];
+			iris = let
+				config = virtualServer [ snm.nixosModules.default systems/iris ];
+			in config.realise "x86_64-linux";
 		};
 	};
 }

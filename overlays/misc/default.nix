@@ -37,10 +37,12 @@ final: prev:
 		withBDplus = true;
 	};
 
-	mpv-unwrapped = prev.mpv-unwrapped.override { libbluray = final.libbluray_bd; };
-	vlc = prev.vlc.override { libbluray = final.libbluray_bd; };
+	mpv-unwrapped_bd = prev.mpv-unwrapped.override { libbluray = final.libbluray_bd; };
+	mpv_bd = final.wrapMpv final.mpv-unwrapped_bd { };
 
-	myWine = prev.wineWowPackages.full.override {
+	vlc_bd = prev.vlc.override { libbluray = final.libbluray_bd; };
+
+	wine-custom = prev.wineWowPackages.full.override {
 		wineRelease = "staging";
 		gtkSupport = true;
 		vaSupport = true;

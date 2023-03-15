@@ -6,7 +6,8 @@
 			enable = true;
 
 			# Modern, more reliable wifi stack
-			wifi.backend = "iwd";
+			# wifi.backend = "iwd";
+			# TODO: breaks authentication
 
 			# Fix auth issues
 			wifi.scanRandMacAddress = false;

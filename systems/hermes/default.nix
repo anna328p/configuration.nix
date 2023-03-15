@@ -13,7 +13,7 @@
 			supportedFilesystems = [ "zfs" ];
 		};
 
-		kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
+		kernelPackages = pkgs.linuxPackages_testing;
 
 		kernelParams = [
 			"iwlwifi.swcrypto=0" "bluetooth.disable_ertm=1"
@@ -21,6 +21,7 @@
 		];
 
 		supportedFilesystems = [ "zfs" ];
+		zfs.enableUnstable = true;
 
 		plymouth.enable = lib.mkForce false;
 	};
@@ -48,7 +49,7 @@
 		postgresql.enable = true;
 	};
 
-	home-manager.users.anna = import ./home;
+	home-manager.users.anna.imports = [ ./home ];
 
 	environment.systemPackages = with pkgs; [
 		powertop
