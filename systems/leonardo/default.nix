@@ -1,10 +1,16 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, localModules, ... }:
 
 {
-	imports = [
+	imports = with localModules; [
+		common.base
+		common.server
+		common.virtual
+
 		./hardware-configuration.nix
 		./networking.nix
 	];
+
+	nixpkgs.hostPlatform = lib.systems.examples.gnu64;
 
 	networking = {
 		hostName = "leonardo";

@@ -1,10 +1,16 @@
-{ ... }:
+{ lib, localModules, ... }:
 
 {
-	imports = [
+	imports = with localModules; [
+		common.base
+		common.server
+		common.virtual
+
 		./hardware-configuration.nix
 		./qbot.nix
 	];
+
+	nixpkgs.hostPlatform = lib.systems.examples.aarch64-multiplatform;
 
 	networking = {
 		hostName = "heracles";

@@ -1,26 +1,22 @@
-{ config, flakes, ... }:
+{ config, lib, flakes, localModules, ... }:
 
 {
-	imports = [
+	imports = with localModules; [
+		common.base
+		common.physical
+		common.workstation
+		common.misc.amd
+
+		flakes.musnix.nixosModules.default
+
 		./hardware-configuration.nix
 		./transmission.nix
-		flakes.musnix.nixosModules.default
 	];
 
 	# Hardware support
 	boot = {
-		kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
-
 		kernelParams = [ "pcie_aspm=off" ];
-
-		initrd.availableKernelModules = [
-			"xhci_pci" "ehci_pci" "ahci" "nvme"
-			"usb_storage" "usbhid" "uas" "sd_mod"
-		];
-
-		supportedFilesystems = [ "zfs" ];
-		initrd.supportedFilesystems = [ "zfs" ];
-
+		initrd.availableKernelModules = [ "usbhid" ];
 		kernelModules = [ "nct6775" ];
 	};
 
@@ -55,24 +51,6 @@
 	};
 
 	home-manager.users.anna.imports = [ ./home ];
-
-	# virtualisation
-
-	users.users.anna.extraGroups = [ "libvirtd" ];
-	
-	virtualisation = {
-		libvirtd = {
-			enable = true;
-			onShutdown = "shutdown";
-
-			qemu = {
-				ovmf.enable = true;
-				runAsRoot = false;
-			};
-		};
-
-		podman.enable = true;
-	};
 
 	system.stateVersion = "18.09"; # Do not change unless specified in release notes
 }

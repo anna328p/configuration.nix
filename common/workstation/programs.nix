@@ -1,4 +1,4 @@
-{ config, lib, pkgs, pkgsMaster, ... }:
+{ config, lib, pkgs, ... }:
 
 {
 	environment.systemPackages = with pkgs; [
@@ -8,7 +8,7 @@
 		firefox-devedition-bin
 
 		# Messengers
-		(wrapDiscord pkgsMaster.discord)
+		discord-custom
 		tdesktop
 		element-desktop nheko
 		thunderbird
@@ -70,9 +70,6 @@
 		nixpkgs-review
 		nix-prefetch-git
 		cachix
-
-		# VMs
-		virtmanager spice-gtk
 
 		# Misc
 		gh # GitHub CLI

@@ -7,16 +7,9 @@
 
 		flake-utils.url = github:numtide/flake-utils;
 
-		flake-parts.url = github:hercules-ci/flake-parts;
-		flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
-
 		flake-compat.url = github:edolstra/flake-compat;
 		flake-compat.flake = false;
 		
-		lib-aggregate.url = github:nix-community/lib-aggregate;
-		lib-aggregate.inputs.flake-utils.follows = "flake-utils";
-		lib-aggregate.inputs.nixpkgs-lib.follows = "nixpkgs";
-
 		nur.url = github:nix-community/NUR;
 		nixos-hardware.url = github:nixos/nixos-hardware;
 		impermanence.url = github:nix-community/impermanence;
@@ -27,16 +20,6 @@
 		home-manager.url = github:nix-community/home-manager;
 		home-manager.inputs.nixpkgs.follows = "nixpkgs";
 		home-manager.inputs.utils.follows = "flake-utils";
-
-		nix-eval-jobs.url = github:nix-community/nix-eval-jobs;
-		nix-eval-jobs.inputs.nixpkgs.follows = "nixpkgs";
-		nix-eval-jobs.inputs.flake-parts.follows = "flake-parts";
-
-		wayland.url = github:nix-community/nixpkgs-wayland;
-		wayland.inputs.nixpkgs.follows = "nixpkgs";
-		wayland.inputs.nix-eval-jobs.follows = "nix-eval-jobs";
-		wayland.inputs.flake-compat.follows = "flake-compat";
-		wayland.inputs.lib-aggregate.follows = "lib-aggregate";
 
 		neovim.url = github:neovim/neovim?dir=contrib;
 		neovim.inputs.flake-utils.follows = "flake-utils";
@@ -71,24 +54,44 @@
 		, nixos-hardware
 		, impermanence
 		, home-manager
-		, wayland
 		, neovim
 		, musnix
 		, qbot
 		, snm
 		, ...
 	}@flakes: let
-		mkConfigBuilder = callback: rec {
-			inherit callback;
+		localModules = {
+			common = {
+				module = common/module;
 
-			modules = [ ];
-			realise = callback modules;
+				base = common/base;
+				physical = common/physical;
+				server = common/server;
+				virtual = common/virtual;
+				workstation = common/workstation;
 
-			__functor = self: extraModules: let
-				modules = self.modules ++ extraModules;
-				realise = self.callback modules;
-			in
-				self // { inherit modules realise; };
+				misc = {
+					amd = common/misc/amd;
+					small = common/misc/small;
+				};
+
+				home = {
+					module = common/home/module;
+
+					base = common/home/base;
+					workstation = common/home/workstation;
+				};
+			};
+
+			systems = {
+				hermes = systems/hermes;
+				theseus = systems/theseus;
+
+				leonardo = systems/leonardo;
+				neo = systems/neo;
+				heracles = systems/heracles;
+				iris = systems/iris;
+			};
 		};
 
 		flakeLib = import ./lib { inherit flakes; };
@@ -100,45 +103,18 @@
 
 		overlays = [
 			localOverlay
-			wayland.overlay
 			nur.overlay
 			qbot.overlay
 		];
 
-		mkNixosSystem = modules: system: let
-			importPkgs = path: import path {
-				inherit system overlays;
+		mkNixosSystem = modules: nixpkgs.lib.nixosSystem {
+			inherit modules;
 
-				config.allowUnfree = true;
-				config.allowBroken = true;
+			specialArgs = {
+				inherit flakes overlays localModules;
+				L = flakeLib;
 			};
-
-			pkgs = importPkgs nixpkgs;
-			pkgsMaster = importPkgs nixpkgs-master;
-
-			L = flakeLib;
-		in
-			nixpkgs.lib.nixosSystem {
-				inherit system pkgs modules;
-
-				specialArgs = { inherit flakes pkgsMaster L; };
-			};
-
-		baseConfig = mkConfigBuilder mkNixosSystem [ common/base ];
-
-		baseServer = baseConfig [ common/server ];
-		virtualServer = baseServer [ common/virtual ];
-
-		basePhysical = baseConfig [ common/physical ];
-		baseWorkstation = basePhysical [ common/workstation ];
-
-		amdWorkstation = baseWorkstation [
-			nixos-hardware.nixosModules.common-cpu-amd
-			nixos-hardware.nixosModules.common-gpu-amd
-			common/misc/amd
-		];
-
-		noBuildFull = { ... }: { misc.buildFull = false; };
+		};
 
 	in {
 		lib = flakeLib;
@@ -150,33 +126,24 @@
 			default = local;
 		};
 
+		nixosModules = localModules // {
+			default = localModules.common.module;
+		};
+
 		nixosConfigurations = let
-			configs = rec {
-				hermes = amdWorkstation [ systems/hermes ];
-				hermes-small = hermes [ noBuildFull ];
+			moduleSets = with localModules; rec {
+				hermes = [ systems.hermes ];
+				hermes-small = hermes ++ [ common.misc.small ];
 
-				theseus = amdWorkstation [ systems/theseus ];
-				theseus-small = theseus [ noBuildFull ];
+				theseus = [ systems.theseus ];
+				theseus-small = theseus ++ [ common.misc.small ];
 
-				heracles = virtualServer [ systems/heracles ];
-				leonardo = virtualServer [ systems/leonardo ];
-				neo = virtualServer [ systems/neo ];
-				iris = virtualServer [ systems/iris ];
+				heracles = [ systems.heracles ];
+				leonardo = [ systems.leonardo ];
+				neo = [ systems.neo ];
+				iris = [ systems.iris ];
 			};
 
-			systems = {
-				default = "x86_64-linux";
-
-				heracles = "aarch64-linux";
-			};
-
-			systemFor = name: with builtins;
-				if hasAttr name systems
-					then getAttr name systems
-					else systems.default;
-
-		in builtins.mapAttrs
-			(name: config: config.realise (systemFor name))
-			configs;
+		in builtins.mapAttrs (_: mkNixosSystem) moduleSets;
 	};
 }

@@ -1,37 +1,62 @@
 { flakes }:
 
 let
-	inherit (flakes.nixpkgs) lib;
+	inherit (builtins)
+		foldl' mapAttrs attrValues;
 
-	flakeLib = lib.makeExtensible (self: let
-		callLib = file: args:
-			import file ({
-				inherit lib using;
-				L = self;
-			} // args);
+	# fix : (a -> a) -> a
+	fix = f: let x = f x; in x;
 
-		importOneLib = name: path:
-			{ ${name} = callLib path { }; };
 
-		foldSets = lib.foldl lib.mergeAttrs { };
+	# foldSets : [Set] -> Set
+	foldSets = foldl' (a: b: a // b) { };
 
-		importLibSet = libs:
-			foldSets (lib.mapAttrsToList importOneLib libs);
 
-		foldExports = imports: let
-			callExports = _: lib: lib.exports lib;
-		in
-			imports // foldSets (lib.mapAttrsToList callExports imports);
+	# mapAttrVals : (a -> b) -> Set a -> Set b
+	mapAttrVals = fn: mapAttrs (_: fn);
 
-		usingImportLibs = set:
-			foldExports (importLibSet set);
 
-		using = libs: rest: let
-			imports = usingImportLibs libs;
-		in
-			imports // rest imports;
+	# Mod = { * } -> Set
+	# callMod' : Set -> Set -> (Mod -> Set) -> Set -> Set
+	callMod' = self: defaultArgs: mod: args: let
+		args' = { L = self; } // defaultArgs // args;
+	in mod args';
 
-	in using {
+
+	# using' : ((Mod -> Set) -> Set -> Set) -> Set -> Set Path -> (Set -> Set) -> Set
+	using' = call: self: inputs: fn: let
+		# importMod : Path -> Set
+		importMod = path: call (import path) { };
+
+		# getExports : Set -> Set
+		getExports = mod: mod.exports mod;
+
+		# mods : Set Set
+		mods = mapAttrVals importMod inputs;
+		# exports : [Set]
+		exportSets = attrValues (mapAttrVals getExports mods);
+
+		env = mods // (foldSets exportSets);
+	in env // fn env;
+
+
+	# mkLibrary : Set -> Mod -> Set
+	mkLibrary = extraArgs: fn: let
+		inner = self: let
+			# args : Set
+			args = extraArgs // { inherit using; };
+
+			# call : (Mod -> Set) -> Set -> Set
+			call = callMod' self args;
+
+			# using : Set Path -> (Set -> Set) -> Set
+			using = using' call self;
+		in call fn { };
+	in fix inner;
+
+
+in mkLibrary { inherit (flakes.nixpkgs) lib; } ({ using, ... }:
+	using {
 		base = ./base.nix;
 
 		strings-lists = ./strings-lists.nix;
@@ -42,5 +67,5 @@ let
 		misc = ./misc.nix;
 		types = ./types.nix;
 		options = ./options.nix;
-	} (_: {}));
-in flakeLib
+	} (_: {})
+)

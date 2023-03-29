@@ -4,10 +4,14 @@
 	imports = [
 		./udev.nix
 		./hw-support.nix
+		./storage.nix
 		./networking.nix
-		./docs.nix
 
+		./virtualisation.nix
+		./zswap.nix
 		./kmscon.nix
+
+		./docs.nix
 
 		./sound.nix
 		./video.nix

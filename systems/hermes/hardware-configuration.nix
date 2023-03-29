@@ -2,11 +2,8 @@
 
 {
 	imports = [
-		(modulesPath + "/installer/scan/not-detected.nix")
-
 		flakes.impermanence.nixosModule
 		flakes.nixos-hardware.nixosModules.lenovo-thinkpad-t14-amd-gen1
-		flakes.nixos-hardware.nixosModules.common-cpu-amd-pstate
 	];
 
 	fileSystems = let

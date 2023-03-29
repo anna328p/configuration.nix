@@ -1,20 +1,14 @@
 { config, pkgs, ... }:
 
 {
-	# Emulate ARM systems for remote deployments
-	boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+	boot = {
+		# Emulate ARM systems for remote deployments
+		binfmt.emulatedSystems = [ "aarch64-linux" ];
 
-	# Allow mounting most external drives
-	boot.supportedFilesystems = [ "ntfs" "exfat" ];
-
-	# Control connected monitors' settings
-	boot.kernelModules = [
-		"i2c-dev" "ddcci"
-	];
-
-	boot.extraModulePackages = with config.boot.kernelPackages; [
-		ddcci-driver
-	];
+		# Control connected monitors' settings
+		kernelModules = [ "i2c-dev" "ddcci" ];
+		extraModulePackages = [ config.boot.kernelPackages.ddcci-driver ];
+	};
 
 	environment.systemPackages = with pkgs; [
 		# DDC monitor control

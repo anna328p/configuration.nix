@@ -1,4 +1,4 @@
-{ pkgs, pkgsMaster, lib, ... }:
+{ pkgs, lib, ... }:
 
 {
 	# IME support
@@ -25,7 +25,7 @@
 
 		# GTK theme
 		adw-gtk3
-	] ++ (with pkgsMaster.gnomeExtensions; [
+	] ++ (with pkgs.gnomeExtensions; [
 		gsconnect
 		brightness-control-using-ddcutil
 		sensory-perception

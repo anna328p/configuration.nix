@@ -32,6 +32,8 @@ in {
 		'';
 	};
 
+	discord-custom = final.wrapDiscord final.discord;
+
 	libbluray_bd = prev.libbluray.override {
 		withJava = true;
 		withAACS = true;

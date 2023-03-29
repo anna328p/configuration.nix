@@ -1,0 +1,5 @@
+{ ... }:
+
+{
+	misc.buildFull = false;
+}

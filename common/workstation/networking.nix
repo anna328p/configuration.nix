@@ -1,4 +1,4 @@
-{ pkgs, pkgsMaster, ... }:
+{ pkgs, ... }:
 
 {
 	networking = {
@@ -34,7 +34,7 @@
 
 		mullvad-vpn = {
 			enable = true;
-			package = pkgsMaster.mullvad-vpn;
+			package = pkgs.mullvad-vpn;
 		};
 
 		# Private LAN VPN

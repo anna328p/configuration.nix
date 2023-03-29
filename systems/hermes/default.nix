@@ -1,27 +1,23 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, localModules, ... }:
 {
-	imports = [
+	imports = with localModules; [
+		common.base
+		common.physical
+		common.workstation
+		common.misc.amd
+
 		./hardware-configuration.nix
 		./persist-system.nix
 		./persist-home.nix
 	];
 
 	boot = {
-		initrd = {
-			availableKernelModules = [ "nvme" "ehci_pci" "xhci_pci" "rtsx_pci_sdmmc" ];
-			kernelModules = [ "dm-snapshot" ];
-			supportedFilesystems = [ "zfs" ];
-		};
-
-		kernelPackages = pkgs.linuxPackages_testing;
+		kernelPackages = lib.mkForce pkgs.linuxPackages_testing;
+		zfs.enableUnstable = true;
 
 		kernelParams = [
 			"iwlwifi.swcrypto=0" "bluetooth.disable_ertm=1"
-			"zswap.enabled=1" "zswap.compressor=zstd"
 		];
-
-		supportedFilesystems = [ "zfs" ];
-		zfs.enableUnstable = true;
 
 		plymouth.enable = lib.mkForce false;
 	};
@@ -54,11 +50,7 @@
 	environment.systemPackages = with pkgs; [
 		powertop
 		opensc pcsctools
-		virt-manager
 	];
-
-	virtualisation.libvirtd.enable = true;
-	virtualisation.podman.enable = true;
 
 	system.stateVersion = "22.05";
 }

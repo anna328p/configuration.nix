@@ -1,8 +1,13 @@
 { config, pkgs, lib, ... }:
 
 {
+	imports = [
+		./storage.nix
+	];
+
 	boot.loader = {
 		systemd-boot.enable = true;
+
 		efi = {
 			canTouchEfiVariables = true;
 			efiSysMountPoint = "/boot";
@@ -23,6 +28,8 @@
 		# Firmware integration
 		efibootmgr
 	];
+
+	hardware.enableRedistributableFirmware = true;
 
 	services.gpm.enable = true;
 }

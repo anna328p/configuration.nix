@@ -1,4 +1,4 @@
-{ lib, config, pkgs, pkgsMaster, L, ... }:
+{ lib, config, pkgs, L, ... }:
 
 let
 	scheme = config.colorScheme;
@@ -360,7 +360,7 @@ in {
 
 	programs.discocss = {
 		enable = true;
-		discordPackage = (pkgs.wrapDiscord pkgsMaster.discord);
+		discordPackage = pkgs.discord-custom;
 
 		inherit css;
 	};
