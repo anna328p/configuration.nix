@@ -48,6 +48,23 @@
         "type": "github"
       }
     },
+    "dht": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1651172278,
+        "narHash": "sha256-m4utcxqE3Mn5L4IQ9UfuJXj2KkXXnqKBGqh7kHHGMJQ=",
+        "owner": "transmission",
+        "repo": "dht",
+        "rev": "015585510e402a057ec17142711ba2b568b5fd62",
+        "type": "github"
+      },
+      "original": {
+        "owner": "transmission",
+        "ref": "post-0.27-transmission",
+        "repo": "dht",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -74,9 +91,8 @@
         "type": "github"
       },
       "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
+        "id": "flake-utils",
+        "type": "indirect"
       }
     },
     "gitignore": {
@@ -118,9 +134,8 @@
         "type": "github"
       },
       "original": {
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "type": "github"
+        "id": "home-manager",
+        "type": "indirect"
       }
     },
     "idevicerestore": {
@@ -157,13 +172,59 @@
     "keydb": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-c8NEpiO1HSAOQvsWktkr7L4adIu2A53eRXVFaoQ4qZg=",
+        "narHash": "sha256-SfjWTBpdUHMsSK1xNcAQgDCF8+/scqMcVH4d0z/7lAo=",
         "type": "tarball",
         "url": "https://github.com/anna328p/mirror/releases/latest/download/keydb_eng.zip"
       },
       "original": {
         "type": "tarball",
         "url": "https://github.com/anna328p/mirror/releases/latest/download/keydb_eng.zip"
+      }
+    },
+    "libutp": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1678030974,
+        "narHash": "sha256-dpbX1h/gpuVIAXC4hwwuRwQDJ0pwVVEsgemOVN0Dv9Q=",
+        "owner": "transmission",
+        "repo": "libutp",
+        "rev": "9cb9f9c4f0073d78b08d6542cebaea6564ecadfe",
+        "type": "github"
+      },
+      "original": {
+        "owner": "transmission",
+        "ref": "post-3.4-transmission",
+        "repo": "libutp",
+        "type": "github"
+      }
+    },
+    "local-pkgs": {
+      "inputs": {
+        "dht": "dht",
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "idevicerestore": "idevicerestore",
+        "keydb": "keydb",
+        "libutp": "libutp",
+        "neovim": "neovim",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "protoplug": "protoplug",
+        "transgui": "transgui",
+        "transmission": "transmission",
+        "usbmuxd": "usbmuxd"
+      },
+      "locked": {
+        "lastModified": 1,
+        "narHash": "sha256-7152jgNJIA3c9tHkA73xAsk57xnkCe3T1hzqxTy1Cqs=",
+        "path": "./pkgs",
+        "type": "path"
+      },
+      "original": {
+        "path": "./pkgs",
+        "type": "path"
       }
     },
     "musnix": {
@@ -189,17 +250,18 @@
     "neovim": {
       "inputs": {
         "flake-utils": [
+          "local-pkgs",
           "flake-utils"
         ],
         "nixpkgs": "nixpkgs"
       },
       "locked": {
         "dir": "contrib",
-        "lastModified": 1680365231,
-        "narHash": "sha256-vynHWSNc4tHnB2Dv7EvGTO5so3T9fEZJ+mPjTFifk5s=",
+        "lastModified": 1680532069,
+        "narHash": "sha256-lznZRR8Gl1KpkuE3AIhPagyxk4+cPIGLdBQix6BWmmY=",
         "owner": "neovim",
         "repo": "neovim",
-        "rev": "9084948893f9c1669ab56061c8d04adabbb6c3cf",
+        "rev": "e30cc8be1950a6d1dec7395807966e1b5d0d9194",
         "type": "github"
       },
       "original": {
@@ -234,15 +296,14 @@
       "locked": {
         "lastModified": 1680070330,
         "narHash": "sha256-aoT2YZCd9LEtiEULFLIF0ykKydgE72X8gw/k9/pRS5I=",
-        "owner": "nixos",
+        "owner": "NixOS",
         "repo": "nixos-hardware",
         "rev": "a6aa8174fa61e55bd7e62d35464d3092aefe0421",
         "type": "github"
       },
       "original": {
-        "owner": "nixos",
-        "repo": "nixos-hardware",
-        "type": "github"
+        "id": "nixos-hardware",
+        "type": "indirect"
       }
     },
     "nixpkgs": {
@@ -263,34 +324,32 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1680409990,
-        "narHash": "sha256-S2J9n+sSeAAdXWHrz/s9pyS5fhbQilfNqYrs6RCUyN8=",
-        "owner": "nixos",
+        "lastModified": 1680474786,
+        "narHash": "sha256-l7uE6B9rhOh0/757BvhK0nfBjqYtqU3K3vDU/VwC1EE=",
+        "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "77c642acb22ed80c0880b68caa0837d38dbee171",
+        "rev": "f443d2e52384f33e08d6cbbea1953cd87e016250",
         "type": "github"
       },
       "original": {
-        "owner": "nixos",
+        "id": "nixpkgs",
         "ref": "master",
-        "repo": "nixpkgs",
-        "type": "github"
+        "type": "indirect"
       }
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1680334200,
-        "narHash": "sha256-kDEdiPCw41us+8p6ae2vz2Xd8cmPxXzc9uTftAWuUzc=",
-        "owner": "nixos",
+        "lastModified": 1680450296,
+        "narHash": "sha256-4SJqREZkmyQufQcudS+j0WqsHeRDE6jyFw6l6QcrMrE=",
+        "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "45c671173b3392e946dee7f9aa6c40c6f348bec3",
+        "rev": "cd9eead62d1cb6dd692cd87c209e0bc48f733669",
         "type": "github"
       },
       "original": {
-        "owner": "nixos",
+        "id": "nixpkgs",
         "ref": "nixos-unstable-small",
-        "repo": "nixpkgs",
-        "type": "github"
+        "type": "indirect"
       }
     },
     "nixpkgs_3": {
@@ -311,16 +370,31 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1680408553,
-        "narHash": "sha256-4jVTOt4hFMqpDH3WvJK9mHTWGkL8vka6Us0zRyzaIbY=",
+        "lastModified": 1680464750,
+        "narHash": "sha256-20bP0roHuVhncvCIu1FTkfKJ1QIKxG1IxfmBjKOiP3c=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "dd60c4592d03d8607c4fd359593260570eaa6f49",
+        "rev": "93e5e544f84b56d4b6bee62e0242e93ce5f11dee",
         "type": "github"
       },
       "original": {
-        "owner": "nix-community",
-        "repo": "NUR",
+        "id": "nur",
+        "type": "indirect"
+      }
+    },
+    "protoplug": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1543821563,
+        "narHash": "sha256-ku+1Vh4NfLQpahE9WSVmTthyPLsqR0vvZOgD2wPjTug=",
+        "owner": "pac-dev",
+        "repo": "protoplug",
+        "rev": "6060a3bcb3213ce890a9b781d29f702099127ddd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pac-dev",
+        "repo": "protoplug",
         "type": "github"
       }
     },
@@ -334,11 +408,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1678754270,
-        "narHash": "sha256-1jt9vrMK+V+KfBODXfDCd7EE+E//y2qUnR7gxLsIWtA=",
+        "lastModified": 1680491691,
+        "narHash": "sha256-suMKAsVecz9WiDh6opHe+/5meyAP6uX80hTjAAcYuX4=",
         "owner": "arch-community",
         "repo": "qbot",
-        "rev": "68690da67bb51e8852c5fc553e5d1efe021a0000",
+        "rev": "4670a5a52b64eb938a178062f825438ed7cd30aa",
         "type": "github"
       },
       "original": {
@@ -352,19 +426,16 @@
         "flake-compat": "flake-compat",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
-        "idevicerestore": "idevicerestore",
         "impermanence": "impermanence",
-        "keydb": "keydb",
+        "local-pkgs": "local-pkgs",
         "musnix": "musnix",
-        "neovim": "neovim",
         "nix-colors": "nix-colors",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-master": "nixpkgs-master",
         "nur": "nur",
         "qbot": "qbot",
-        "snm": "snm",
-        "usbmuxd": "usbmuxd"
+        "snm": "snm"
       }
     },
     "snm": {
@@ -395,6 +466,41 @@
         "owner": "simple-nixos-mailserver",
         "repo": "nixos-mailserver",
         "type": "gitlab"
+      }
+    },
+    "transgui": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1680429104,
+        "narHash": "sha256-/PLspkpUpnm3w8f9a6lwNTFbUqSbYtrblRgryMJPWVw=",
+        "owner": "transmission-remote-gui",
+        "repo": "transgui",
+        "rev": "864ee2cc726e336a3091427dad2ee954846a29ad",
+        "type": "github"
+      },
+      "original": {
+        "owner": "transmission-remote-gui",
+        "repo": "transgui",
+        "type": "github"
+      }
+    },
+    "transmission": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1678913900,
+        "narHash": "sha256-DaaJnnWEZOl6zLVxgg+U8C5ztv7Iq0wJ9yle0Gxwybc=",
+        "ref": "refs/tags/4.0.2",
+        "rev": "2a57b17031053999e66c7c094e5d6cd6ec4666aa",
+        "revCount": 15402,
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/transmission/transmission"
+      },
+      "original": {
+        "ref": "refs/tags/4.0.2",
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/transmission/transmission"
       }
     },
     "usbmuxd": {

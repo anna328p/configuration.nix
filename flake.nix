@@ -2,27 +2,28 @@
 	description = "NixOS system configurations";
 
 	inputs = {
-		nixpkgs.url = github:nixos/nixpkgs/nixos-unstable-small;
-		nixpkgs-master.url = github:nixos/nixpkgs/master;
+		nixpkgs.url = flake:nixpkgs/nixos-unstable-small;
+		nixpkgs-master.url = flake:nixpkgs/master;
 
-		flake-utils.url = github:numtide/flake-utils;
+		flake-utils.url = flake:flake-utils;
 
 		flake-compat.url = github:edolstra/flake-compat;
 		flake-compat.flake = false;
 		
-		nur.url = github:nix-community/NUR;
-		nixos-hardware.url = github:nixos/nixos-hardware;
+		local-pkgs.url = "path:./pkgs";
+		local-pkgs.inputs.nixpkgs.follows = "nixpkgs";
+		local-pkgs.inputs.flake-utils.follows = "flake-utils";
+
+		nur.url = flake:nur;
+		nixos-hardware.url = flake:nixos-hardware;
 		impermanence.url = github:nix-community/impermanence;
 
 		nix-colors.url = github:misterio77/nix-colors;
 		nix-colors.inputs.nixpkgs-lib.follows = "nixpkgs";
 
-		home-manager.url = github:nix-community/home-manager;
+		home-manager.url = flake:home-manager;
 		home-manager.inputs.nixpkgs.follows = "nixpkgs";
 		home-manager.inputs.utils.follows = "flake-utils";
-
-		neovim.url = github:neovim/neovim?dir=contrib;
-		neovim.inputs.flake-utils.follows = "flake-utils";
 
 		musnix.url = github:musnix/musnix;
 		musnix.inputs.nixpkgs.follows = "nixpkgs";
@@ -35,26 +36,17 @@
 		snm.inputs.nixpkgs.follows = "nixpkgs";
 		snm.inputs.nixpkgs-22_11.follows = "nixpkgs";
 		snm.inputs.flake-compat.follows = "flake-compat";
-
-		keydb.url = "https://github.com/anna328p/mirror/releases/latest/download/keydb_eng.zip";
-		keydb.flake = false;
-
-		usbmuxd.url = github:libimobiledevice/usbmuxd;
-		usbmuxd.flake = false;
-
-		idevicerestore.url = github:libimobiledevice/idevicerestore;
-		idevicerestore.flake = false;
 	};
 
 	outputs = { self
 		, nixpkgs
 		, nixpkgs-master
 		, flake-utils
+		, local-pkgs
 		, nur
 		, nixos-hardware
 		, impermanence
 		, home-manager
-		, neovim
 		, musnix
 		, qbot
 		, snm
@@ -74,13 +66,13 @@
 					amd = common/misc/amd;
 					small = common/misc/small;
 				};
+			};
 
-				home = {
-					module = common/home/module;
+			home = {
+				module = home/module;
 
-					base = common/home/base;
-					workstation = common/home/workstation;
-				};
+				base = home/base;
+				workstation = home/workstation;
 			};
 
 			systems = {
@@ -96,15 +88,10 @@
 
 		flakeLib = import ./lib { inherit flakes; };
 
-		localOverlay = import ./overlays {
-			inherit (nixpkgs) lib;
-			inherit flakes;
-		};
-
 		overlays = [
-			localOverlay
+			local-pkgs.overlays.default
+			qbot.overlays.default
 			nur.overlay
-			qbot.overlay
 		];
 
 		mkNixosSystem = modules: nixpkgs.lib.nixosSystem {
@@ -120,11 +107,6 @@
 		lib = flakeLib;
 
 		inputs = flakes;
-
-		overlays = rec {
-			local = localOverlay;
-			default = local;
-		};
 
 		nixosModules = localModules // {
 			default = localModules.common.module;

@@ -12,7 +12,6 @@
 		./dconf
 		./theming
 
-		./media.nix
 		./transgui.nix
 	];
 

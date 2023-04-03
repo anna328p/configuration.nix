@@ -1,4 +1,4 @@
-{ pkgs, flakes, ... }:
+{ pkgs, ... }:
 
 {
 	imports = [
@@ -20,13 +20,11 @@
  		supportedLocales = [ "en_US.UTF-8/UTF-8" ];
 	};
 
-	environment.systemPackages = with pkgs; let
-		neovim' = flakes.neovim.defaultPackage.${pkgs.system};
-	in [
+	environment.systemPackages = with pkgs; [
 		## Standard utilities
 
 		tmux
-		neovim'
+		neovim
 
 		moreutils # coreutils addons
 		psmisc # process management tools

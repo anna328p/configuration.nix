@@ -23,7 +23,7 @@ in {
 	fileSystems = let
 		btrfsEntry = device: options': {
 			inherit device;
-			fsType = btrfs;
+			fsType = "btrfs";
 			options = [ "compress=zstd" ] ++ options';
 			noCheck = true;
 		};
@@ -41,8 +41,8 @@ in {
 		"/media/backup2" = btrfsEntry devs.backup2 storageOpts;
 
 		"/home" = btrfsEntry devs.home [ "subvol=@home" ];
-		"/home" = btrfsEntry devs.home [ "subvol=@games" ];
-		"/home" = btrfsEntry devs.home [ "subvol=/" ];
+		"/media/games" = btrfsEntry devs.home [ "subvol=@games" ];
+		"/media/raw-home" = btrfsEntry devs.home [ "subvol=/" ];
 	};
 
 	swapDevices = [

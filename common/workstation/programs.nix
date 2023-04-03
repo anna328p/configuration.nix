@@ -97,6 +97,7 @@
 		# Media players
 		mpv_bd
 		vlc_bd
+		keydb
 
 		# Misc
 		transgui

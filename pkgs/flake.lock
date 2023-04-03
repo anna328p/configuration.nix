@@ -1,0 +1,216 @@
+{
+  "nodes": {
+    "dht": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1651172278,
+        "narHash": "sha256-m4utcxqE3Mn5L4IQ9UfuJXj2KkXXnqKBGqh7kHHGMJQ=",
+        "owner": "transmission",
+        "repo": "dht",
+        "rev": "015585510e402a057ec17142711ba2b568b5fd62",
+        "type": "github"
+      },
+      "original": {
+        "owner": "transmission",
+        "ref": "post-0.27-transmission",
+        "repo": "dht",
+        "type": "github"
+      }
+    },
+    "flake-utils": {
+      "locked": {
+        "lastModified": 1678901627,
+        "narHash": "sha256-U02riOqrKKzwjsxc/400XnElV+UtPUQWpANPlyazjH0=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "93a2b84fc4b70d9e089d029deacc3583435c2ed6",
+        "type": "github"
+      },
+      "original": {
+        "id": "flake-utils",
+        "type": "indirect"
+      }
+    },
+    "idevicerestore": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1666161178,
+        "narHash": "sha256-Br0doWmtgU4JCABa1w1Y47i3tDE7QRzxO55QTPcAEt0=",
+        "owner": "libimobiledevice",
+        "repo": "idevicerestore",
+        "rev": "7b89019fbb81ce64e1c1d259c5746544c8e8eeea",
+        "type": "github"
+      },
+      "original": {
+        "owner": "libimobiledevice",
+        "repo": "idevicerestore",
+        "type": "github"
+      }
+    },
+    "keydb": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-SfjWTBpdUHMsSK1xNcAQgDCF8+/scqMcVH4d0z/7lAo=",
+        "type": "tarball",
+        "url": "https://github.com/anna328p/mirror/releases/latest/download/keydb_eng.zip"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://github.com/anna328p/mirror/releases/latest/download/keydb_eng.zip"
+      }
+    },
+    "libutp": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1678030974,
+        "narHash": "sha256-dpbX1h/gpuVIAXC4hwwuRwQDJ0pwVVEsgemOVN0Dv9Q=",
+        "owner": "transmission",
+        "repo": "libutp",
+        "rev": "9cb9f9c4f0073d78b08d6542cebaea6564ecadfe",
+        "type": "github"
+      },
+      "original": {
+        "owner": "transmission",
+        "ref": "post-3.4-transmission",
+        "repo": "libutp",
+        "type": "github"
+      }
+    },
+    "neovim": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "dir": "contrib",
+        "lastModified": 1680532069,
+        "narHash": "sha256-lznZRR8Gl1KpkuE3AIhPagyxk4+cPIGLdBQix6BWmmY=",
+        "owner": "neovim",
+        "repo": "neovim",
+        "rev": "e30cc8be1950a6d1dec7395807966e1b5d0d9194",
+        "type": "github"
+      },
+      "original": {
+        "dir": "contrib",
+        "owner": "neovim",
+        "repo": "neovim",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1671983799,
+        "narHash": "sha256-Z2Ro6hFPZHkBqkVXY5/aBUzxi5xizQGvuHQ9+T5B/ks=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "fad51abd42ca17a60fc1d4cb9382e2d79ae31836",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1678695076,
+        "narHash": "sha256-sjR2kwEjpjxxig2QSy44a1wHIkgKTi6egaopekA/dOs=",
+        "path": "/nix/store/nhkhndq760wgx1xhx60n1fsink9n6wyb-source",
+        "rev": "f1ff114ef608315f9d9d7deb7f5bb8151ce4afea",
+        "type": "path"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "type": "indirect"
+      }
+    },
+    "protoplug": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1543821563,
+        "narHash": "sha256-ku+1Vh4NfLQpahE9WSVmTthyPLsqR0vvZOgD2wPjTug=",
+        "owner": "pac-dev",
+        "repo": "protoplug",
+        "rev": "6060a3bcb3213ce890a9b781d29f702099127ddd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pac-dev",
+        "repo": "protoplug",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "dht": "dht",
+        "flake-utils": "flake-utils",
+        "idevicerestore": "idevicerestore",
+        "keydb": "keydb",
+        "libutp": "libutp",
+        "neovim": "neovim",
+        "nixpkgs": "nixpkgs_2",
+        "protoplug": "protoplug",
+        "transgui": "transgui",
+        "transmission": "transmission",
+        "usbmuxd": "usbmuxd"
+      }
+    },
+    "transgui": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1680429104,
+        "narHash": "sha256-/PLspkpUpnm3w8f9a6lwNTFbUqSbYtrblRgryMJPWVw=",
+        "owner": "transmission-remote-gui",
+        "repo": "transgui",
+        "rev": "864ee2cc726e336a3091427dad2ee954846a29ad",
+        "type": "github"
+      },
+      "original": {
+        "owner": "transmission-remote-gui",
+        "repo": "transgui",
+        "type": "github"
+      }
+    },
+    "transmission": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1678913900,
+        "narHash": "sha256-DaaJnnWEZOl6zLVxgg+U8C5ztv7Iq0wJ9yle0Gxwybc=",
+        "ref": "refs/tags/4.0.2",
+        "rev": "2a57b17031053999e66c7c094e5d6cd6ec4666aa",
+        "revCount": 15402,
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/transmission/transmission"
+      },
+      "original": {
+        "ref": "refs/tags/4.0.2",
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/transmission/transmission"
+      }
+    },
+    "usbmuxd": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1677661791,
+        "narHash": "sha256-DILBwKoFliBl1l2ULIilpJ6CyZzXa+STBzL0t/2+Ff4=",
+        "owner": "libimobiledevice",
+        "repo": "usbmuxd",
+        "rev": "d0cda199059ac9fba386a29827c91a5fed7c9cfc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "libimobiledevice",
+        "repo": "usbmuxd",
+        "type": "github"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}

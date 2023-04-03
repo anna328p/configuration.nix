@@ -1,26 +1,8 @@
+{ flakes, mkFlakeVer, ... }:
+
 final: prev: 
-let
-	mkFlakeVer = flake: prefix: let
-		shortRev = builtins.substring 0 7 flake.rev;
-	in
-		prefix + "-git-" + shortRev;
-
-	inherit (final) flakes;
-in {
-
-	usbmuxd = prev.usbmuxd.overrideAttrs (_: rec {
-		src = flakes.usbmuxd;
-
-		version = mkFlakeVer src "1.1.2";
-		RELEASE_VERSION = version;
-	});
-
-	idevicerestore = prev.idevicerestore.overrideAttrs (_: rec {
-		src = flakes.idevicerestore;
-
-		version = mkFlakeVer src "1.1.0";
-		RELEASE_VERSION = version;
-	});
+{
+	inherit (flakes.neovim.packages.${final.system}) neovim;
 
 	wrapDiscord = discordPkg: final.symlinkJoin {
 		name = "${discordPkg.pname}-wrapped";

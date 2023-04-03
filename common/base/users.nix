@@ -1,4 +1,4 @@
-{ pkgs, flakes, config, specialArgs, ... }:
+{ pkgs, flakes, config, specialArgs, localModules, ... }:
 
 let
 	passwdHash = "$6$o3HFaJySc0ptEcz$tr5ndkC9HMA0RDVobaLUncgzEiveeWtSJV8"
@@ -44,7 +44,7 @@ in {
 
 		extraSpecialArgs = specialArgs // { systemConfig = config; };
 
-		sharedModules = [ (import ../home/base) ];
+		sharedModules = [ localModules.home.base ];
 		
 		users.anna = { };
 	};

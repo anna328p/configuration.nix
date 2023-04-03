@@ -1,4 +1,4 @@
-{ ... }:
+{ localModules, ... }:
 
 {
 	imports = [
@@ -30,7 +30,7 @@
 
 	# Import home configs
 	home-manager = {
-		users.anna.imports = [ ../home/workstation ];
+		users.anna.imports = [ localModules.home.workstation ];
 	};
 
 	# Don't interfere with home-manager's zsh config

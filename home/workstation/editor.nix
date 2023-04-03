@@ -1,4 +1,4 @@
-{ pkgs, lib, config, flakes, ... }:
+{ pkgs, lib, config, ... }:
 
 { # testing...
 	home = {
@@ -22,10 +22,15 @@
 
 	programs.neovim = {
 		enable = true;
-		package = flakes.neovim.defaultPackage.${pkgs.system};
 		withRuby = false;
 
-		extraConfig = ''
+		extraConfig = let
+			base16Colors = with lib;
+				concatStringsSep ", "
+					(mapAttrsToList
+						(k: v: "${k} = '#${v}'")
+						config.colorScheme.colors);
+		in ''
 			" integration
 			set mouse=a
 			set clipboard+=unnamed
@@ -80,11 +85,7 @@
 
 			lua <<EOF
 				-- colors
-				require('base16-colorscheme').setup({${
-					lib.concatStringsSep ", " (lib.mapAttrsToList
-						(name: val: "${name} = '#${val}'")
-						config.colorScheme.colors)
-				}})
+				require('base16-colorscheme').setup({${base16Colors}})
 
 				-- completions
 				local lspconfig = require'lspconfig'
@@ -183,7 +184,6 @@
 				require"nvim-treesitter.install".compilers = { "${pkgs.stdenv.cc}/bin/cc" }
 
 				require'nvim-treesitter.configs'.setup {
-					ensure_installed = { },
 					rainbow = { enable = true, extended_mode = true, },
 					highlight = { enable = true, },
 					indent = { enable = true, },
@@ -262,9 +262,6 @@ EOF
 				};
 			};
 
-			nvim-treesitter-all = nvim-treesitter.withPlugins (plugins:
-				pkgs.tree-sitter.allGrammars
-			);
 		in [
 			# visual
 			nvim-base16 gitsigns-nvim lualine-nvim tabline-nvim
@@ -281,7 +278,8 @@ EOF
 			null-ls-nvim
 
 			# syntax
-			nvim-treesitter-all nvim-ts-rainbow nvim-treesitter-context
+			nvim-treesitter.withAllGrammars
+			nvim-ts-rainbow nvim-treesitter-context
 			vim-endwise pears-nvim
 
 			# languages

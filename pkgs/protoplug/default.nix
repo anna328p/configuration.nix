@@ -1,25 +1,13 @@
-{ clangStdenv
-, lib
-, fetchFromGitHub
-, pkg-config
-, luajit
-, fftw
-, alsa-lib
-, gtk3, freetype
-, libX11, xorg
-, curl
-}:
+{ flakes, mkFlakeVer
+, clangStdenv, lib, fetchFromGitHub
+, pkg-config, luajit, fftw, alsa-lib, gtk3, freetype, libX11, xorg, curl
+, ... }:
 
-clangStdenv.mkDerivation {
+clangStdenv.mkDerivation rec {
 	pname = "protoplug";
-	version = "1.4.0+git-6060a3b";
 
-	src = fetchFromGitHub {
-		owner = "pac-dev";
-		repo = "protoplug";
-		rev = "6060a3bcb3213ce890a9b781d29f702099127ddd";
-		sha256 = "ku+1Vh4NfLQpahE9WSVmTthyPLsqR0vvZOgD2wPjTug=";
-	};
+	src = flakes.protoplug;
+	version = mkFlakeVer src "1.4.0";
 
 	nativeBuildInputs = [ pkg-config ];
 
