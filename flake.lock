@@ -172,7 +172,7 @@
     "keydb": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-SfjWTBpdUHMsSK1xNcAQgDCF8+/scqMcVH4d0z/7lAo=",
+        "narHash": "sha256-ouPWK/S3kU8LmY9Bey1L5ksAbojuMwxo97bPw7f+GC0=",
         "type": "tarball",
         "url": "https://github.com/anna328p/mirror/releases/latest/download/keydb_eng.zip"
       },
@@ -218,7 +218,7 @@
       },
       "locked": {
         "lastModified": 1,
-        "narHash": "sha256-7152jgNJIA3c9tHkA73xAsk57xnkCe3T1hzqxTy1Cqs=",
+        "narHash": "sha256-HZ5IBDOB9Xm6IGT1T5o1sosu2bw1wg61v9UfCp1NJj4=",
         "path": "./pkgs",
         "type": "path"
       },
@@ -257,11 +257,11 @@
       },
       "locked": {
         "dir": "contrib",
-        "lastModified": 1680532069,
-        "narHash": "sha256-lznZRR8Gl1KpkuE3AIhPagyxk4+cPIGLdBQix6BWmmY=",
+        "lastModified": 1680975837,
+        "narHash": "sha256-HQTCOrYlNIjhj3kuOzjBbgnioMbQVSQg02TdYKXPbOE=",
         "owner": "neovim",
         "repo": "neovim",
-        "rev": "e30cc8be1950a6d1dec7395807966e1b5d0d9194",
+        "rev": "b6d5047d40a589806be5dd9e4a3b342d456539a8",
         "type": "github"
       },
       "original": {
