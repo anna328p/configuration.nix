@@ -59,10 +59,6 @@
 		];
 	};
 
-	environment.gnome.excludePackages = with pkgs; [
-		gnome-connections # TODO: re-enable. freerdp fails to build due to winpr2 dep not found
-	];
-
 	services = {
 		xserver = {
 			enable = true;
@@ -112,7 +108,6 @@
 		};
 
 		gnome.core-developer-tools.enable = true;
-		gnome.gnome-remote-desktop.enable = false; # TODO: re-enable. freerdp fails to build
 	};
 
 	programs = {

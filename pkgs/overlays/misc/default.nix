@@ -2,7 +2,7 @@
 
 final: prev: 
 {
-	inherit (flakes.neovim.packages.${final.system}) neovim;
+	# inherit (flakes.neovim.packages.${final.system}) neovim;
 
 	wrapDiscord = discordPkg: final.symlinkJoin {
 		name = "${discordPkg.pname}-wrapped";
@@ -42,7 +42,5 @@ final: prev:
 		yelp = gprev.yelp.overrideAttrs (_: {
 			patches = [ ./yelp-no-smooth-scrolling.patch ];
 		});
-
-		gnome-control-center = gprev.gnome-control-center.override { gnome-remote-desktop = null; };
 	});
 }

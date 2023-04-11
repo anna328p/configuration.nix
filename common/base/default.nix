@@ -50,7 +50,7 @@
 		git
 		speedtest-cli
 		wget
-		nmap
+		nmap dnsutils whois
 	];
 
 	# Set default text editor

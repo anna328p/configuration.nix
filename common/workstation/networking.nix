@@ -17,11 +17,6 @@
 		firewall.enable = false;
 	};
 
-	environment.systemPackages = with pkgs; [
-		nmap dnsutils
-		mosh
-	];
-
 	users.users.anna.extraGroups = [ "networkmanager" "dialout" ];
 
 	services = {

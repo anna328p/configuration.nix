@@ -22,6 +22,9 @@
 
 		# Steno keyboard support
 		plover.dev
+
+		# Smart cards, Yubikey
+		opensc pcsctools yubikey-manager yubikey-manager-qt
 	];
 
 	# Mouse configuration
@@ -64,6 +67,9 @@
 
 	# Allow access to Apple devices via USB
 	services.usbmuxd.enable = true;
+
+	# Allow smart card and Yubikey access
+	services.pcscd.enable = true;
 
 	# Update device firmware
 	services.fwupd.enable = true;

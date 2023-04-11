@@ -40,17 +40,11 @@
 		powertop.enable = true;
 	};
 
-	services = {
-		pcscd.enable = true;
-		postgresql.enable = true;
-	};
+	services.postgresql.enable = true;
 
 	home-manager.users.anna.imports = [ ./home ];
 
-	environment.systemPackages = with pkgs; [
-		powertop
-		opensc pcsctools
-	];
+	environment.systemPackages = with pkgs; [ powertop ];
 
 	system.stateVersion = "22.05";
 }
