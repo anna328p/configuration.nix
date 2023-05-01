@@ -42,11 +42,6 @@
 			chrootlocalUser = false;
 		};
 
-		gpsd = {
-			enable = true;
-			device = "/dev/ttyACM0";
-		};
-
 		xserver.displayManager.gdm.autoSuspend = false;
 	};
 

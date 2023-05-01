@@ -23,7 +23,6 @@
 
 		home-manager.url = flake:home-manager;
 		home-manager.inputs.nixpkgs.follows = "nixpkgs";
-		home-manager.inputs.utils.follows = "flake-utils";
 
 		musnix.url = github:musnix/musnix;
 		musnix.inputs.nixpkgs.follows = "nixpkgs";

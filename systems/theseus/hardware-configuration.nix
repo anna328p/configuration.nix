@@ -1,4 +1,4 @@
-{ lib, flakes, modulesPath, ... }:
+{ config, lib, flakes, modulesPath, ... }:
 
 let
 	devs = let
@@ -19,6 +19,8 @@ in {
 	imports = with flakes.nixos-hardware.nixosModules; [
 		common-pc-ssd common-cpu-amd common-gpu-amd
 	];
+
+	hardware.amdgpu.opencl = config.misc.buildFull;
 
 	fileSystems = let
 		btrfsEntry = device: options': {

@@ -1,7 +1,10 @@
-{ pkgs, ifFullBuild, ... }:
+{ pkgs, lib, config, ifFullBuild, ... }:
 
 {
 	environment.systemPackages = with pkgs; [
+		# Controller support
+		linuxConsoleTools
+	] ++ (lib.optionals config.misc.buildFull (with pkgs; [
 		# Steam
 		protontricks
 
@@ -11,11 +14,9 @@
 		# Games
 		osu-lazer
 		wesnoth
-		prismlauncher # Minecraft
+		# TODO: reenable when nixpkgs#229358 fixed
+		# prismlauncher # Minecraft
+	]));
 
-		# Controller support
-		linuxConsoleTools
-	];
-
-	programs.steam.enable = ifFullBuild true;
+	programs.steam.enable = config.misc.buildFull;
 }

@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 
 {
 	# IME support
@@ -55,8 +55,9 @@
 			noto-fonts noto-fonts-cjk noto-fonts-emoji-blob-bin
 			liberation_ttf open-sans corefonts
 
-			# google-fonts # builder broken?
-		];
+		] ++ (lib.optionals config.misc.buildFull (with pkgs; [
+			google-fonts
+		]));
 	};
 
 	services = {

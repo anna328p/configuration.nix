@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, config, pkgs, ... }:
 
 {
 	networking = {
@@ -27,7 +27,7 @@
 			nssmdns = true;
 		};
 
-		mullvad-vpn = {
+		mullvad-vpn = lib.mkIf config.misc.buildFull {
 			enable = true;
 			package = pkgs.mullvad-vpn;
 		};

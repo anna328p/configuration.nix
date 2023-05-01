@@ -10,61 +10,32 @@
 		# Messengers
 		discord-custom
 		tdesktop
-		element-desktop nheko
+		nheko
 		thunderbird
-
-		# Video
-		zoom-us
 
 		## Creation / Editing tools
 
 		# Text, documents
-		libreoffice
 		logseq
-
-		# CAD, CAM
-		openscad
-		solvespace
-		prusa-slicer
-
-		# EDA
-		kicad libxslt
 
 		# Graphics
 		gimp
 		inkscape
-		krita
 		imagemagick # Conversion/editing
 
 		# Media
 		audacity # Audio editor
-		kdenlive # Video editor
-		# vcv-rack # Virtual modular synth; expensive to build
 		ffmpeg   # Transcoding
 
 		# Typefaces
 		fontforge-gtk nodePackages.svgo
 
-		## Viewers / Players
-
-		# Books
-		calibre
-
 		## Programming / Software development
 
 		# Interpreters
 		nodejs
-		ruby_3_1
+		ruby_latest
 		python3
-
-		# VMs
-		adoptopenjdk-openj9-bin-16
-		mono
-
-		# Haskell
-		cabal-install
-		cabal2nix
-		ghc
 
 		# Nix
 		nixpkgs-review
@@ -76,32 +47,65 @@
 		direnv
 		_7zz
 
-		## Compatibility tools / Emulators
-
-		# Misc
-		appimage-run
-
 		## Miscellaneous
 
-		anki # Flashcards
 		gnupg1 # Encryption
 		espeak-ng # TTS
 		woeusb # Write Windows install disks
 		idevicerestore # Flash Apple devices
 
 	] ++ (if config.misc.buildFull then with pkgs; [
-		# Wine
-		wine-custom
-		winetricks
-		samba # to provide winbind
+		# Text, documents
+		libreoffice
+
+		vcv-rack # Virtual modular synth
+
+		# Video
+		zoom-us
+
+		element-desktop 
+
+		# VMs
+		adoptopenjdk-openj9-bin-16
+		mono
+
+		# Haskell
+		cabal-install
+		cabal2nix
+		ghc
+
+		## Viewers / Players
+
+		# Books
+		calibre
 
 		# Media players
 		mpv_bd
 		vlc_bd
 		keydb
 
+		# CAD, CAM
+		openscad
+		solvespace
+		prusa-slicer
+
+		# EDA
+		kicad libxslt
+
 		# Misc
 		transgui
+
+		## Compatibility tools / Emulators
+
+		# Wine
+		wine-custom
+		winetricks
+		samba # to provide winbind
+
+		# Misc
+		appimage-run
+
+		anki # Flashcards
 	] else with pkgs; [
 		# Media players
 		mpv

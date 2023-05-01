@@ -1,4 +1,4 @@
-{ flakes, lib, ... }:
+{ flakes, lib, systemConfig, ... }:
 
 {
 	imports = [
@@ -27,9 +27,9 @@
 		userDirs.enable = true;
 	};
 
-	services.fluidsynth.enable = true;
+	services.fluidsynth.enable = systemConfig.misc.buildFull;
 
-	programs.obs-studio.enable = true;
+	programs.obs-studio.enable = systemConfig.misc.buildFull;
 
 	manual.manpages.enable = lib.mkForce true;
 }

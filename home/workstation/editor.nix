@@ -1,18 +1,19 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, config, systemConfig, ... }:
 
 { # testing...
 	home = {
 		packages = with pkgs; [
-			solargraph
-			haskell-language-server
+			rubyPackages_latest.solargraph
 			rnix-lsp
 			nodePackages.diagnostic-languageserver
 			nodePackages.vscode-langservers-extracted
 			nodePackages.bash-language-server
 
-			rubyPackages_3_1.rubocop
+			rubyPackages_latest.rubocop
 			proselint
-		];
+		] ++ (lib.optionals systemConfig.misc.buildFull (with pkgs; [
+			haskell-language-server
+		]));
 
 		sessionVariables = {
 			EDITOR = "nvim";

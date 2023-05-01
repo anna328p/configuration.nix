@@ -24,5 +24,4 @@ in composeOverlays (map importOverlay [
 
 	./misc
 	./transmission
-	./apple
 ])

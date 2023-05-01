@@ -34,22 +34,6 @@
         "type": "indirect"
       }
     },
-    "idevicerestore": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1666161178,
-        "narHash": "sha256-Br0doWmtgU4JCABa1w1Y47i3tDE7QRzxO55QTPcAEt0=",
-        "owner": "libimobiledevice",
-        "repo": "idevicerestore",
-        "rev": "7b89019fbb81ce64e1c1d259c5746544c8e8eeea",
-        "type": "github"
-      },
-      "original": {
-        "owner": "libimobiledevice",
-        "repo": "idevicerestore",
-        "type": "github"
-      }
-    },
     "keydb": {
       "flake": false,
       "locked": {
@@ -151,15 +135,13 @@
       "inputs": {
         "dht": "dht",
         "flake-utils": "flake-utils",
-        "idevicerestore": "idevicerestore",
         "keydb": "keydb",
         "libutp": "libutp",
         "neovim": "neovim",
         "nixpkgs": "nixpkgs_2",
         "protoplug": "protoplug",
         "transgui": "transgui",
-        "transmission": "transmission",
-        "usbmuxd": "usbmuxd"
+        "transmission": "transmission"
       }
     },
     "systems": {
@@ -210,22 +192,6 @@
         "submodules": true,
         "type": "git",
         "url": "https://github.com/transmission/transmission"
-      }
-    },
-    "usbmuxd": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1677661791,
-        "narHash": "sha256-DILBwKoFliBl1l2ULIilpJ6CyZzXa+STBzL0t/2+Ff4=",
-        "owner": "libimobiledevice",
-        "repo": "usbmuxd",
-        "rev": "d0cda199059ac9fba386a29827c91a5fed7c9cfc",
-        "type": "github"
-      },
-      "original": {
-        "owner": "libimobiledevice",
-        "repo": "usbmuxd",
-        "type": "github"
       }
     }
   },

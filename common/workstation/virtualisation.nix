@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
 	virtualisation = {
@@ -8,8 +8,14 @@
 			enable = true;
 			onShutdown = "shutdown";
 
-			qemu.ovmf.enable = true;
-			qemu.runAsRoot = false;
+			qemu = {
+				ovmf.enable = true;
+				runAsRoot = false;
+
+				package = if config.misc.buildFull
+					then pkgs.qemu
+					else pkgs.qemu_kvm;
+			};
 		};
 	};
 

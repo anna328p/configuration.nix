@@ -8,14 +8,6 @@
 		neovim.url = github:neovim/neovim?dir=contrib;
 		neovim.inputs.flake-utils.follows = "flake-utils";
 
-		# Apple
-
-		usbmuxd.url = github:libimobiledevice/usbmuxd;
-		usbmuxd.flake = false;
-
-		idevicerestore.url = github:libimobiledevice/idevicerestore;
-		idevicerestore.flake = false;
-
 		# Transmission
 		
 		transmission = {

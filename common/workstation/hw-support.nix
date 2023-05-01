@@ -3,7 +3,8 @@
 {
 	boot = {
 		# Emulate ARM systems for remote deployments
-		binfmt.emulatedSystems = [ "aarch64-linux" ];
+		binfmt.emulatedSystems = lib.optionals config.misc.buildFull
+			[ "aarch64-linux" ];
 
 		# Control connected monitors' settings
 		kernelModules = [ "i2c-dev" "ddcci" ];
@@ -19,9 +20,6 @@
 
 		# Mouse config GUI
 		piper
-
-		# Steno keyboard support
-		plover.dev
 
 		# Smart cards, Yubikey
 		opensc pcsctools yubikey-manager yubikey-manager-qt

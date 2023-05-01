@@ -3,6 +3,10 @@
 final: prev: 
 {
 	# inherit (flakes.neovim.packages.${final.system}) neovim;
+	neovim = prev.neovim.override { withRuby = false; };
+
+	ruby_latest = final.ruby_3_2;
+	rubyPackages_latest = final.rubyPackages_3_2;
 
 	wrapDiscord = discordPkg: final.symlinkJoin {
 		name = "${discordPkg.pname}-wrapped";
@@ -38,9 +42,12 @@ final: prev:
 		buildInputs = oa.buildInputs ++ [ final.python3Packages.pycryptodome ];
 	});
 
-	gnome = prev.gnome.overrideScope' (gfinal: gprev: {
-		yelp = gprev.yelp.overrideAttrs (_: {
-			patches = [ ./yelp-no-smooth-scrolling.patch ];
-		});
+	# TODO: remove after nixpkgs#229306 fixed 2023-05-01
+	dummy-nm-plugin = name: prev.hello.overrideAttrs (_: {
+		passthru.networkManagerPlugin = name;
 	});
+
+	networkmanager-sstp = final.dummy-nm-plugin "sstp";
+	networkmanager-l2tp = final.dummy-nm-plugin "l2tp";
+	networkmanager-fortisslvpn = final.dummy-nm-plugin "fortissl";
 }
