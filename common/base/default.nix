@@ -11,7 +11,7 @@
 
 	networking = {
 		enableIPv6 = true;
-		domain = "ad.ap5.dev";
+		domain = "lan.ap5.network";
 	};
 
 	# english

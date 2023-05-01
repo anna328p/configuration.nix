@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
 	boot = {
@@ -60,6 +60,17 @@
 	hardware.sane = {
 		enable = true;
 		extraBackends = with pkgs; [ sane-airscan ];
+
+		brscan5 = {
+			enable = true;
+			
+			netDevices = {
+				livingroom = {
+					model = "HL-L2390DW";
+					ip = "10.0.0.4";
+				};
+			};
+		};
 	};
 
 	# Android device debugging support

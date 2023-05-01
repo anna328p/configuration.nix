@@ -93,6 +93,7 @@
 		# Wine
 		wine-custom
 		winetricks
+		samba # to provide winbind
 
 		# Media players
 		mpv_bd
