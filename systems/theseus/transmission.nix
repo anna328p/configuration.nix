@@ -1,6 +1,8 @@
 { ... }:
 
-{
+let
+	rpc-password = builtins.readFile ../../secrets/transmission-password;
+in {
 	users.users.anna.extraGroups = [ "transmission" ];
 
 	services.transmission = {
@@ -13,7 +15,7 @@
 
 			rpc-authentication-required = "true";
 			rpc-username = "anna";
-			rpc-password = (builtins.readFile ./transmission-password.txt);
+			inherit rpc-password;
 
 			peer-port = 25999;
 
