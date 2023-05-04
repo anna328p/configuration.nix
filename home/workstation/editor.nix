@@ -4,6 +4,7 @@
 	home = {
 		packages = with pkgs; [
 			rubyPackages_latest.solargraph
+			ccls
 			rnix-lsp
 			nodePackages.diagnostic-languageserver
 			nodePackages.vscode-langservers-extracted
@@ -99,6 +100,9 @@
 				lspconfig.rnix.setup { }
 				lspconfig.diagnosticls.setup { }
 				lspconfig.bashls.setup { }
+				lspconfig.ccls.setup {
+					single_file_support = true,
+				}
 
 				local css_capabilities = vim.lsp.protocol.make_client_capabilities()
 				css_capabilities.textDocument.completion.completionItem.snippetSupport = true

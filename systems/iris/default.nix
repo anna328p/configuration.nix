@@ -2,9 +2,9 @@
 
 {
 	imports = with localModules; [
-		common.base
-		common.server
-		common.virtual
+		common_base
+		common_server
+		common_virtual
 
 		./hardware-configuration.nix
 		./networking.nix # generated at runtime by nixos-infect

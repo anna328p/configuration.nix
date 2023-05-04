@@ -2,10 +2,10 @@
 
 {
 	imports = with localModules; [
-		common.base
-		common.physical
-		common.workstation
-		common.misc.amd
+		common_base
+		common_physical
+		common_workstation
+		common_misc_amd
 
 		flakes.musnix.nixosModules.default
 

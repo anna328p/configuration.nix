@@ -22,9 +22,9 @@
 	in import flakes.nixpkgs-master (args // systemArgs);
 
 	nix = {
-		extraOptions = ''
-			experimental-features = nix-command flakes repl-flake
-		'';
+		settings.experimental-features = [
+			"nix-command" "flakes" "repl-flake"
+		];
 
 		package = pkgs.nixVersions.unstable;
 

@@ -12,6 +12,19 @@
 			canTouchEfiVariables = true;
 			efiSysMountPoint = "/boot";
 		};
+
+		systemd-boot = {
+			extraFiles = {
+				"efi/shell/shell.efi" = "${pkgs.edk2-uefi-shell}/shell.efi";
+			};
+
+			extraEntries = {
+				"z-00-efi-shell.conf" = ''
+					title EFI Shell
+					efi /efi/shell/shell.efi
+				'';
+			};
+		};
 	};
 
 	environment.systemPackages = with pkgs; [

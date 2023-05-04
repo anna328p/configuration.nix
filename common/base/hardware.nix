@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-	boot.tmpOnTmpfs = true;
+	boot.tmp.useTmpfs = true;
 
 	# TTY appearance
 	console = {

@@ -39,57 +39,47 @@
 
 	outputs = { self
 		, nixpkgs
-		, nixpkgs-master
-		, flake-utils
 		, local-pkgs
 		, nur
-		, nixos-hardware
-		, impermanence
-		, home-manager
-		, musnix
-		, qbot
-		, snm
 		, ...
 	}@flakes: let
-		localModules = {
-			common = {
-				module = common/module;
+		nixosModules' = rec {
+			default = common_module;
 
-				base = common/base;
-				physical = common/physical;
-				server = common/server;
-				virtual = common/virtual;
-				workstation = common/workstation;
+			common_module = common/module;
 
-				misc = {
-					amd = common/misc/amd;
-					small = common/misc/small;
-				};
-			};
+			common_base = common/base;
+			common_physical = common/physical;
+			common_server = common/server;
+			common_virtual = common/virtual;
+			common_workstation = common/workstation;
 
-			home = {
-				module = home/module;
+			common_misc_amd = common/misc/amd;
+			common_misc_small = common/misc/small;
 
-				base = home/base;
-				workstation = home/workstation;
-			};
+			systems_hermes = systems/hermes;
+			systems_theseus = systems/theseus;
 
-			systems = {
-				hermes = systems/hermes;
-				theseus = systems/theseus;
-
-				leonardo = systems/leonardo;
-				neo = systems/neo;
-				heracles = systems/heracles;
-				iris = systems/iris;
-			};
+			systems_leonardo = systems/leonardo;
+			systems_neo = systems/neo;
+			systems_heracles = systems/heracles;
+			systems_iris = systems/iris;
 		};
+
+		homeManagerModules' = rec {
+			default = module;
+
+			module = home/module;
+			base = home/base;
+			workstation = home/workstation;
+		};
+
+		localModules = nixosModules' // { home = homeManagerModules'; };
 
 		flakeLib = import ./lib { inherit flakes; };
 
 		overlays = [
 			local-pkgs.overlays.default
-			qbot.overlays.default
 			nur.overlay
 		];
 
@@ -102,29 +92,31 @@
 			};
 		};
 
+		importMods = builtins.mapAttrs (_: import);
+		mkSystems = builtins.mapAttrs (_: mkNixosSystem);
+
 	in {
 		lib = flakeLib;
 
 		inputs = flakes;
 
-		nixosModules = localModules // {
-			default = localModules.common.module;
-		};
+		nixosModules = importMods nixosModules';
+		homeManagerModules = importMods homeManagerModules';
 
 		nixosConfigurations = let
 			moduleSets = with localModules; rec {
-				hermes = [ systems.hermes ];
-				hermes-small = hermes ++ [ common.misc.small ];
+				hermes = [ systems_hermes ];
+				hermes-small = hermes ++ [ common_misc_small ];
 
-				theseus = [ systems.theseus ];
-				theseus-small = theseus ++ [ common.misc.small ];
+				theseus = [ systems_theseus ];
+				theseus-small = theseus ++ [ common_misc_small ];
 
-				heracles = [ systems.heracles ];
-				leonardo = [ systems.leonardo ];
-				neo = [ systems.neo ];
-				iris = [ systems.iris ];
+				heracles = [ systems_heracles ];
+				leonardo = [ systems_leonardo ];
+				neo = [ systems_neo ];
+				iris = [ systems_iris ];
 			};
 
-		in builtins.mapAttrs (_: mkNixosSystem) moduleSets;
+		in mkSystems moduleSets;
 	};
 }

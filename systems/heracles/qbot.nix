@@ -1,4 +1,4 @@
-{ lib, flakes, ... }:
+{ pkgs, lib, flakes, ... }:
 
 {
 	imports = [
@@ -7,6 +7,8 @@
 
 	services.qbot = {
 		enable = true;
+
+		package = flakes.qbot.packages.${pkgs.system}.default;
 
 		config = {
 			token = builtins.readFile ../../secrets/qbot-token;

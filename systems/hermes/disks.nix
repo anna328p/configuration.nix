@@ -1,11 +1,6 @@
-{ flakes, modulesPath, ... }:
+{ ... }:
 
 {
-	imports = [
-		flakes.impermanence.nixosModule
-		flakes.nixos-hardware.nixosModules.lenovo-thinkpad-t14-amd-gen1
-	];
-
 	fileSystems = let
 		dataset = subpath: {
 			fsType = "zfs";

@@ -1,22 +1,29 @@
-{ config, pkgs, lib, localModules, ... }:
+{ config, pkgs, lib, localModules, flakes, ... }:
 {
 	imports = with localModules; [
-		common.base
-		common.physical
-		common.workstation
-		common.misc.amd
+		common_base
+		common_physical
+		common_workstation
+		common_misc_amd
 
-		./hardware-configuration.nix
+		flakes.nixos-hardware.nixosModules.lenovo-thinkpad-t14-amd-gen1
+		./disks.nix
+
+		flakes.impermanence.nixosModule
 		./persist-system.nix
 		./persist-home.nix
 	];
 
 	boot = {
-		kernelPackages = lib.mkForce pkgs.linuxPackages_testing;
+		# TODO: change back once openzfs supports 6.3+ 2023-04-28
+		# kernelPackages = lib.mkForce pkgs.linuxPackages_testing;
+		kernelPackages = lib.mkForce pkgs.linuxPackages_6_2;
+
 		zfs.enableUnstable = true;
 
 		kernelParams = [
 			"iwlwifi.swcrypto=0" "bluetooth.disable_ertm=1"
+			"pcie_aspm=force"
 		];
 
 		plymouth.enable = lib.mkForce false;
@@ -38,6 +45,8 @@
 	powerManagement = {
 		enable = true;
 		powertop.enable = true;
+
+		cpuFreqGovernor = "schedutil";
 	};
 
 	services.postgresql.enable = true;

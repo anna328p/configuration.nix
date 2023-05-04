@@ -46,6 +46,7 @@
 		gh # GitHub CLI
 		direnv
 		_7zz
+		nix-tree
 
 		## Miscellaneous
 

@@ -6,9 +6,11 @@
 		binfmt.emulatedSystems = lib.optionals config.misc.buildFull
 			[ "aarch64-linux" ];
 
+		# TODO: build broken with kernel 6.3, 2023-04-28
 		# Control connected monitors' settings
-		kernelModules = [ "i2c-dev" "ddcci" ];
-		extraModulePackages = [ config.boot.kernelPackages.ddcci-driver ];
+		# kernelModules = [ "i2c-dev" "ddcci" ];
+		# extraModulePackages = [ config.boot.kernelPackages.ddcci-driver ];
+		kernelModules = [ "i2c-dev" ];
 	};
 
 	environment.systemPackages = with pkgs; [
@@ -23,6 +25,9 @@
 
 		# Smart cards, Yubikey
 		opensc pcsctools yubikey-manager yubikey-manager-qt
+
+		# Power management
+		config.boot.kernelPackages.cpupower
 	];
 
 	# Mouse configuration
@@ -81,7 +86,10 @@
 	services.pcscd.enable = true;
 
 	# Update device firmware
-	services.fwupd.enable = true;
+	services.fwupd = {
+		enable = true;
+		extraRemotes = [ "lvfs-testing" ];
+	};
 
 	# Misc
 	hardware.bluetooth.enable = true;

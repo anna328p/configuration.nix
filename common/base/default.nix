@@ -69,5 +69,13 @@
 
 	# enable sshd everywhere
 	services.openssh.enable = true;
+
+	nix.settings = {
+		experimental-features = [ "cgroups" "auto-allocate-uids" ];
+		auto-optimise-store = true;
+		auto-allocate-uids = true;
+		use-cgroups = true;
+		preallocate-contents = true;
+	};
 }
 # vim: noet:ts=4:sw=4:ai:mouse=a
