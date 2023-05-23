@@ -8,8 +8,6 @@ final: prev:
 	ruby_latest = final.ruby_3_2;
 	rubyPackages_latest = final.rubyPackages_3_2;
 
-	rubyPackages_latest = final.rubyPackages_3_1;
-
 	wrapDiscord = discordPkg: final.symlinkJoin {
 		name = "${discordPkg.pname}-wrapped";
 		paths = [ discordPkg ];
