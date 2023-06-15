@@ -22,6 +22,7 @@
 		gimp
 		inkscape
 		imagemagick # Conversion/editing
+		img2pdf
 
 		# Media
 		audacity # Audio editor

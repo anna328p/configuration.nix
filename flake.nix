@@ -43,30 +43,37 @@
 		, nur
 		, ...
 	}@flakes: let
-		nixosModules' = rec {
-			default = common_module;
+		L = import ./lib { inherit flakes; };
 
-			common_module = common/module;
+		nixosModulePaths = rec {
+			default = common.module;
 
-			common_base = common/base;
-			common_physical = common/physical;
-			common_server = common/server;
-			common_virtual = common/virtual;
-			common_workstation = common/workstation;
+			common = {
+				module = common/module;
 
-			common_misc_amd = common/misc/amd;
-			common_misc_small = common/misc/small;
+				base = common/base;
+				physical = common/physical;
+				server = common/server;
+				virtual = common/virtual;
+				workstation = common/workstation;
 
-			systems_hermes = systems/hermes;
-			systems_theseus = systems/theseus;
+				misc.amd = common/misc/amd;
+				misc.ftp = common/misc/ftp.nix;
+				misc.small = common/misc/small;
+			};
 
-			systems_leonardo = systems/leonardo;
-			systems_neo = systems/neo;
-			systems_heracles = systems/heracles;
-			systems_iris = systems/iris;
+			systems = {
+				hermes = systems/hermes;
+				theseus = systems/theseus;
+
+				leonardo = systems/leonardo;
+				angelia = systems/angelia;
+				heracles = systems/heracles;
+				iris = systems/iris;
+			};
 		};
 
-		homeManagerModules' = rec {
+		homeModulePaths = rec {
 			default = module;
 
 			module = home/module;
@@ -74,9 +81,7 @@
 			workstation = home/workstation;
 		};
 
-		localModules = nixosModules' // { home = homeManagerModules'; };
-
-		flakeLib = import ./lib { inherit flakes; };
+		localModules = nixosModulePaths // { home = homeModulePaths; };
 
 		overlays = [
 			local-pkgs.overlays.default
@@ -87,34 +92,36 @@
 			inherit modules;
 
 			specialArgs = {
-				inherit flakes overlays localModules;
-				L = flakeLib;
+				inherit flakes overlays localModules L;
 			};
 		};
 
-		importMods = builtins.mapAttrs (_: import);
-		mkSystems = builtins.mapAttrs (_: mkNixosSystem);
+		importMods = with L;
+			o (mapAttrValues import) (flattenSetSep "-");
+
+		mkSystems = with L;
+			mapAttrValues mkNixosSystem;
 
 	in {
-		lib = flakeLib;
+		lib = L;
 
 		inputs = flakes;
 
-		nixosModules = importMods nixosModules';
-		homeManagerModules = importMods homeManagerModules';
+		nixosModules = importMods nixosModulePaths;
+		homeManagerModules = importMods homeModulePaths;
 
 		nixosConfigurations = let
 			moduleSets = with localModules; rec {
-				hermes = [ systems_hermes ];
-				hermes-small = hermes ++ [ common_misc_small ];
+				hermes = [ systems.hermes ];
+				hermes-small = hermes ++ [ common.misc.small ];
 
-				theseus = [ systems_theseus ];
-				theseus-small = theseus ++ [ common_misc_small ];
+				theseus = [ systems.theseus ];
+				theseus-small = theseus ++ [ common.misc.small ];
 
-				heracles = [ systems_heracles ];
-				leonardo = [ systems_leonardo ];
-				neo = [ systems_neo ];
-				iris = [ systems_iris ];
+				heracles = [ systems.heracles ];
+				leonardo = [ systems.leonardo ];
+				angelia = [ systems.angelia ];
+				iris = [ systems.iris ];
 			};
 
 		in mkSystems moduleSets;

@@ -16,7 +16,7 @@
 	nixpkgs.hostPlatform = lib.systems.examples.gnu64;
 
 	networking = {
-		hostName = "neo";
+		hostName = "angelia";
 		firewall.allowedTCPPorts = [ 80 443 ];
 	};
 

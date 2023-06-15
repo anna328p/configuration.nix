@@ -16,7 +16,7 @@
 				});
 
 			serverNames = [
-				"leonardo" "neo" "iris" "heracles" "cyamites"
+				"leonardo" "angelia" "iris" "heracles" "cyamites"
 				"theseus"
 			];
 

@@ -2,15 +2,17 @@
 
 {
 	imports = with localModules; [
-		common_base
-		common_physical
-		common_workstation
-		common_misc_amd
+		common.base
+		common.physical
+		common.workstation
+		common.misc.amd
 
 		flakes.musnix.nixosModules.default
 
 		./hardware-configuration.nix
 		./transmission.nix
+
+		common.misc.ftp
 	];
 
 	# Hardware support
@@ -33,15 +35,6 @@
 
 	services = {
 		atftpd.enable = true;
-
-		vsftpd = {
-			enable = true;
-			localUsers = true;
-			userlist = [ "anna" ];
-			userlistEnable = true;
-			chrootlocalUser = false;
-		};
-
 		xserver.displayManager.gdm.autoSuspend = false;
 	};
 

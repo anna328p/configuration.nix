@@ -3,11 +3,20 @@
 with lib; let
 	cfg = config.misc.bookmarks;
 
-	bookmarksType = with types; nullOr (listOf (either (str) (attrsOf str)));
-	strListType = with types; nullOr (listOf str);
+	mkStrOption = L.mkGenericOption {} types.str;
 
-	mkBookmarksOption = L.mkGenericOption { default = null; } bookmarksType;
-	mkStrListOption = L.mkGenericOption { default = null; } strListType;
+	bookmarkType = types.submodule {
+		options = {
+			name = mkStrOption "Name shown in the sidebar" { default = ""; };
+			target = mkStrOption "Location that the bookmark points to" {};
+		};
+	};
+
+	bookmarksType = types.listOf bookmarkType;
+	strListType = types.listOf types.str;
+
+	mkBookmarksOption = L.mkGenericOption { default = []; } bookmarksType;
+	mkStrListOption = L.mkGenericOption { default = []; } strListType;
 in {
 	options.misc.bookmarks = {
 		enable = mkEnableOption "File manager bookmarks";
@@ -23,19 +32,17 @@ in {
 		gtk.gtk3.bookmarks = with L; let
 			homeDir = config.home.homeDirectory;
 			
-			toBookmark = prefix: fn: entry: let
-				mkTarget = val: prefix + fn val;
+			mkBookmarks = opt: prefix: fn: let
+				mkLine = entry: let
+					inherit (entry) name target;
+				in
+					"${prefix}${fn target} ${name}";
 			in
-				if isString entry
-					then singleton (mkTarget entry)
-					else mapAttrsToList (k: v: "${mkTarget v} ${k}") entry;
+				map mkLine opt;
 
-			opt' = (flip optionalsAttr') cfg;
-			opt = name: fn: opt' name (concatMap fn);
-
-		in (opt "system" (toBookmark "file://" urlencode))
-		++ (opt "home" (toBookmark "file://${homeDir}/" urlencode))
-		++ (opt "global" (toBookmark "" id))
-		++ (opt' "extraConfig" id);
+		in (mkBookmarks cfg.system "file://"            urlencode)
+		++ (mkBookmarks cfg.home   "file://${homeDir}/" urlencode)
+		++ (mkBookmarks cfg.global ""                   id)
+		++ cfg.extraConfig;
 	};
 }

@@ -24,7 +24,7 @@
 			forceSSL = true;
 			globalRedirect = dest;
 		}; in {
-			"synapse.neo.dk0.us" = {
+			"synapse.angelia.ap5.network" = {
 				enableACME = true;
 				forceSSL = true;
 
@@ -37,8 +37,8 @@
 				};
 			};
 
-			" synapse.neo.dk0.us" = {
-				useACMEHost = "synapse.neo.dk0.us";
+			" synapse.angelia.ap5.network" = {
+				useACMEHost = "synapse.angelia.ap5.network";
 				onlySSL = true;
 
 				listen = [ { addr = "0.0.0.0"; port = 8448; ssl = true; } ];
@@ -48,10 +48,10 @@
 				};
 			};
 
-			"neo.dk0.us" = base pkgs.element-web { };
-			"element.neo.dk0.us" = base pkgs.element-web { };
+			"angelia.ap5.network" = base pkgs.element-web { };
+			"element.angelia.ap5.network" = base pkgs.element-web { };
 
-			"riot.neo.dk0.us" = redirect "neo.dk0.us";
+			"riot.angelia.ap5.network" = redirect "angelia.ap5.network";
 		});
 
 		appendHttpConfig = ''

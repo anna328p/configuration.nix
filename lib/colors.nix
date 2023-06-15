@@ -5,7 +5,7 @@ with lib; with L; rec {
 		prefixHash genDecls genVarDecls byKind;
 	};
 
-	prefixAttrs = pfx: mapAttrs (_: addStrings pfx);
+	prefixAttrs = o mapAttrValues addStrings;
 	prefixHash = prefixAttrs "#";
 
 	genDecls = oo concatLines mapAttrsToList;

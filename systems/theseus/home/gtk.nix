@@ -5,14 +5,15 @@
 		enable = true;
 
 		system = [
-			"/media/storage/torrents"
+			{ target = "/media/storage/torrents"; }
 		];
 
 		home = [
-			{ "UIUC SP2023" = "Documents/Docs/UIUC/31 SP2023"; }
-			"work"
-			{ "FL Exports" = "Documents/Image-Line/FL Studio/Projects/Exports"; }
-			{ "FL Packs" = ".wine-FL20.7/drive_c/Program Files/Image-Line/FL Studio 20/Data/Patches/Packs"; }
+			{ target = "work"; }
+			{ name = "Docs"; target = "Documents/Docs"; }
+			{ name = "UIUC SP2023"; target = "Documents/Docs/UIUC/31 SP2023"; }
+			{ name = "FL Exports"; target = "Documents/Image-Line/FL Studio/Projects/Exports"; }
+			{ name = "FL Patches"; target = "Documents/Image-Line/Patches"; }
 		];
 	};
 }

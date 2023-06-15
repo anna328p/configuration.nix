@@ -2,24 +2,28 @@
 
 with lib; with L; rec {
 	exports = self: { inherit (self)
-		optionalAttr' optionalsAttr'
-		optionalAttr optionalsAttr;
+		optionalAttr optionalsAttr
+
+		mergeSets mergeSetsRec
+		flattenSetSep
+		mapAttrValues;
 	};
-
-	genericOptionalAttr = fn: name: set: fn': let
-		val = getAttr name set;
-	in
-		if (isAttrs set) && (hasAttr name set) && !(isNull val)
-			then (o fn fn') val
-			else [];
 	
-	optionalsAttr' = genericOptionalAttr id;
-	optionalAttr' = genericOptionalAttr singleton;
+	# optionalAttr : Str -> Set a -> [a]
+	optionalAttr = attr: set:
+		if set ? ${attr}
+			then [ set.${attr} ]
+			else [];
 
-	toId = f: a: b: f a b id;
+	# optionalsAttr : Str -> Set a -> (a | List)
+	optionalsAttr = attr: set: set.${attr} or [];
 
-	optionalsAttr = toId optionalsAttr';
-	optionalAttr = toId optionalAttr';
+	
+	# mergeSets : [Set Any] -> Set Any
+	mergeSets = foldl' (l: r: l // r) {};
+
+	# mergeSetsRec : [Set Any] -> Set Any
+	mergeSetsRec = foldl' recursiveUpdate {};
 
 	diffSets = a: b: let
 		optionalValues = a: b: k: let
@@ -33,7 +37,27 @@ with lib; with L; rec {
 		in
 			filter pred (attrNames c);
 
-		foldSets = foldl' (l: r: l // r) {};
+		in zipAttrsWith (_: mergeSets) (map (optionalValues a b) (diffNames a b));
+	
+	# flattenSetSep =
+	#     sig Str _- Set Any _- Set (Except Set) __
 
-		in zipAttrsWith (_: foldSets) (map (optionalValues a b) (diffNames a b));
+	# flattenSetSep : Str -> Set Any -> Set (Except Set)
+	flattenSetSep = sep: let
+		isNameValuePair = val:
+			isAttrs val && (attrNames val) == [ "name" "value" ];
+
+		mkPair = path: nameValuePair (concatStringsSep sep path);
+	in
+		pipe' [
+			(mapAttrsRecursive mkPair)
+			(collect isNameValuePair)
+			(listToAttrs)
+		];
+	
+	# mapAttrValues =
+	#     sig forall (a: b: (Fn a _- b) _- Set a _- Set b)
+
+	# mapAttrValues : (a -> b) -> Set a -> Set b
+	mapAttrValues = o mapAttrs const;
 }

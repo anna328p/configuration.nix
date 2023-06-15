@@ -4,7 +4,7 @@
 	services = {
 		# matrix-synapse = {
 		# 	enable = true;
-		# 	server_name = "dk0.us";
+		# 	server_name = "ap5.network";
 		# 	listeners = [
 		# 		{
 		# 			port = 8008;
@@ -38,8 +38,8 @@
 		# 	environmentFile = /etc/keyring/matrix-appservice-discord/tokens.env;
 		# 	settings = {
 		# 		bridge = {
-		# 			domain = "dk0.us";
-		# 			homeserverUrl = "https://synapse.neo.dk0.us";
+		# 			domain = "ap5.network";
+		# 			homeserverUrl = "https://synapse.angelia.ap5.network";
 		# 		};
 		# 	};
 		# };

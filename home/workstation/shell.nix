@@ -1,13 +1,24 @@
 { ... }:
 
 {
-	home.shellAliases = {
+	home.shellAliases = let
+		addT = nbs: nbs + " --show-trace";
+		addK = nbs: nbs + " --keep-going";
+		addF = nbs: nbs + " --fast";
+	in rec {
 		open = "xdg-open";
 
-		nbs = "time nixos-rebuild switch --use-remote-sudo";
-		nbst = "time nixos-rebuild switch --use-remote-sudo --show-trace";
-		nbsk = "time nixos-rebuild switch --use-remote-sudo --keep-going";
-		nbsf = "time nixos-rebuild switch --use-remote-sudo --fast";
+		nbs = "time nixos-rebuild switch --use-remote-sudo"
+			+ " --flake 'path:/etc/nixos'";
+
+		nbst = addT nbs;
+		nbsk = addK nbs;
+		nbsf = addF nbs;
+
+		nbstf = addF nbst;
+		nbsft = addT nbsf;
+		nbskf = addF nbsk;
+		nbsfk = addK nbsf;
 
 		nsn = "nix search nixpkgs";
 	};

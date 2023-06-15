@@ -1,6 +1,8 @@
-{ lib, ... }:
+{ ... }:
 
-with lib; rec {
+let
+	inherit (builtins) toString;
+in rec {
 	exports = self: { inherit (self)
 		fontCss;
 	};
@@ -8,6 +10,6 @@ with lib; rec {
 	# FontOpt : { name : Str; size : Num }
 	# fontCss : FontOpt -> Str
 	fontCss = opt: let
-		sizeStr = toString opt.size;
-	in "${sizeStr}pt ${opt.name}";
+		inherit (opt) size name;
+	in "${toString size}pt ${name}";
 }

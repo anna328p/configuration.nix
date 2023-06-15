@@ -1,12 +1,22 @@
 { lib, ... }:
 
-with lib; rec {
+let
+	inherit (builtins)
+		foldl'
+		isInt;
+in rec {
 	exports = self: { inherit (self) 
+		id
 		compose o compose2 oo
-		pipe'
-
-		fontCss;
+		flip
+		pipe pipe'
+		const
+		isPositiveInt
+		modulo;
 	};
+
+	# id : a -> a
+	id = x: x;
 
 	# compose : (b -> c) -> (a -> b) -> (a -> c)
 	compose = f: g: x: f (g x);
@@ -16,6 +26,36 @@ with lib; rec {
 	oo = o o o;
 	compose2 = oo;
 
+	# flip : (a -> b -> c) -> (b -> a -> c)
+	flip = f: a: b: f b a;
+
+	# pipe = a -> [ (a -> b) (b -> c) ... (d -> e) ] -> e 
+	pipe = foldl' (fn: val: fn val);
+
 	# pipe' = [ (a -> b) (b -> c) ... (d -> e) ] -> a -> e 
-	pipe' = flip pipe;
+	pipe' = foldl' (flip compose) id;
+
+	# const =
+	#     sig forall (a: a _- (Fn Any _- a))
+
+	# const : a -> (Any -> a)
+	const = val: _: val;
+
+	# isPositiveInt : Int -> Bool
+	isPositiveInt = n:
+		assert isInt n;
+		n >= 0;
+
+	# modulo : Int -> Int -> Int
+	modulo = a: b: a - (a / b) * b;
+
+	# pow : Int -> Int -> Int
+	pow = base: exp:
+		assert isPositiveInt exp;
+		if exp == 0 then
+			1
+		else if exp == 1 then
+			base
+		else
+			base * (pow base (exp - 1));
 }
