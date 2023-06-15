@@ -13,6 +13,8 @@ in rec {
 		sublist
 		repeatStr
 
+		init last
+
 		genericPad padList' padStr'
 		leftPadList rightPadList
 		leftPadStr rightPadStr
@@ -62,6 +64,26 @@ in rec {
 	repeatStr = str: count:
 		concatStringsSep "" (genList (_: str) count);
 
+	# init : [a] -> [a]
+	init = list: let
+		len = length list;
+	in
+		assert isList list;
+		if len < 2 then
+			[]
+		else
+			genList (elemAt list) (len - 1);
+	
+	# last : [a] -> a
+	last = list: let
+		len = length list;
+	in
+		assert isList list;
+		if (len == 0) then
+			null
+		else
+			elemAt list (len - 1);
+	
 	# fixedWidthString : Int -> Str -> Str -> Str
 	# TODO: implement
 	# fixedWidthString = width: filler: str: null;
