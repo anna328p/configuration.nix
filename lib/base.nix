@@ -12,8 +12,7 @@ in rec {
 		pipe pipe'
 		fix
 		const
-		isPositiveInt
-		modulo;
+		isPositiveInt min max modulo pow;
 	};
 
 	# id : a -> a
@@ -49,6 +48,12 @@ in rec {
 	isPositiveInt = n:
 		assert isInt n;
 		n >= 0;
+
+	# min : Int -> Int -> Int
+	min = a: b: if a < b then a else b;
+
+	# max : Int -> Int -> Int
+	max = a: b: if a > b then a else b;
 
 	# modulo : Int -> Int -> Int
 	modulo = a: b: a - (a / b) * b;

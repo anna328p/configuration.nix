@@ -2,6 +2,7 @@
 
 with L; let
 	inherit (builtins)
+		isFunction
 		ceil
 		isList length elemAt genList
 		isString stringLength substring
@@ -14,6 +15,9 @@ in rec {
 		repeatStr
 
 		init last
+		isPair mkPair fst snd
+		curry uncurry
+		zip mapPairs zipMap
 
 		genericPad padList' padStr'
 		leftPadList rightPadList
@@ -83,6 +87,62 @@ in rec {
 			null
 		else
 			elemAt list (len - 1);
+
+	# minListLength : [a] -> [b] -> Int
+	minListLength = left: right:
+		assert isList left;
+		assert isList right;
+		min (length left) (length right);
+
+	# isPair : [a] -> Bool
+	isPair = val: isList val && (length val) == 2;
+
+	# mkPair : a -> b -> (a, b)
+	mkPair = a: b: [ a b ];
+	
+	# fst : (a, b) -> a
+	fst = pair:
+		assert isPair pair;
+		elemAt pair 0;
+
+	# snd : (a, b) -> b
+	snd = pair:
+		assert isPair pair;
+		elemAt pair 1;
+	
+	# curry : ((a, b) -> c) -> a -> b -> c
+	curry = fn: a: b:
+		assert isFunction fn;
+		fn [ a b ];
+
+	# uncurry : (a -> b -> c) -> (a, b) -> c
+	uncurry = fn: pair:
+		assert isFunction fn;
+		assert isPair pair;
+		fn (fst pair) (snd pair);
+
+	# zip : [a] -> [b] -> [(a, b)]
+	zip = left: right: let
+		len = minListLength left right;
+	in
+		genList (pairAt left right) len;
+	
+	# mapPairs : (a -> b -> c) -> [(a, b)] -> c
+	mapPairs = fn: list:
+		assert isFunction fn;
+		assert isList list;
+		assert all isPair list;
+		map (uncurry fn) list;
+	
+	# pairAt : [a] -> [b] -> Int -> (a, b)
+	pairAt = left: right: i: mkPair (elemAt left i) (elemAt right i);
+
+	# zipMap : (a -> b -> c) -> [a] -> [b] -> [c]
+	zipMap = fn: left: right: let
+		len = minListLength left right;
+	in
+		assert isFunction fn;
+		genList (i: fn (elemAt left i) (elemAt right i)) len;
 	
 	# fixedWidthString : Int -> Str -> Str -> Str
 	# TODO: implement
