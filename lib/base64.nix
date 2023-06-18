@@ -6,6 +6,12 @@ with L; let
 		map concatMap foldl'
 		genList length elemAt;
 in rec {
+	exports = self: { inherit (self)
+		toBitGroups strToBitString strToBitList
+		zeroPadN toBase64 toBase64Padded;
+	};
+
+	# b64Array : [Str]
 	b64Array = [
 		"A" "B" "C" "D" "E" "F" "G" "H"
 		"I" "J" "K" "L" "M" "N" "O" "P"
@@ -16,11 +22,6 @@ in rec {
 		"w" "x" "y" "z" "0" "1" "2" "3"
 		"4" "5" "6" "7" "8" "9" "+" "/"
 	];
-
-	exports = self: { inherit (self)
-		toBitGroups strToBitString strToBitList
-		zeroPadN toBase64 toBase64Padded;
-	};
 
 	# getNSlice : Int -> [a] -> Int -> [a]
 	getNSlice = size: list: n: sublist (n * size) size list;
