@@ -1,49 +1,48 @@
 { config, pkgs, lib, ... }:
 
 {
-	imports = [
-		./storage.nix
-	];
+    imports = [
+        ./storage.nix
+    ];
 
-	boot.loader = {
-		systemd-boot.enable = true;
+    boot.loader = {
+        systemd-boot.enable = true;
 
-		efi = {
-			canTouchEfiVariables = true;
-			efiSysMountPoint = "/boot";
-		};
+        efi = {
+            canTouchEfiVariables = true;
+            efiSysMountPoint = "/boot";
+        };
 
-		systemd-boot = {
-			extraFiles = {
-				"efi/shell/shell.efi" = "${pkgs.edk2-uefi-shell}/shell.efi";
-			};
+        systemd-boot = {
+            extraFiles = {
+                "efi/shell/shell.efi" = "${pkgs.edk2-uefi-shell}/shell.efi";
+            };
 
-			extraEntries = {
-				"z-00-efi-shell.conf" = ''
-					title EFI Shell
-					efi /efi/shell/shell.efi
-				'';
-			};
-		};
-	};
+            extraEntries = {
+                "z-00-efi-shell.conf" = ''
+                    title EFI Shell
+                    efi /efi/shell/shell.efi
+                '';
+            };
+        };
+    };
 
-	environment.systemPackages = with pkgs; [
-		acpi
+    environment.systemPackages = with pkgs; [
+        acpi
 
-		# Query hardware configuration
-		usbutils
-		pciutils
-		dmidecode
+        # Query hardware configuration
+        usbutils
+        pciutils
+        dmidecode
 
-		# Sensors
-		lm_sensors
+        # Sensors
+        lm_sensors
 
-		# Firmware integration
-		efibootmgr
-	];
+        # Firmware integration
+        efibootmgr
+    ];
 
-	hardware.enableRedistributableFirmware = true;
+    hardware.enableRedistributableFirmware = true;
 
-	services.gpm.enable = true;
+    services.gpm.enable = true;
 }
-# vim: noet:ts=4:sw=4:ai:mouse=a

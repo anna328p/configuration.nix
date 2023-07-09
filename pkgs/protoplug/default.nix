@@ -4,43 +4,43 @@
 , ... }:
 
 clangStdenv.mkDerivation rec {
-	pname = "protoplug";
+    pname = "protoplug";
 
-	src = flakes.protoplug;
-	version = mkFlakeVer src "1.4.0";
+    src = flakes.protoplug;
+    version = mkFlakeVer src "1.4.0";
 
-	nativeBuildInputs = [ pkg-config ];
+    nativeBuildInputs = [ pkg-config ];
 
-	buildInputs = [
-		luajit
-		curl
+    buildInputs = [
+        luajit
+        curl
 
-		fftw
-		alsa-lib
+        fftw
+        alsa-lib
 
-		gtk3 freetype
-		xorg.libXinerama
-		xorg.libXcursor
-	];
+        gtk3 freetype
+        xorg.libXinerama
+        xorg.libXcursor
+    ];
 
-	patchPhase = ''
-		sed -i 's|/usr/share/ProtoplugFiles|'$out'/share/ProtoplugFiles|' Source/ProtoplugDir.cpp
-	'';
+    patchPhase = ''
+        sed -i 's|/usr/share/ProtoplugFiles|'$out'/share/ProtoplugFiles|' Source/ProtoplugDir.cpp
+    '';
 
-	buildPhase = ''
-		pushd Builds/multi/Linux
-		make CONFIG=Release
-	'';
+    buildPhase = ''
+        pushd Builds/multi/Linux
+        make CONFIG=Release
+    '';
 
-	installPhase = ''
-		popd
-		pushd Bin/linux
+    installPhase = ''
+        popd
+        pushd Bin/linux
 
-		install -v -D -t $out/lib/vst "Lua Protoplug "*.so
+        install -v -D -t $out/lib/vst "Lua Protoplug "*.so
 
-		ln -sfv $out/lib/vst $out/lib/lxvst
+        ln -sfv $out/lib/vst $out/lib/lxvst
 
-		install -v -d $out/share
-		cp -rv $src/ProtoplugFiles $out/share
-	'';
+        install -v -d $out/share
+        cp -rv $src/ProtoplugFiles $out/share
+    '';
 }

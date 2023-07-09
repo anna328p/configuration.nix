@@ -1,17 +1,15 @@
 { config, pkgs, lib, flakes, ... }:
 
 {
-	imports = [
-		../module
+    imports = [
+        ../module
 
-		./tmux.nix
-		./shell.nix
-		./git.nix
-	];
+        ./tmux.nix
+        ./shell.nix
+        ./git.nix
+    ];
 
-	home.stateVersion = "22.05";
+    home.stateVersion = "22.05";
 
-	manual.manpages.enable = lib.mkDefault false;
+    manual.manpages.enable = lib.mkDefault false;
 }
-
-# vim: set ts=4 sw=4 noet :

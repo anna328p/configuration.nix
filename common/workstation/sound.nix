@@ -1,45 +1,45 @@
 { pkgs, ... }:
 
 {
-	# MIDI support
-	boot.kernelModules = [ "snd-seq" "snd-rawmidi" ];
+    # MIDI support
+    boot.kernelModules = [ "snd-seq" "snd-rawmidi" ];
 
-	# hardware stuff?
-	sound.enable = true;
+    # hardware stuff?
+    sound.enable = true;
 
-	# Manage audio server stuff
-	environment.systemPackages = with pkgs; [
-		pavucontrol
-		# helvum # TODO: broken 2023-02-08
-	];
+    # Manage audio server stuff
+    environment.systemPackages = with pkgs; [
+        pavucontrol
+        # helvum # TODO: broken 2023-02-08
+    ];
 
-	# Allow audio access (I have no idea if this does anything)
-	users.users.anna.extraGroups = [ "audio" "jackaudio" ];
+    # Allow audio access (I have no idea if this does anything)
+    users.users.anna.extraGroups = [ "audio" "jackaudio" ];
 
-	# Build packages with PulseAudio support...
-	nixpkgs.config.pulseaudio = true;
+    # Build packages with PulseAudio support...
+    nixpkgs.config.pulseaudio = true;
 
-	# ...but disable PulseAudio...
-	hardware.pulseaudio.enable = false;
+    # ...but disable PulseAudio...
+    hardware.pulseaudio.enable = false;
 
-	# ...and use PipeWire instead!
-	services.pipewire = {
-		enable = true;
+    # ...and use PipeWire instead!
+    services.pipewire = {
+        enable = true;
 
-		# All the compatibility layers
-		pulse.enable = true;
-		jack.enable = true;
-		alsa.enable = true;
-		alsa.support32Bit = true;
-	};
+        # All the compatibility layers
+        pulse.enable = true;
+        jack.enable = true;
+        alsa.enable = true;
+        alsa.support32Bit = true;
+    };
 
-	# Allow pipewire to run with realtime priority to reduce audio latency
-	security = {
-		pam.loginLimits = [
-			{ domain = "@audio"; type = "-"; item = "nice"; value = "-20"; }
-			{ domain = "@audio"; type = "-"; item = "rtprio"; value = "99"; }
-		];
+    # Allow pipewire to run with realtime priority to reduce audio latency
+    security = {
+        pam.loginLimits = [
+            { domain = "@audio"; type = "-"; item = "nice"; value = "-20"; }
+            { domain = "@audio"; type = "-"; item = "rtprio"; value = "99"; }
+        ];
 
-		rtkit.enable = true;
-	};
+        rtkit.enable = true;
+    };
 }

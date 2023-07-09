@@ -1,21 +1,21 @@
 { lib, config, ... }:
 
 let
-	kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
+    kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
 in {
-	boot = {
-		inherit kernelPackages;
+    boot = {
+        inherit kernelPackages;
 
-		supportedFilesystems = [
-			"zfs"
+        supportedFilesystems = [
+            "zfs"
 
-			# external drives
-			"ntfs" "exfat"
-		];
+            # external drives
+            "ntfs" "exfat"
+        ];
 
-		initrd = {
-			kernelModules = [ "dm-snapshot" ];
-			supportedFilesystems = [ "zfs" ];
-		};
-	};
+        initrd = {
+            kernelModules = [ "dm-snapshot" ];
+            supportedFilesystems = [ "zfs" ];
+        };
+    };
 }

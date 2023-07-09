@@ -1,0 +1,20 @@
+{
+  "eval": {
+    "target": {
+      "args": [],
+      "installable": "path:.#nixosConfigurations"
+    },
+    "depth": 10,
+    "workers": 8
+  },
+  "formatting": {
+    "command": "nixpkgs-fmt"
+  },
+  "options": {
+    "enable": true,
+    "target": {
+      "args": [],
+      "installable": "path:.#nixosConfigurations.theseus.options"
+    }
+  }
+}

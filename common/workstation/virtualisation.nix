@@ -1,27 +1,27 @@
 { config, pkgs, ... }:
 
 {
-	virtualisation = {
-		podman.enable = true;
+    virtualisation = {
+        podman.enable = true;
 
-		libvirtd = {
-			enable = true;
-			onShutdown = "shutdown";
+        libvirtd = {
+            enable = true;
+            onShutdown = "shutdown";
 
-			qemu = {
-				ovmf.enable = true;
-				runAsRoot = false;
+            qemu = {
+                ovmf.enable = true;
+                runAsRoot = false;
 
-				package = if config.misc.buildFull
-					then pkgs.qemu
-					else pkgs.qemu_kvm;
-			};
-		};
-	};
+                package = if config.misc.buildFull
+                    then pkgs.qemu
+                    else pkgs.qemu_kvm;
+            };
+        };
+    };
 
-	users.users.anna.extraGroups = [ "libvirtd" ];
+    users.users.anna.extraGroups = [ "libvirtd" ];
 
-	environment.systemPackages = with pkgs; [
-		virt-manager spice-gtk
-	];
+    environment.systemPackages = with pkgs; [
+        virt-manager spice-gtk
+    ];
 }

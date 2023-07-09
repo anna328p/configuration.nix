@@ -1,71 +1,71 @@
 { flakes }:
 
 let
-	inherit (builtins)
-		foldl' mapAttrs attrValues;
+    inherit (builtins)
+        foldl' mapAttrs attrValues;
 
-	# fix : (a -> a) -> a
-	fix = f: let x = f x; in x;
-
-
-	# foldSets : [Set] -> Set
-	foldSets = foldl' (a: b: a // b) { };
+    # fix : (a -> a) -> a
+    fix = f: let x = f x; in x;
 
 
-	# mapAttrVals : (a -> b) -> Set a -> Set b
-	mapAttrVals = fn: mapAttrs (_: fn);
+    # foldSets : [Set] -> Set
+    foldSets = foldl' (a: b: a // b) { };
 
 
-	# Mod = { * } -> Set
-	# callMod' : Set -> Set -> (Mod -> Set) -> Set -> Set
-	callMod' = self: defaultArgs: mod: args: let
-		args' = { L = self; } // defaultArgs // args;
-	in mod args';
+    # mapAttrVals : (a -> b) -> Set a -> Set b
+    mapAttrVals = fn: mapAttrs (_: fn);
 
 
-	# using' : ((Mod -> Set) -> Set -> Set) -> Set -> Set Path -> (Set -> Set) -> Set
-	using' = call: self: inputs: fn: let
-		# importMod : Path -> Set
-		importMod = path: call (import path) { };
-
-		# getExports : Set -> Set
-		getExports = mod: mod.exports mod;
-
-		# mods : Set Set
-		mods = mapAttrVals importMod inputs;
-		# exports : [Set]
-		exportSets = attrValues (mapAttrVals getExports mods);
-
-		env = mods // (foldSets exportSets);
-	in env // fn env;
+    # Mod = { * } -> Set
+    # callMod' : Set -> Set -> (Mod -> Set) -> Set -> Set
+    callMod' = self: defaultArgs: mod: args: let
+        args' = { L = self; } // defaultArgs // args;
+    in mod args';
 
 
-	# mkLibrary : Set -> Mod -> Set
-	mkLibrary = extraArgs: fn: let
-		inner = self: let
-			# args : Set
-			args = extraArgs // { inherit using; };
+    # using' : ((Mod -> Set) -> Set -> Set) -> Set -> Set Path -> (Set -> Set) -> Set
+    using' = call: self: inputs: fn: let
+        # importMod : Path -> Set
+        importMod = path: call (import path) { };
 
-			# call : (Mod -> Set) -> Set -> Set
-			call = callMod' self args;
+        # getExports : Set -> Set
+        getExports = mod: mod.exports mod;
 
-			# using : Set Path -> (Set -> Set) -> Set
-			using = using' call self;
-		in call fn { };
-	in fix inner;
+        # mods : Set Set
+        mods = mapAttrVals importMod inputs;
+        # exports : [Set]
+        exportSets = attrValues (mapAttrVals getExports mods);
+
+        env = mods // (foldSets exportSets);
+    in env // fn env;
+
+
+    # mkLibrary : Set -> Mod -> Set
+    mkLibrary = extraArgs: fn: let
+        inner = self: let
+            # args : Set
+            args = extraArgs // { inherit using; };
+
+            # call : (Mod -> Set) -> Set -> Set
+            call = callMod' self args;
+
+            # using : Set Path -> (Set -> Set) -> Set
+            using = using' call self;
+        in call fn { };
+    in fix inner;
 
 
 in mkLibrary { inherit (flakes.nixpkgs) lib; } ({ using, ... }:
-	using {
-		base = ./base.nix;
+    using {
+        base = ./base.nix;
 
-		strings-lists = ./strings-lists.nix;
-		sets = ./sets.nix;
-		colors = ./colors.nix;
-		_urlencode = ./urlencode.nix;
-		base64 = ./base64.nix;
-		misc = ./misc.nix;
-		types = ./types.nix;
-		options = ./options.nix;
-	} (_: {})
+        strings-lists = ./strings-lists.nix;
+        sets = ./sets.nix;
+        colors = ./colors.nix;
+        _urlencode = ./urlencode.nix;
+        base64 = ./base64.nix;
+        misc = ./misc.nix;
+        types = ./types.nix;
+        options = ./options.nix;
+    } (_: {})
 )

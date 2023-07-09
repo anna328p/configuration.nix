@@ -1,22 +1,22 @@
 { lib, localModules, ... }:
 
 {
-	imports = with localModules; [
-		common_base
-		common_server
-		common_virtual
+    imports = with localModules; [
+        common.base
+        common.server
+        common.virtual
 
-		./hardware-configuration.nix
-		./qbot.nix
-	];
+        ./hardware-configuration.nix
+        ./qbot.nix
+    ];
 
-	nixpkgs.hostPlatform = lib.systems.examples.aarch64-multiplatform;
+    nixpkgs.hostPlatform = lib.systems.examples.aarch64-multiplatform;
 
-	networking = {
-		hostName = "heracles";
+    networking = {
+        hostName = "heracles";
 
-		firewall.allowedTCPPorts = [ 4567 ];
-	};
+        firewall.allowedTCPPorts = [ 4567 ];
+    };
 
-	system.stateVersion = "23.05";
+    system.stateVersion = "23.05";
 }

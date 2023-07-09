@@ -1,12 +1,12 @@
 { ... }:
 
 {
-	misc.bookmarks = {
-		enable = true;
+    misc.bookmarks = {
+        enable = true;
 
-		home = [
-			{ name = "Docs"; target = "Documents/Docs"; }
-			{ target = "work"; }
-		];
-	};
+        home = [
+            { name = "Docs"; target = "Documents/Docs"; }
+            { target = "work"; }
+        ];
+    };
 }

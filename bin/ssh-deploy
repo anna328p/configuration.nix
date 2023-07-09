@@ -45,7 +45,8 @@ script_dir () {
 }
 
 parse_opts () {
-	local opts=$(getopt -n ssh-deploy -l target-host:,build-host:,remote-build,help -o t:b:rh -- "$@")
+	declare opts
+	opts=$(getopt -n ssh-deploy -l target-host:,build-host:,remote-build,help -o t:b:rh -- "$@")
 	check_res $?
 
 	eval set -- "$opts"
@@ -78,7 +79,9 @@ main () {
 	declare -a cmd=( nixos-rebuild --fast --use-remote-sudo --use-substitutes )
 
 	# flake output
-	local flake_loc=$(realpath $(script_dir)/..)
+	declare flake_loc
+	flake_loc=$(realpath "$(script_dir)"/..)
+
 	check_res "$?"
 
 	cmd+=( --flake "path:${flake_loc}#${ARG_flake_output}" )
@@ -98,5 +101,3 @@ main () {
 }
 
 main "$@"
-
-# vim: ft=tcl

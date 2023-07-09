@@ -1,55 +1,55 @@
 { lib, config, L, ... }:
 
 let
-	scheme = config.colorScheme;
-	formatted = L.colors.prefixHash scheme.colors;
+    scheme = config.colorScheme;
+    formatted = L.colors.prefixHash scheme.colors;
 
-	defs = with formatted; rec {
-		accent_color    = base0C;
-		accent_bg_color = accent_color;
-		accent_fg_color = base05;
+    defs = with formatted; rec {
+        accent_color    = base0C;
+        accent_bg_color = accent_color;
+        accent_fg_color = base05;
 
-		destructive_color    = base08;
-		destructive_bg_color = destructive_color;
-		destructive_fg_color = base05;
+        destructive_color    = base08;
+        destructive_bg_color = destructive_color;
+        destructive_fg_color = base05;
 
-		success_color    = base0B;
-		success_bg_color = success_color;
-		success_fg_color = base05;
+        success_color    = base0B;
+        success_bg_color = success_color;
+        success_fg_color = base05;
 
-		warning_color    = base0A;
-		warning_bg_color = warning_color;
-		warning_fg_color = base05;
+        warning_color    = base0A;
+        warning_bg_color = warning_color;
+        warning_fg_color = base05;
 
-		error_color    = destructive_color;
-		error_bg_color = error_color;
-		error_fg_color = base05;
+        error_color    = destructive_color;
+        error_bg_color = error_color;
+        error_fg_color = base05;
 
-		window_bg_color = base00;
-		window_fg_color = base05;
+        window_bg_color = base00;
+        window_fg_color = base05;
 
-		view_bg_color = base01;
-		view_fg_color = base05;
+        view_bg_color = base01;
+        view_fg_color = base05;
 
-		headerbar_bg_color = base01;
-		headerbar_fg_color = base05;
-		headerbar_border_color = base04;
-		headerbar_backdrop_color = base00;
+        headerbar_bg_color = base01;
+        headerbar_fg_color = base05;
+        headerbar_border_color = base04;
+        headerbar_backdrop_color = base00;
 
-		card_bg_color = base01;
-		card_fg_color = base05;
+        card_bg_color = base01;
+        card_fg_color = base05;
 
-		dialog_bg_color = base01;
-		dialog_fg_color = base05;
+        dialog_bg_color = base01;
+        dialog_fg_color = base05;
 
-		popover_bg_color = base01;
-		popover_fg_color = base05;
-	};
+        popover_bg_color = base01;
+        popover_fg_color = base05;
+    };
 
-	css = L.colors.genDecls (k: v: "@define-color ${k} ${v};") defs;
+    css = L.colors.genDecls (k: v: "@define-color ${k} ${v};") defs;
 in {
-	xdg.configFile = {
-		"gtk-3.0/gtk.css".text = css;
-		"gtk-4.0/gtk.css".text = css;
-	};
+    xdg.configFile = {
+        "gtk-3.0/gtk.css".text = css;
+        "gtk-4.0/gtk.css".text = css;
+    };
 }

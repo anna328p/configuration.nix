@@ -1,56 +1,55 @@
 { ... }:
 
 {
-	environment.persistence."/safe/home" = {
-		hideMounts = true;
+    environment.persistence."/safe/home" = {
+        hideMounts = true;
 
-		users.anna = {
-			directories = [
-				{ directory = ".gnupg"; mode = "0700"; }
-				{ directory = ".ssh"; mode = "0700"; }
-				{ directory = ".local/share/keyrings"; mode = "0700"; }
+        users.anna = {
+            directories = [
+                { directory = ".gnupg"; mode = "0700"; }
+                { directory = ".ssh"; mode = "0700"; }
+                { directory = ".local/share/keyrings"; mode = "0700"; }
 
-				".local/state"
+                ".local/state"
 
-				".local/share/direnv"
-				".local/share/nvim/site"
-				".local/share/icc"
+                ".local/share/direnv"
+                ".local/share/nvim/site"
+                ".local/share/icc"
 
-				".config/syncthing"
-				".config/discord"
-				".local/share/TelegramDesktop"
+                ".config/syncthing"
+                ".config/discord"
+                ".local/share/TelegramDesktop"
 
-				".local/share/wine"
+                ".local/share/wine"
 
-				".config/Logseq"
-				".logseq"
-				".local/share/logseq"
+                ".config/Logseq"
+                ".logseq"
+                ".local/share/logseq"
 
-				".mozilla/firefox"
+                ".mozilla/firefox"
 
-				"Documents"
-				"Music"
-				"Pictures"
-				"Videos"
-				"Sync"
+                "Documents"
+                "Music"
+                "Pictures"
+                "Videos"
+                "Sync"
 
-				"work"
-			];
+                "work"
+            ];
 
-			files = [
-				".local/share/zsh/zsh_history"
-			];
-		};
-	};
+            files = [
+                ".local/share/zsh/zsh_history"
+            ];
+        };
+    };
 
-	environment.persistence."/volatile/cache" = {
-		hideMounts = true;
-		
-		users.anna = {
-			directories = [
-				".cache"
-			];
-		};
-	};
+    environment.persistence."/volatile/cache" = {
+        hideMounts = true;
+        
+        users.anna = {
+            directories = [
+                ".cache"
+            ];
+        };
+    };
 }
-# vim: noet:ts=4:sw=4:ai:mouse=a

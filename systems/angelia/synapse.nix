@@ -1,64 +1,64 @@
 { ... }:
 
 {
-	services = {
-		# matrix-synapse = {
-		# 	enable = true;
-		# 	server_name = "ap5.network";
-		# 	listeners = [
-		# 		{
-		# 			port = 8008;
-		# 			bind_address = "::1";
-		# 			type = "http";
-		# 			tls = false;
-		# 			x_forwarded = true;
-		# 			resources = [
-		# 				{ names = [ "client" "federation" ]; compress = false; }
-		# 			];
-		# 		}
-		# 	];
+    services = {
+        # matrix-synapse = {
+        #   enable = true;
+        #   server_name = "ap5.network";
+        #   listeners = [
+        #       {
+        #           port = 8008;
+        #           bind_address = "::1";
+        #           type = "http";
+        #           tls = false;
+        #           x_forwarded = true;
+        #           resources = [
+        #               { names = [ "client" "federation" ]; compress = false; }
+        #           ];
+        #       }
+        #   ];
 
-		# 	enable_registration = true;
+        #   enable_registration = true;
 
-		# 	database_type = "psycopg2";
-		# 	database_args = {
-		# 		password = "synapse";
-		# 	};
+        #   database_type = "psycopg2";
+        #   database_args = {
+        #       password = "synapse";
+        #   };
 
-		# 	verbose = "1";
+        #   verbose = "1";
 
 
-		# 	app_service_config_files = [
-		# 		"/etc/dr.yaml"
-		# 	];
-		# };
+        #   app_service_config_files = [
+        #       "/etc/dr.yaml"
+        #   ];
+        # };
 
-		# matrix-appservice-discord = {
-		# 	enable = true;
-		# 	environmentFile = /etc/keyring/matrix-appservice-discord/tokens.env;
-		# 	settings = {
-		# 		bridge = {
-		# 			domain = "ap5.network";
-		# 			homeserverUrl = "https://synapse.angelia.ap5.network";
-		# 		};
-		# 	};
-		# };
+        # matrix-appservice-discord = {
+        #   enable = true;
+        #   environmentFile = /etc/keyring/matrix-appservice-discord/tokens.env;
+        #   settings = {
+        #       bridge = {
+        #           domain = "ap5.network";
+        #           homeserverUrl = "https://synapse.angelia.ap5.network";
+        #       };
+        #   };
+        # };
 
-		# postgresql = {
-		# 	enable = true;
-		# 	initialScript = pkgs.writeText "synapse-init.sql" ''
-		# 		CREATE ROLE "matrix-synapse" WITH LOGIN PASSWORD 'synapse' CREATEDB;
-		# 		CREATE DATABASE "matrix-synapse" WITH OWNER "matrix-synapse"
-		# 			TEMPLATE template0
-		# 			LC_COLLATE = "C"
-		# 			LC_CTYPE = "C";
-		# 		GRANT ALL PRIVILEGES ON DATABASE "matrix-synapse" TO "matrix-synapse";
-		# 	'';
-		# };
-	};
+        # postgresql = {
+        #   enable = true;
+        #   initialScript = pkgs.writeText "synapse-init.sql" ''
+        #       CREATE ROLE "matrix-synapse" WITH LOGIN PASSWORD 'synapse' CREATEDB;
+        #       CREATE DATABASE "matrix-synapse" WITH OWNER "matrix-synapse"
+        #           TEMPLATE template0
+        #           LC_COLLATE = "C"
+        #           LC_CTYPE = "C";
+        #       GRANT ALL PRIVILEGES ON DATABASE "matrix-synapse" TO "matrix-synapse";
+        #   '';
+        # };
+    };
 
-	environment.variables = {
-		"SYNAPSE_CACHE_FACTOR" = "2.0";
-	};
+    environment.variables = {
+        "SYNAPSE_CACHE_FACTOR" = "2.0";
+    };
 
 }

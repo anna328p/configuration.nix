@@ -1,81 +1,80 @@
 { pkgs, ... }:
 
 {
-	imports = [
-		../module
+    imports = [
+        ../module
 
-		./users.nix
-		./hardware.nix
-		./flake-support.nix
-	];
+        ./users.nix
+        ./hardware.nix
+        ./flake-support.nix
+    ];
 
-	networking = {
-		enableIPv6 = true;
-		domain = "lan.ap5.network";
-	};
+    networking = {
+        enableIPv6 = true;
+        domain = "lan.ap5.network";
+    };
 
-	# english
-	i18n = {
-		defaultLocale = "en_US.UTF-8";
- 		supportedLocales = [ "en_US.UTF-8/UTF-8" ];
-	};
+    # english
+    i18n = {
+        defaultLocale = "en_US.UTF-8";
+        supportedLocales = [ "en_US.UTF-8/UTF-8" ];
+    };
 
-	environment.systemPackages = with pkgs; [
-		## Standard utilities
+    environment.systemPackages = with pkgs; [
+        ## Standard utilities
 
-		tmux
-		neovim
+        tmux
+        neovim
 
-		moreutils # coreutils addons
-		psmisc # process management tools
+        moreutils # coreutils addons
+        psmisc # process management tools
 
-		exa # ls but better
-		tree # ls -R replacement
-		dfc # colorful df
-		ripgrep # faster grep -r replacement
-		fd # easier find replacement
-		pv # stream progress viewer
+        exa # ls but better
+        tree # ls -R replacement
+        dfc # colorful df
+        ripgrep # faster grep -r replacement
+        fd # easier find replacement
+        pv # stream progress viewer
 
-		jq # json query tool
-		file # query file types
-		bc units # calculators
+        jq # json query tool
+        file # query file types
+        bc units # calculators
 
-		neofetch # why not?
+        neofetch # why not?
 
-		# Compressors, archivers
-		zstd xz pigz
-		zip unzip
+        # Compressors, archivers
+        zstd xz pigz
+        zip unzip
 
-		## Networking
-		git
-		speedtest-cli
-		wget
-		nmap dnsutils whois
-	];
+        ## Networking
+        git
+        speedtest-cli
+        wget
+        nmap dnsutils whois
+    ];
 
-	# Set default text editor
-	environment.variables = {
-		EDITOR = "nvim";
-		VISUAL = "nvim";
-	};
+    # Set default text editor
+    environment.variables = {
+        EDITOR = "nvim";
+        VISUAL = "nvim";
+    };
 
-	# Shell
-	programs.zsh = {
-		enable = true;
-		interactiveShellInit = "bindkey -e";
-	};
+    # Shell
+    programs.zsh = {
+        enable = true;
+        interactiveShellInit = "bindkey -e";
+    };
 
-	environment.pathsToLink = [ "/share/zsh" ];
+    environment.pathsToLink = [ "/share/zsh" ];
 
-	# enable sshd everywhere
-	services.openssh.enable = true;
+    # enable sshd everywhere
+    services.openssh.enable = true;
 
-	nix.settings = {
-		experimental-features = [ "cgroups" "auto-allocate-uids" ];
-		auto-optimise-store = true;
-		auto-allocate-uids = true;
-		use-cgroups = true;
-		preallocate-contents = true;
-	};
+    nix.settings = {
+        experimental-features = [ "cgroups" "auto-allocate-uids" ];
+        auto-optimise-store = true;
+        auto-allocate-uids = true;
+        use-cgroups = true;
+        preallocate-contents = true;
+    };
 }
-# vim: noet:ts=4:sw=4:ai:mouse=a
