@@ -1,29 +1,26 @@
-{ lib, L, using, ... }:
+{ L, using, ... }:
 
 with L; let
     inherit (builtins)
-        isFunction
-        ceil
+        isInt isFunction
         isList length elemAt genList
         isString stringLength substring
         getAttr
         concatStringsSep;
 in rec {
     exports = self: { inherit (self)
-        singleton
         sublist
         repeatStr
-
+        fixedWidthString
         init last
-        isPair mkPair fst snd
-        curry uncurry
-        pairAt zip mapPairs zipMap
 
-        genericPad padList' padStr'
-        leftPadList rightPadList
+        genList'
+
+        leftPadListObj rightPadListObj
+        leftPadListList rightPadListList
         leftPadStr rightPadStr
 
-        slices' sliceListN sliceStrN
+        sliceListN sliceStrN
 
         addStrings
         concatStrings
@@ -31,13 +28,16 @@ in rec {
         concatLines concatMapLines
 
         stringToChars
-        mapStringChars' mapStringChars
+        imapStringChars mapStringChars
 
         charToInt;
     };
 
-    # singleton : a -> [a]
-    singleton = val: [ val ];
+    # addLists : [a] -> [a] -> [a]
+    addLists = a: b: a ++ b;
+
+    # addStrings : Str -> Str -> Str
+    addStrings = a: b: a + b;
 
     # sublist : Int -> Int -> List -> List
     sublist = start: count: list: let
@@ -64,8 +64,10 @@ in rec {
         substring index 1 str;
 
     # repeatStr : Str -> Int -> Str
-    repeatStr = str: count:
-        concatStringsSep "" (genList (_: str) count);
+    repeatStr = str: count: concatStrings (genList' str count);
+
+    # repeatStr : [a] -> Int -> [a]
+    repeatList = list: count: concatLists (genList' list count);
 
     # init : [a] -> [a]
     init = list: let
@@ -87,106 +89,141 @@ in rec {
         else
             elemAt list (len - 1);
 
-    # minListLength : [a] -> [b] -> Int
-    minListLength = left: right:
-        assert isList left;
-        assert isList right;
-        min (length left) (length right);
+    # getLenFn = T a -> Int
+    # mkRepeatFn = a -> Int -> T a
+    # getSliceFn = T a -> Int -> Int -> T a
+    # rtlFn = T a -> Int -> T a
 
-    # isPair : [a] -> Bool
-    isPair = val: isList val && (length val) == 2;
+    # rtlArg = Set (getLenFn | mkRepeatFn | getSliceFn)
+    # repeatToLen' : rtlArg -> rtlFn
+    repeatToLen' = { getLen, mkRepeat, getSlice }:
+        filler: width: let
+            fLen = getLen filler;
+            nRep = ceilDiv fLen width;
 
-    # mkPair : a -> b -> (a, b)
-    mkPair = a: b: [ a b ];
+            repeats = mkRepeat filler nRep;
+        in
+            if width == fLen * nRep
+                then repeats
+                else getSlice 0 width repeats;
     
-    # fst : (a, b) -> a
-    fst = pair:
-        assert isPair pair;
-        elemAt pair 0;
+    # repeatStrToLen : Str -> Int -> Str
+    repeatStrToLen = repeatToLen' {
+        getLen = stringLength;
+        mkRepeat = repeatStr;
+        getSlice = substring;
+    };
 
-    # snd : (a, b) -> b
-    snd = pair:
-        assert isPair pair;
-        elemAt pair 1;
-    
-    # curry : ((a, b) -> c) -> a -> b -> c
-    curry = fn: a: b:
-        assert isFunction fn;
-        fn [ a b ];
+    # repeatListToLen : [a] -> Int -> [a]
+    repeatListToLen = repeatToLen' {
+        getLen = length;
+        mkRepeat = repeatList;
+        getSlice = sublist;
+    };
 
-    # uncurry : (a -> b -> c) -> (a, b) -> c
-    uncurry = fn: pair:
-        assert isFunction fn;
-        assert isPair pair;
-        fn (fst pair) (snd pair);
-
-    # zip : [a] -> [b] -> [(a, b)]
-    zip = left: right: let
-        len = minListLength left right;
-    in
-        genList (pairAt left right) len;
-    
-    # mapPairs : (a -> b -> c) -> [(a, b)] -> c
-    mapPairs = fn: list:
-        assert isFunction fn;
-        assert isList list;
-        assert all isPair list;
-        map (uncurry fn) list;
-    
-    # pairAt : [a] -> [b] -> Int -> (a, b)
-    pairAt = left: right: i: mkPair (elemAt left i) (elemAt right i);
-
-    # zipMap : (a -> b -> c) -> [a] -> [b] -> [c]
-    zipMap = fn: left: right: let
-        len = minListLength left right;
-    in
-        assert isFunction fn;
-        genList (i: fn (elemAt left i) (elemAt right i)) len;
-    
     # fixedWidthString : Int -> Str -> Str -> Str
-    # TODO: implement
-    # fixedWidthString = width: filler: str: null;
+    fixedWidthString = width: filler: str: let
+        sLen = stringLength str;
+        fLen = stringLength filler;
 
-    # genericPad : (T a -> Num) -> (a -> Num -> T a) -> (T a -> T a -> T a) -> a -> Num -> T a -> T a
-    genericPad = lenFn: mkPaddingFn: applyPadding:
-        obj: len: src: let
-            len' = lenFn src;
-            padding = mkPaddingFn obj (len - len');
-        in if len' >= len
-            then src
-            else applyPadding src padding;
-    
-    # padList' : ([a] -> [a] -> [a]) -> a -> Num -> [a] -> [a]
-    padList' = genericPad length (o genList const);
-    
-    # leftPadList : a -> Num -> [a] -> [a]
-    leftPadList = padList' (l: p: p ++ l);
-    # rightPadList : a -> Num -> [a] -> [a]
-    rightPadList = padList' (l: p: l ++ p);
-
-    # padStr' : (Str -> Str -> Str) -> Char -> Num -> Str -> Str
-    padStr' = genericPad stringLength repeatStr;
-    
-    # leftPadStr : Char -> Num -> Str -> Str
-    leftPadStr = padStr' (s: p: p + s);
-    # rightPadStr : Char -> Num -> Str -> Str
-    rightPadStr = padStr' (s: p: s + p);
-
-    # addStrings : Str -> Str -> Str
-    addStrings = a: b: a + b;
-
-    # slices' : (Num -> Num -> T a -> T a) -> (T a -> Num) -> Num -> T a -> [T a]
-    slices' = subFn: lenFn: len: obj: let
-        objLen = lenFn obj;
-        nSlices = ceil (1.0 * objLen / len);
-        getSlice = ix: subFn (ix * len) len obj;
+        nEmptySpaces = width - sLen;
+        padding = repeatStrToLen filler nEmptySpaces;
     in
-        genList getSlice nSlices;
+        assert isInt width;
+        assert isString filler;
+        assert fLen > 0;
+        assert sLen < width;
+
+        if nEmptySpaces == 0
+            then str
+            else padding + str;
     
-    # sliceListN : Num -> [a] -> [[a]]
-    sliceListN = slices' sublist length;
-    # sliceStrN : Num -> Str -> [Str]
-    sliceStrN = slices' substring stringLength;
+    # genList' : a -> Int -> [a]
+    genList' = o genList const;
+
+    # predFn = Any -> Bool
+    # getLenFn = T a -> Int
+    # mkPadFn = a -> Int -> T a
+    # joinFn = T a -> T a -> T a
+    # padFn = a -> Int -> T a -> T a
+    
+    # genericPadArg : Set (predFn | getLenFn | mkPadFn | joinFn)
+
+    # genericPad : predFn -> predFn -> getLenFn -> mkPadFn -> joinFn -> padFn
+    genericPad = { isInnerType, isContainer, getLen, mkPad, join }:
+        filler: width: input: let
+            inputLen = getLen input;
+            padding = mkPad filler width;
+        in
+            assert isInnerType filler;
+            assert isInt width;
+            assert isContainer input;
+
+            if inputLen >= width
+                then input
+                else join input padding;
+
+    padListObj' = join: genericPad {
+        isInnerType = const true;
+        isContainer = isList;
+        getLen = length;
+        mkPad = genList';
+        inherit join;
+    };
+
+    # leftPadListObj : a -> Int -> [a] -> [a]
+    leftPadListObj = padListObj' (flip addLists);
+
+    # rightPadListObj : a -> Int -> [a] -> [a]
+    rightPadListObj = padListObj' addLists;
+
+    padListList' = join: genericPad {
+        isInnerType = isList;
+        isContainer = isList;
+        getLen = length;
+        mkPad = repeatListToLen;
+        inherit join;
+    };
+
+    # leftPadListList : [a] -> Int -> [a] -> [a]
+    leftPadListList = padListList' (flip addLists);
+
+    # rightPadListList : [a] -> Int -> [a] -> [a]
+    rightPadListList = padListList' addLists;
+
+    padStr' = join: genericPad {
+        isInnerType = isString;
+        isContainer = isString;
+        getLen = stringLength;
+        mkPad = repeatStrToLen;
+        inherit join;
+    };
+
+    # leftPadStr : Str -> Int -> Str -> Str
+    leftPadStr = padStr' (flip addStrings);
+
+    # rightPadStr : Str -> Int -> Str -> Str
+    rightPadStr = padStr' addStrings;
+
+    genericSliceN = { getLen, getSlice }:
+        width: input: let
+            inputLen = getLen input;
+            nSlices = ceilDiv inputLen width;
+            mkSlice = ix: getSlice (ix * width) width input;
+        in
+            genList mkSlice nSlices;
+    
+    # sliceListN : Int -> [a] -> [[a]]
+    sliceListN = genericSliceN {
+        getLen = length;
+        getSlice = sublist;
+    };
+
+    # sliceStrN : Int -> Str -> [Str]
+    sliceStrN = genericSliceN {
+        getLen = stringLength;
+        getSlice = substring;
+    };
 
     concatStrings = concatStringsSep "";
 
@@ -207,17 +244,20 @@ in rec {
         assert isString input;
         genList (charAt input) (stringLength input);
 
-    # mapStringChars' : (Int -> Str -> a) -> Str -> [a]
-    mapStringChars' = fn: input: let
+    # imapStringChars : (Int -> Str -> a) -> Str -> [a]
+    imapStringChars = fn: input: let
         mapFn = i: fn i (charAt input i);
     in
         assert isString input;
         genList mapFn (stringLength input);
 
     # mapStringChars : (Str -> a) -> Str -> [a]
-    mapStringChars = fn: mapStringChars' (_: fn);
+    mapStringChars = o imapStringChars const;
     
     asciiTable = import ./ascii-table.nix;
 
-    charToInt = (flip getAttr) asciiTable;
+    # isChar : Str -> Bool
+    isChar = c: isString c && (stringLength c) == 1;
+
+    charToInt = flip getAttr asciiTable;
 }

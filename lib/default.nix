@@ -58,8 +58,10 @@ let
 in mkLibrary { inherit (flakes.nixpkgs) lib; } ({ using, ... }:
     using {
         base = ./base.nix;
+        numeric = ./numeric.nix;
 
         strings-lists = ./strings-lists.nix;
+        tuples = ./tuples.nix;
         sets = ./sets.nix;
         colors = ./colors.nix;
         _urlencode = ./urlencode.nix;
