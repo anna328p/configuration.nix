@@ -144,11 +144,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1689134369,
-        "narHash": "sha256-0G9dutIvhS/WUr3Awcnqw71g8EVVvvkOhVDnDDbY4Fw=",
+        "lastModified": 1689362769,
+        "narHash": "sha256-5V7Z7T9019pGsFnYH6va5h6Wveq8FKmXa/xLfj0DhNI=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "e42fb59768f0305085abde0dd27ab5e0cc15420c",
+        "rev": "c1cdce3d89741d402d8fd2c93e3d2643ff85b053",
         "type": "github"
       },
       "original": {
@@ -174,7 +174,7 @@
     "keydb": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-0FCI4azBDVko3M0MEQQYbjHWzqgDMjRqYcciYRFKLVs=",
+        "narHash": "sha256-kFrRpU58C1zTWECHx+WfKcErZc79iEe8mkHT7g9S39E=",
         "type": "tarball",
         "url": "https://github.com/anna328p/mirror/releases/latest/download/keydb_eng.zip"
       },
@@ -221,7 +221,7 @@
       },
       "locked": {
         "lastModified": 1,
-        "narHash": "sha256-hPkSLW+7F7dVbW8TK+ds7p+VioBw0x8ymxJMeNx7e+4=",
+        "narHash": "sha256-8rszLjRpHzV0vPp4N5RAquXSm07543tvxuJrbODflYE=",
         "path": "./pkgs",
         "type": "path"
       },
@@ -260,11 +260,11 @@
       },
       "locked": {
         "dir": "contrib",
-        "lastModified": 1689252216,
-        "narHash": "sha256-xLzBRZxgHqW3nitUIB70zah5Sdd0GTfgICqDo4y36O4=",
+        "lastModified": 1689353238,
+        "narHash": "sha256-48FzJRK2+MD4GVXWMFNWih+8zJE+m7zBlyNOSJM1Dok=",
         "owner": "neovim",
         "repo": "neovim",
-        "rev": "a3f4598226c4d01e4fbc41181a1ad21793862fe3",
+        "rev": "33e1a8cd7042816a064c0d2bf32b6570d7e88b79",
         "type": "github"
       },
       "original": {
@@ -316,11 +316,11 @@
     },
     "nixos-hardware": {
       "locked": {
-        "lastModified": 1689060619,
+        "lastModified": 1689320556,
         "narHash": "sha256-vODUkZLWFVCvo1KPK3dC2CbXjxa9antEn5ozwlcTr48=",
         "owner": "NixOS",
         "repo": "nixos-hardware",
-        "rev": "44bc025007e5fcc10dbc3d9f96dcbf06fc0e8c1c",
+        "rev": "d4ea64f2063820120c05f6ba93ee02e6d4671d6b",
         "type": "github"
       },
       "original": {
@@ -379,11 +379,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1689273735,
-        "narHash": "sha256-71rGlsB38G3vjTxLUSZjS6uJFTzVzKv5X0ozvQpos9E=",
+        "lastModified": 1689370062,
+        "narHash": "sha256-bWYP5vWoeZS1Fk6DnsEiZLme8ZHrgABzoSZFOUdO9uU=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "1bea85f8859839cd6ea279b136651639d42dc13e",
+        "rev": "afd92f23e3bcee2504a2fce54d81f80a4d18a2f0",
         "type": "github"
       },
       "original": {
@@ -410,11 +410,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1689237958,
-        "narHash": "sha256-G9HZmqsT3kqRAPL2am3nICLBu086lfPG0QR+JpFQicg=",
+        "lastModified": 1689353800,
+        "narHash": "sha256-otYIhlggg1kspAfl3EFTuiPv5zF8QcBSyO7K5uEnqo8=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "1128a6668a27668a7d2799ebdc9e31e3ea3f727f",
+        "rev": "af59b3fb98ba6c3868522a3bc1c13388c09163ab",
         "type": "github"
       },
       "original": {
@@ -441,11 +441,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1689268587,
-        "narHash": "sha256-f2SCLzz6CfYIX9WN9MDQAz2T1YkI/ycYNwUZb1rpRiE=",
+        "lastModified": 1689364020,
+        "narHash": "sha256-B/WwnPauIwdtUZx+F6l1c1S2h3z3hTf3Zy7uRZm2+Po=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "b628a183586e0de78a9250728eb4acee4fac1818",
+        "rev": "bee3a6a559df309d95efa57686f88142bbf7d8b6",
         "type": "github"
       },
       "original": {
@@ -495,11 +495,11 @@
     "rainbow-delimiters-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1689188828,
-        "narHash": "sha256-5N/Lhuje8Eob3of+XVPSZxXRdQbCW/IVa2xvZh+Cq+g=",
+        "lastModified": 1689366832,
+        "narHash": "sha256-H0n5uNSpRAyUMHDd09PX/cwUrPQIwNXCaVGkh0WfalE=",
         "owner": "hiphish",
         "repo": "rainbow-delimiters.nvim",
-        "rev": "862e0f5e867e1a4c93e3efe73d4c71b7b6d3fec8",
+        "rev": "61a00e4f396cd2266c8c2efdde3fcfef4dcad906",
         "type": "gitlab"
       },
       "original": {
