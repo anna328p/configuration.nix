@@ -4,7 +4,7 @@ with L; let
 	inherit (builtins)
 		isList length elemAt genList all
 		isInt isFunction
-		map
+		map foldl'
 		;
 in rec {
 	exports = self: { inherit (self)
@@ -12,7 +12,8 @@ in rec {
 		isTuple isPair
 		mkTuple mkPair
 		fst snd
-		curry uncurry
+		curry curryN
+		uncurry uncurryN
 		minListLength
 		zip mapPairs zipMap
 		pairAt
@@ -30,21 +31,25 @@ in rec {
 	# singleton : a -> [a]
 	singleton = val: [ val ];
 
-	# mkTupleRes = Either [a] (a -> mkTupleRes)
-	# mkTuple : Int -> a -> mkTupleRes
-	mkTuple = n': let
-		recurse = acc: n: val: let
-			res = acc ++ singleton val;
-		in
-			if n == 1
-				then res
-				else recurse res (n - 1);
-	in
-		assert isInt n' && n' >= 1;
-		recurse [] n';
+	# append : [a] -> a -> [a]
+	append = xs: x:
+	    assert isList xs;
+	    xs ++ [x];
+
+    # curryFn : Nat -> Type -> Type -> Type
+    # curryFn 1 a b = a -> b
+    # curryFn n a b = a -> curryFn (n - 1) a b
+
+    # curry : ([a] -> b) -> Nat n -> curryFn n a b
+    curryN = f: n:
+        assert isNat n;
+        foldl' compose2 f (genList' append n) [];
+
+    # mkTuple : Nat n -> curryFn n a [a]
+    mkTuple = curryN id;
 
 	# mkPair : a -> b -> (a, b)
-	mkPair = mkTuple 2;
+	mkPair = a: b: [ a b ];
 	
 	# fst : (a, b) -> a
 	fst = pair:
@@ -60,6 +65,13 @@ in rec {
 	curry = fn: a: b:
 		assert isFunction fn;
 		fn [ a b ];
+
+    # uncurry : Nat n -> (Any -> Any) -> Tuple n -> Any
+    uncurryN = n: fn: xs:
+        assert isNat n;
+        assert isFunction fn;
+        assert isTuple n xs;
+        foldl' id fn xs;
 
 	# uncurry : (a -> b -> c) -> (a, b) -> c
 	uncurry = fn: pair:

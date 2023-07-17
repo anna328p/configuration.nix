@@ -6,9 +6,11 @@ with L; let
 		;
 in {
 	exports = self: { inherit (self)
-		isPositiveInt
-		min max
-		modulo pow ceilDiv
+	    isPositive isNegative
+	    isPositiveInt isNegativeInt
+	    isNat
+		min max modulo abs
+		pow ceilDiv
 		;
 	};
 
@@ -23,6 +25,9 @@ in {
 
 	# isNegativeInt : Int -> Bool
 	isNegativeInt = n: isInt n && isNegative n;
+
+	# isNat : Int -> Bool
+	isNat = n: isInt n && n > 0;
 
 	# min : Int -> Int -> Int
 	min = a: b: if a < b then a else b;
