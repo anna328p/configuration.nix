@@ -15,10 +15,6 @@
     ];
 
     boot = {
-        # TODO: change back once openzfs supports 6.3+ 2023-04-28
-        # kernelPackages = lib.mkForce pkgs.linuxPackages_testing;
-        kernelPackages = lib.mkForce pkgs.linuxPackages_6_2;
-
         zfs.enableUnstable = true;
 
         kernelParams = [
