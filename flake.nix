@@ -43,8 +43,6 @@
         , nur
         , ...
     }@flakes: let
-        L = import ./lib { inherit flakes; };
-
         nixosModulePaths = rec {
             default = common.module;
 
@@ -92,18 +90,19 @@
             inherit modules;
 
             specialArgs = {
-                inherit flakes overlays localModules L;
+                inherit flakes overlays localModules;
+                L = self.lib;
             };
         };
 
-        importMods = with L;
+        importMods = with self.lib;
             o (mapAttrValues import) (flattenSetSep "-");
 
-        mkSystems = with L;
+        mkSystems = with self.lib;
             mapAttrValues mkNixosSystem;
 
     in {
-        lib = L;
+        lib = import ./lib { inherit flakes; };
 
         inputs = flakes;
 

@@ -1,15 +1,43 @@
 { flakes, ... }:
 
 final: prev: let
-    buildPlugin = final.vimUtils.buildVimPluginFrom2Nix;
-in {
-    vim-slim = buildPlugin {
-        name = "vim-slim";
-        src = flakes.vim-slim;
-    };
+    nvim-nightly-pkgs = flakes.neovim-nightly-overlay.packages.${final.system};
 
-    rainbow-delimiters-nvim = buildPlugin {
-        name = "rainbow-delimiters-nvim";
-        src = flakes.rainbow-delimiters-nvim;
-    };
+
+    buildPlugin = final.vimUtils.buildVimPluginFrom2Nix;
+
+    buildPluginFrom = sources: name:
+        buildPlugin {
+            inherit name;
+            src = sources.${name};
+        };
+
+    buildPluginsFrom = sources: names:
+        prev.lib.genAttrs names (buildPluginFrom sources);
+
+
+    nvim-treesitter = let
+        pkg = buildPluginFrom flakes "nvim-treesitter";
+
+        src = flakes.nixpkgs
+            + "/pkgs/applications/editors/vim"
+            + "/plugins/nvim-treesitter/overrides.nix";
+
+        set = { nvim-treesitter = pkg; };
+
+        overrides = final.callPackage src { } set set;
+    in
+        pkg.overrideAttrs (_: overrides);
+
+in {
+    neovim-unwrapped = nvim-nightly-pkgs.neovim;
+
+    vimPlugins = prev.vimPlugins.extend
+        (vfinal: vprev: {
+            inherit nvim-treesitter;
+        } // buildPluginsFrom flakes [
+            "vim-slim"
+            "rainbow-delimiters-nvim"
+            "nvim-cmp"
+        ]);
 }

@@ -5,8 +5,9 @@
         nixpkgs.url = flake:nixpkgs;
         flake-utils.url = flake:flake-utils;
 
-        neovim.url = github:neovim/neovim?dir=contrib;
-        neovim.inputs.flake-utils.follows = "flake-utils";
+        neovim-nightly-overlay.url =
+            github:nix-community/neovim-nightly-overlay;
+        neovim-nightly-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
         nixd.url = github:nix-community/nixd;
 
@@ -31,7 +32,8 @@
 
         # Misc
 
-        keydb.url = "https://github.com/anna328p/mirror/releases/latest/download/keydb_eng.zip";
+        keydb.url =
+            "https://github.com/anna328p/mirror/releases/latest/download/keydb_eng.zip";
         keydb.flake = false;
 
         protoplug.url = github:pac-dev/protoplug;
@@ -42,6 +44,12 @@
 
         rainbow-delimiters-nvim.url = gitlab:hiphish/rainbow-delimiters.nvim;
         rainbow-delimiters-nvim.flake = false;
+
+        nvim-treesitter.url = github:nvim-treesitter/nvim-treesitter;
+        nvim-treesitter.flake = false;
+
+        nvim-cmp.url = github:PlankCipher/nvim-cmp/patch-1;
+        nvim-cmp.flake = false;
     };
 
     outputs = { self
