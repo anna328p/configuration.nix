@@ -7,6 +7,5 @@ let
         callPackage file args';
 
 in {
-    protoplug = callPackage' ./protoplug { };
     keydb = callPackage' ./keydb { };
 }

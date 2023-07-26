@@ -4,6 +4,7 @@ let
     inherit (builtins)
         isAttrs attrNames attrValues mapAttrs
         length filter foldl' map genList elemAt
+        listToAttrs concatStringsSep
         ;
 
     inherit (lib)

@@ -5,14 +5,15 @@
         nixpkgs.url = flake:nixpkgs/nixos-unstable-small;
         nixpkgs-master.url = flake:nixpkgs/master;
 
+        # libraries
+
         flake-utils.url = flake:flake-utils;
 
         flake-compat.url = github:edolstra/flake-compat;
         flake-compat.flake = false;
-        
-        local-pkgs.url = "path:./pkgs";
-        local-pkgs.inputs.nixpkgs.follows = "nixpkgs";
-        local-pkgs.inputs.flake-utils.follows = "flake-utils";
+
+        flake-parts.url = github:hercules-ci/flake-parts;
+        flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
 
         nur.url = flake:nur;
         nixos-hardware.url = flake:nixos-hardware;
@@ -34,15 +35,63 @@
         snm.inputs.utils.follows = "flake-utils";
         snm.inputs.nixpkgs.follows = "nixpkgs";
         snm.inputs.nixpkgs-22_11.follows = "nixpkgs";
+        snm.inputs.nixpkgs-23_05.follows = "nixpkgs";
         snm.inputs.flake-compat.follows = "flake-compat";
+
+        # Packages
+
+        neovim.url = github:neovim/neovim?dir=contrib;
+        neovim.inputs.nixpkgs.follows = "nixpkgs";
+        neovim.inputs.flake-utils.follows = "flake-utils";
+
+        hercules-ci-effects.url = github:hercules-ci/hercules-ci-effects;
+        hercules-ci-effects.inputs.flake-parts.follows = "flake-parts";
+        hercules-ci-effects.inputs.nixpkgs.follows = "nixpkgs";
+        hercules-ci-effects.inputs.hercules-ci-agent.follows =
+            "hercules-ci-agent";
+
+        hercules-ci-agent.url = github:hercules-ci/hercules-ci-agent;
+        hercules-ci-agent.inputs.flake-parts.follows = "flake-parts";
+        hercules-ci-agent.inputs.nixpkgs.follows = "nixpkgs";
+
+        neovim-nightly.url =
+            github:nix-community/neovim-nightly-overlay;
+        neovim-nightly.inputs.flake-compat.follows = "flake-compat";
+        neovim-nightly.inputs.flake-parts.follows = "flake-parts";
+        neovim-nightly.inputs.nixpkgs.follows = "nixpkgs";
+        neovim-nightly.inputs.neovim-flake.follows = "neovim";
+        neovim-nightly.inputs.hercules-ci-effects.follows =
+            "hercules-ci-effects";
+
+        nixd.url = github:nix-community/nixd;
+        nixd.inputs.flake-parts.follows = "flake-parts";
+
+        transgui.url = github:transmission-remote-gui/transgui;
+        transgui.flake = false;
+
+        keydb.url = "https://github.com/anna328p/mirror/releases/latest/download/keydb_eng.zip";
+        keydb.flake = false;
+
+        vim-slim.url = github:slim-template/vim-slim;
+        vim-slim.flake = false;
+
+        rainbow-delimiters-nvim.url = gitlab:hiphish/rainbow-delimiters.nvim;
+        rainbow-delimiters-nvim.flake = false;
+
+        nvim-treesitter.url = github:nvim-treesitter/nvim-treesitter;
+        nvim-treesitter.flake = false;
+
+        nvim-cmp.url = github:PlankCipher/nvim-cmp/patch-1;
+        nvim-cmp.flake = false;
     };
 
     outputs = { self
         , nixpkgs
-        , local-pkgs
         , nur
         , ...
     }@flakes: let
+        localPkgs = import ./pkgs flakes;
+
         nixosModulePaths = rec {
             default = common.module;
 
@@ -82,7 +131,7 @@
         localModules = nixosModulePaths // { home = homeModulePaths; };
 
         overlays = [
-            local-pkgs.overlays.default
+            localPkgs.overlay
             nur.overlay
         ];
 
@@ -100,6 +149,9 @@
 
         mkSystems = with self.lib;
             mapAttrValues mkNixosSystem;
+
+        eachExposedSystem = with nixpkgs.lib;
+            genAttrs systems.flakeExposed;
 
     in {
         lib = import ./lib { inherit flakes; };
@@ -124,5 +176,10 @@
             };
 
         in mkSystems moduleSets;
+
+        packages = eachExposedSystem (system:
+            let pkgs = nixpkgs.legacyPackages.${system};
+                in localPkgs.mkPackageSet pkgs
+        );
     };
 }
