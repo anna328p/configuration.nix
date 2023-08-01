@@ -8,12 +8,16 @@ with L; let
 		;
 in rec {
 	exports = self: { inherit (self)
-		singleton
 		isTuple isPair
-		mkTuple mkPair
-		fst snd
+		tupleMatches pairMatches
+
+		singleton
+		append
 		curry curryN
 		uncurry uncurryN
+
+		mkTuple mkPair
+		fst snd
 		minListLength
 		zip mapPairs zipMap
 		pairAt
@@ -28,6 +32,15 @@ in rec {
 	# isPair : [a] -> Bool
 	isPair = isTuple 2;
 
+    tupleMatches = n: let
+        fn = l: r: lengthsEq l r && all id (zipMap id l r);
+    in
+        curryN fn n;
+
+    pairMatches = f: g: p:
+        assert isPair p;
+        f (fst p) && g (snd p);
+
 	# singleton : a -> [a]
 	singleton = val: [ val ];
 
@@ -36,11 +49,11 @@ in rec {
 	    assert isList xs;
 	    xs ++ [x];
 
-    # curryFn : Nat -> Type -> Type -> Type
-    # curryFn 1 a b = a -> b
-    # curryFn n a b = a -> curryFn (n - 1) a b
+    # CurryFn : Nat -> Type -> Type -> Type
+    # CurryFn 1 a b = a -> b
+    # CurryFn n a b = a -> CurryFn (n - 1) a b
 
-    # curry : ([a] -> b) -> Nat n -> curryFn n a b
+    # curry : ([a] -> b) -> Nat n -> CurryFn n a b
     curryN = f: n:
         assert isNat n;
         foldl' compose2 f (genList' append n) [];
@@ -77,13 +90,13 @@ in rec {
 	uncurry = fn: pair:
 		assert isFunction fn;
 		assert isPair pair;
-		fn (fst pair) (snd pair);
+		apply2 fn fst snd pair;
 
 	# minListLength : [a] -> [b] -> Int
 	minListLength = left: right:
 		assert isList left;
 		assert isList right;
-		min (length left) (length right);
+		(on min length) left right;
 
 	# zip : [a] -> [b] -> [(a, b)]
 	zip = left: right: let
@@ -99,12 +112,12 @@ in rec {
 		map (uncurry fn) list;
 	
 	# pairAt : [a] -> [b] -> Int -> (a, b)
-	pairAt = left: right: i: mkPair (elemAt left i) (elemAt right i);
+	pairAt = left: right: apply2 mkPair (elemAt left) (elemAt right);
 
 	# zipMap : (a -> b -> c) -> [a] -> [b] -> [c]
 	zipMap = fn: left: right: let
 		len = minListLength left right;
 	in
 		assert isFunction fn;
-		genList (i: fn (elemAt left i) (elemAt right i)) len;
+		genList (apply2 fn (elemAt left) (elemAt right)) len;
 }

@@ -76,6 +76,7 @@
         auto-allocate-uids = true;
         use-cgroups = true;
         preallocate-contents = true;
+        allow-import-from-derivation = true;
 
         extra-substituters = "https://nix-community.cachix.org";
         extra-trusted-public-keys =

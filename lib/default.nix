@@ -23,8 +23,8 @@ let
     in mod args';
 
 
-    # using' : ((Mod -> Set) -> Set -> Set) -> Set -> Set Path -> (Set -> Set) -> Set
-    using' = call: self: inputs: fn: let
+    # using' : ((Mod -> Set) -> Set -> Set) -> Set Path -> (Set -> Set) -> Set
+    using' = call: inputs: fn: let
         # importMod : Path -> Set
         importMod = path: call (import path) { };
 
@@ -50,12 +50,15 @@ let
             call = callMod' self args;
 
             # using : Set Path -> (Set -> Set) -> Set
-            using = using' call self;
+            using = using' call;
         in call fn { };
     in fix inner;
 
 
-in mkLibrary { inherit (flakes.nixpkgs) lib; } ({ using, ... }:
+in mkLibrary {
+    inherit (flakes.nixpkgs) lib;
+    inherit flakes;
+} ({ using, ... }:
     using {
         base = ./base.nix;
         numeric = ./numeric.nix;
@@ -69,5 +72,9 @@ in mkLibrary { inherit (flakes.nixpkgs) lib; } ({ using, ... }:
         misc = ./misc.nix;
         types = ./types.nix;
         options = ./options.nix;
+
+        introspection = ./introspection.nix;
+
+        lua = ./lua.nix;
     } (_: {})
 )

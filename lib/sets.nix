@@ -3,8 +3,9 @@
 let
     inherit (builtins)
         isAttrs attrNames attrValues mapAttrs
-        length filter foldl' map genList elemAt
+        length filter foldl' map genList
         listToAttrs concatStringsSep
+        isString
         ;
 
     inherit (lib)
@@ -15,6 +16,8 @@ let
         ;
 in with L; rec {
     exports = self: { inherit (self)
+        isSet
+
         nameValuePair
         optionalAttr optionalsAttr
 
@@ -24,8 +27,13 @@ in with L; rec {
 
         mapSetPairs
         setPairs
+
+        mkMapping
+        genSet
         ;
     };
+
+    isSet = isAttrs;
 
     # nameValuePair : Str -> Any -> Set
     nameValuePair = name: value: { inherit name value; };
@@ -72,7 +80,7 @@ in with L; rec {
         pipe' [
             (mapAttrsRecursive mkPair)
             (collect isNameValuePair)
-            (listToAttrs)
+            listToAttrs
         ];
     
     # mapAttrValues =
@@ -81,7 +89,7 @@ in with L; rec {
     # mapAttrValues : (a -> b) -> Set a -> Set b
     mapAttrValues = o mapAttrs const;
 
-    # mapSetPairs : Set -> ((Str, Any) -> a) -> [a]
+    # mapSetPairs : Set -> ((String, Any) -> a) -> [a]
     mapSetPairs = f: set: let
         keys = attrNames set;
         values = attrValues set;
@@ -89,6 +97,17 @@ in with L; rec {
     in
         genList (o f (pairAt keys values)) count;
 
-    # setPairs : Set -> [ (Str, Any) ]
+    # setPairs : Set -> [ (String, Any) ]
     setPairs = mapSetPairs id;
+
+    # mkMapping : String -> a -> Record { name : String, value : a }
+    mkMapping = name: value:
+        assert isString name;
+        { inherit name value; };
+
+    # genSet = [String] -> (String -> a) -> Dict a
+    genSet = fn: let
+        toPairs = map (k: mkMapping k (fn k));
+    in
+        o listToAttrs toPairs;
 }

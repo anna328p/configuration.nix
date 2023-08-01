@@ -1,7 +1,7 @@
 { flakes, ... }:
 
 final: prev: let
-    nvim-nightly-pkgs = flakes.neovim-nightly.packages.${final.system};
+    nvim-pkgs = flakes.neovim.packages.${final.system};
 
 
     buildPlugin = final.vimUtils.buildVimPluginFrom2Nix;
@@ -30,7 +30,7 @@ final: prev: let
         pkg.overrideAttrs (_: overrides);
 
 in {
-    neovim-unwrapped = nvim-nightly-pkgs.neovim;
+    neovim-unwrapped = nvim-pkgs.neovim;
 
     vimPlugins = prev.vimPlugins.extend
         (vfinal: vprev: {

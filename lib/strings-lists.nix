@@ -2,11 +2,14 @@
 
 with L; let
     inherit (builtins)
-        isInt isFunction
+        isInt
         isList length elemAt genList
         isString stringLength substring
         getAttr
-        concatStringsSep;
+        foldl' concatLists
+        concatStringsSep
+        all
+        ;
 in rec {
     exports = self: { inherit (self)
         sublist
@@ -30,7 +33,15 @@ in rec {
         stringToChars
         imapStringChars mapStringChars
 
-        charToInt;
+        charToInt
+
+        findIndex find
+
+        optionals optional
+        flatten
+
+        lengthsEq stringLengthsEq
+        ;
     };
 
     # addLists : [a] -> [a] -> [a]
@@ -254,10 +265,63 @@ in rec {
     # mapStringChars : (Str -> a) -> Str -> [a]
     mapStringChars = o imapStringChars const;
     
+    # asciiTable : Dict Int
     asciiTable = import ./ascii-table.nix;
 
     # isChar : Str -> Bool
     isChar = c: isString c && (stringLength c) == 1;
 
+    # charToInt : Char -> Int
     charToInt = flip getAttr asciiTable;
+
+    # note: strictly O(n), iterates the entire list every time.
+    # working on a new approach that can short-circuit early;
+    # lack of tail recursion makes it hard.
+
+    # findIndex : (a -> Bool) -> [a] -> (Int | Null)
+    findIndex = pred: list: let
+        iteration = acc: val:
+            if acc >= 0 then
+                acc
+            else if pred val then
+                -acc - 1
+            else
+                acc - 1;
+
+        res = foldl' iteration (-1) list;
+    in
+        if res >= 0 then res else null;
+
+    # find : (a -> Bool) -> [a] -> (a | Null)
+    find = pred: list: let
+        ix = findIndex pred list;
+    in
+        if ix != null
+            then elemAt list ix
+            else null;
+
+    # optionals : Bool -> [a] -> [a];
+    optionals = testRes: arg:
+        if testRes then arg else [];
+
+    # optionals : Bool -> a -> [a];
+    optional = testRes: arg: optionals testRes [ arg ];
+
+    # NestedList : Type -> Type
+    # NestedList a = [a | NestedList a]
+
+    # flatten : NestedList a -> [a]
+    flatten = list: let
+        fn = v: if isList v then flatten v else [v];
+    in
+        assert isList list;
+
+        if all (v: !(isList v)) list
+            then list
+            else concatLists (map fn list);
+
+    genericLengthsEq = getLen: a: b: (getLen a) == (getLen b);
+
+    lengthsEq = genericLengthsEq length;
+    stringLengthsEq = genericLengthsEq stringLength;
 }

@@ -2,6 +2,8 @@
     description = "NixOS system configurations";
 
     inputs = {
+        # nixpkgs
+
         nixpkgs.url = flake:nixpkgs/nixos-unstable-small;
         nixpkgs-master.url = flake:nixpkgs/master;
 
@@ -15,7 +17,10 @@
         flake-parts.url = github:hercules-ci/flake-parts;
         flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
 
-        nur.url = flake:nur;
+        parsec.url = github:milahu/nix-parsec;
+
+        # modules
+
         nixos-hardware.url = flake:nixos-hardware;
         impermanence.url = github:nix-community/impermanence;
 
@@ -38,33 +43,15 @@
         snm.inputs.nixpkgs-23_05.follows = "nixpkgs";
         snm.inputs.flake-compat.follows = "flake-compat";
 
-        # Packages
+        # packages
 
         neovim.url = github:neovim/neovim?dir=contrib;
         neovim.inputs.nixpkgs.follows = "nixpkgs";
         neovim.inputs.flake-utils.follows = "flake-utils";
 
-        hercules-ci-effects.url = github:hercules-ci/hercules-ci-effects;
-        hercules-ci-effects.inputs.flake-parts.follows = "flake-parts";
-        hercules-ci-effects.inputs.nixpkgs.follows = "nixpkgs";
-        hercules-ci-effects.inputs.hercules-ci-agent.follows =
-            "hercules-ci-agent";
-
-        hercules-ci-agent.url = github:hercules-ci/hercules-ci-agent;
-        hercules-ci-agent.inputs.flake-parts.follows = "flake-parts";
-        hercules-ci-agent.inputs.nixpkgs.follows = "nixpkgs";
-
-        neovim-nightly.url =
-            github:nix-community/neovim-nightly-overlay;
-        neovim-nightly.inputs.flake-compat.follows = "flake-compat";
-        neovim-nightly.inputs.flake-parts.follows = "flake-parts";
-        neovim-nightly.inputs.nixpkgs.follows = "nixpkgs";
-        neovim-nightly.inputs.neovim-flake.follows = "neovim";
-        neovim-nightly.inputs.hercules-ci-effects.follows =
-            "hercules-ci-effects";
-
-        nixd.url = github:nix-community/nixd;
-        nixd.inputs.flake-parts.follows = "flake-parts";
+        #nil.url = github:oxalica/nil;
+        nil.url = github:jordanisaacs/nil;
+        nil.inputs.flake-utils.follows = "flake-utils";
 
         transgui.url = github:transmission-remote-gui/transgui;
         transgui.flake = false;
@@ -85,9 +72,13 @@
         nvim-cmp.flake = false;
     };
 
+    nixConfig = {
+        allow-import-from-derivation = "true";
+    };
+
     outputs = { self
         , nixpkgs
-        , nur
+        , nil
         , ...
     }@flakes: let
         localPkgs = import ./pkgs flakes;
@@ -131,8 +122,8 @@
         localModules = nixosModulePaths // { home = homeModulePaths; };
 
         overlays = [
-            localPkgs.overlay
-            nur.overlay
+            localPkgs.overlays.default
+            nil.overlays.default
         ];
 
         mkNixosSystem = modules: nixpkgs.lib.nixosSystem {

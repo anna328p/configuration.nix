@@ -6,7 +6,7 @@ let
     mkFlakeVer = flake: prefix:
         "${prefix}-rev-${truncateRev flake.rev}";
 in {
-    overlay = import ./overlays {
+    overlays.default = import ./overlays {
         inherit (nixpkgs) lib;
         inherit flakes mkFlakeVer;
     };

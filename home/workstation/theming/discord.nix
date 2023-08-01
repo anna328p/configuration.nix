@@ -359,7 +359,7 @@ in {
     home.packages = with pkgs; [ lexend ];
 
     programs.discocss = {
-        enable = true;
+        enable = false;
         discordPackage = pkgs.discord-custom;
 
         inherit css;
