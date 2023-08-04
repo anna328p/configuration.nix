@@ -3,6 +3,7 @@
 let
     inherit (builtins)
         foldl'
+        isFunction isAttrs
         ;
 
 in rec {
@@ -11,6 +12,8 @@ in rec {
         compose o compose2 oo
         pipe pipe'
         fix
+
+        isLambda
 
         on
         apply2 A2
@@ -47,6 +50,13 @@ in rec {
 
     # fix : (a -> a) -> a
     fix = f: let x = f x; in x;
+
+    # isLambda : Any -> Bool
+    isLambda = v:
+        isFunction v
+            || (isAttrs v
+                && isFunction (v.__functor or null)
+                && isFunction (v.__functor v));
 
     # on : (b -> b -> c) -> (a -> b) -> a -> a -> c
     on = a: f: x: y: a (f x) (f y);

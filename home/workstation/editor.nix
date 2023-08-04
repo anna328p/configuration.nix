@@ -12,7 +12,6 @@
         extraPackages = with pkgs; [
             rubyPackages_latest.solargraph
             ccls
-            nil statix
 
             nodePackages.vscode-langservers-extracted
             nodePackages.bash-language-server
@@ -20,6 +19,7 @@
             rubyPackages_latest.rubocop
             proselint
         ] ++ (lib.optionals systemConfig.misc.buildFull (with pkgs; [
+            nil statix
             haskell-language-server
             rust-analyzer
             shellcheck
