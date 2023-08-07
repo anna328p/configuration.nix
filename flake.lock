@@ -159,7 +159,7 @@
     "keydb": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-ixF+rfKYxRxS6KR3+G08lUnUf8kbH+5w4jlD39yMT2Y=",
+        "narHash": "sha256-HY7S82mIzmo+Yo7GB9qEk3L4VL0sbUYmwvWvbKwIquQ=",
         "type": "tarball",
         "url": "https://github.com/anna328p/mirror/releases/latest/download/keydb_eng.zip"
       },
@@ -222,15 +222,15 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1690581066,
-        "narHash": "sha256-6iv8IQZzumwOt4GZervQ1hWgJf/wHValP8dbVeNC6B0=",
-        "owner": "jordanisaacs",
+        "lastModified": 1691372739,
+        "narHash": "sha256-fZ8KfBMcIFO/R7xaWtB85SFeuUjb9SCH8fxYBnY8068=",
+        "owner": "oxalica",
         "repo": "nil",
-        "rev": "cf44cd1c694edad2caabee5d402f67d5df0ab6dd",
+        "rev": "97abe7d3d48721d4e0fcc1876eea83bb4247825b",
         "type": "github"
       },
       "original": {
-        "owner": "jordanisaacs",
+        "owner": "oxalica",
         "repo": "nil",
         "type": "github"
       }

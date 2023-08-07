@@ -15,27 +15,63 @@ in with L; rec {
     exports = self: { inherit (self)
         toLuaLiteral
         ;
-
     };
 
-    # toTableRecord : Any -> Any -> Str
-    toTableRecord = k: v: "[${k}] = ${v}";
+    indent = "  ";
+
+    # This DSL forms a monad
+    # a   = Any  -- Nix objects
+    # M a = Lua  -- Literal Lua code
+
+    # verbatim : String -> Lua
+    # Takes unwrapped strings and produces wrapped values
+
+    # toLua : Lua -> String
+    # Takes wrapped values and unwraps them to a string
+
+    # toLua (verbatim s) = s
+
+    # so toLua is basically half of bind
+    # and verbatim is unit
+    M = rec {
+        # map : (a -> b) -> M a -> M b
+        # map : (String -> String) -> Lua -> Lua
+        map = f: val: verbatim (f (toLua val));
+
+        # unit : a -> M a
+        # unit : a -> Lua
+        unit = verbatim;
+
+        pure = unit;
+        return = unit;
+
+        # join : M (M a) -> M a
+        join = toLua;
+
+        # bind : M a -> (a -> M b) -> (M b)
+        # bind : Lua -> (String -> Lua) -> Lua
+        bind = obj: f: f (toLua obj);
+    };
+
+    # tableRecord : Lua -> Lua -> Lua
+    tableRecord = k: v: verbatim "[${toLua k}] = ${toLua v} ";
 
     commaJoin = concatStringsSep ", ";
 
     # mkTableLiteral : [Str] -> Str
-    mkTableLiteral = fields: "{ ${commaJoin fields} }";
+    mkTableLiteral = fields: let
+        fields' = commaJoin (map toLua fields);
+    in
+        verbatim "{ ${fields'} }";
 
     # setToLuaTable : Set -> Str
     setToTable = let
-        mkRecord = on toTableRecord toLiteral;
-        mkEntries = mapSetPairs (uncurry mkRecord);
+        mkEntries = mapSetPairs (uncurry tableRecord);
     in
         o mkTableLiteral mkEntries;
 
     # listToLuaTable : List -> Str
-    listToTable = list:
-        mkTableLiteral (map toLiteral list);
+    listToTable = mkTableLiteral;
 
     throwBadType = val:
         throw "value ${val} cannot be converted to a Lua literal";
@@ -46,22 +82,20 @@ in with L; rec {
 
     __findFile = _: verbatim;
 
-    _Call = obj: args: let
-        target = if isString obj then obj else toLiteral obj;
-
+    _Call = target: args: let
         args' = if isAttrs args then [ args ] else args;
-        argList = o commaJoin (map toLiteral) args';
+        argList = commaJoin (map toLua args');
     in
-        assert orA2 isList isAttrs args;
+        assert isList args || isAttrs args;
 
-        verbatim "${target}(${argList})";
+        verbatim "${toLua target}(${argList})";
 
-    Call = o _Call Wrap;
+    Call = v: _Call (Wrap v);
 
     CallFrom = val: key: Call (Index val key);
 
     CallOn = obj: field: let
-        fname = "(${toLiteral obj}):${field}";
+        fname = "(${toLua obj}):${field}";
     in
         assert isString field;
         _Call (verbatim fname);
@@ -70,43 +104,52 @@ in with L; rec {
         assert isList fields;
         assert all (f: isPair f && isString (fst f)) fields;
 
-        foldl' (acc: uncurry (CallOn acc)) obj fields;
+        foldl' (o uncurry CallOn) obj fields;
 
+    Require = name: _Call (verbatim "require") [ name ];
 
-    Require = name: Call (verbatim "require") [ name ];
+    _Index = obj: key:
+        verbatim "${toLua obj}[${toLua key}]";
 
-    Index = obj: key:
-        verbatim "(${toLiteral obj})[${toLiteral key}]";
+    Index = v: _Index (Wrap v);
 
     Index' = obj: keys:
         assert isList keys;
         foldl' Index obj keys;
 
-    Chunk = lines: verbatim (concatStringsSep "\n" (map toLiteral lines));
+    Chunk = lines: let
+        addSemicolons = map (line: "${toLua line};");
+    in
+        verbatim (concatStringsSep "\n" (addSemicolons lines));
 
-    Code = o toLiteral Chunk;
+    Paste = lines:
+        verbatim (concatStringsSep ";\n" (map toLua lines));
+
+    Code = o toLua Chunk;
 
     If = cond: response: let
-        response' = ({ Then, Else ? null }@arg: arg) response;
+        parseResponseArg = { Then, Else ? null }@arg: arg;
 
-        consequence = if isList response
-            then response
-            else response'.Then;
+        response' = if isList response
+            then { Then = response; Else = null; }
+            else parseResponseArg response;
 
+        consequence = response'.Then;
         alternative = response'.Else;
-        ifHasElse = v: if (response ? Else) then v else "";
+
+        ifHasElse = v: if alternative != null then v else "";
 
         res = ''
-            if (${toLiteral cond}) then
-                ${toLiteral (Chunk consequence)}
+            if (${toLua cond}) then
+                ${toLua (Chunk consequence)}
             ${ifHasElse "else"}
-                ${ifHasElse (toLiteral (Chunk alternative))}
+                ${ifHasElse (toLua (Chunk alternative))}
             end
         '';
     in
-        assert orA2 isList isAttrs response;
-        assert (isAttrs response) -> (isList response'.Then);
-        assert (isAttrs response) -> (response ? Else) -> (isList response'.Else);
+        assert isList response || isAttrs response;
+        assert isList response'.Then;
+        assert (response'.Else != null) -> (isList response'.Else);
 
         verbatim res;
 
@@ -136,17 +179,17 @@ in with L; rec {
 
         verbatim ''
             function(${argList})
-                ${toLiteral (Chunk body)}
+                ${toLua (Chunk body)}
             end
         '';
 
     Return = args:
         assert isList args;
-        verbatim "return ${commaJoin (map toLiteral args)}";
+        verbatim "return ${commaJoin (map toLua args)}";
 
     ReturnOne = arg: Return [ arg ];
 
-    Wrap = arg: verbatim "( ${toLiteral arg} )";
+    Wrap = arg: verbatim "( ${toLua arg} )";
 
     # WARNING: nix alphabetically sorts names in a set pattern
     ForEach = iter: fn: let
@@ -157,8 +200,8 @@ in with L; rec {
         assert isFunction fn;
         
         verbatim ''
-            for ${toLiteral argList} in ${toLiteral iter} do
-                ${toLiteral (Chunk body)}
+            for ${argList} in ${toLua iter} do
+                ${toLua (Chunk body)}
             end
         '';
 
@@ -166,16 +209,14 @@ in with L; rec {
     IPairs = t: Call (verbatim "ipairs") [ t ];
 
     SetLocal = name: value:
-        verbatim ''
-            local ${toLiteral name} = (${toLiteral value});
-        '';
+        verbatim "local ${toLua name} = (${toLua value})";
 
-    Set = name: value: verbatim "${toLiteral name} = (${toLiteral value})";
+    Set = name: value: verbatim "${toLua name} = (${toLua value})";
 
 
-    PrefixOp = op: val: verbatim "(${op}(${toLiteral val}))";
+    PrefixOp = op: val: verbatim "(${op}(${toLua val}))";
 
-    BinOp = op: a: b: verbatim "((${toLiteral a}) ${op} (${toLiteral b}))";
+    BinOp = op: a: b: verbatim "((${toLua a}) ${op} (${toLua b}))";
 
     Count = PrefixOp "#";
     Neg = PrefixOp "-";
@@ -203,36 +244,38 @@ in with L; rec {
     ListOp = op: let
         fn = concatMapStringsSep
             " ${op} "
-            (item: "(${toLiteral item})");
+            (item: "(${toLua item})");
     in
-        o verbatim fn;
+        list: verbatim (fn list);
 
     And' = ListOp "and";
     Or' = ListOp "or";
 
-    # toLiteral : Any -> Str
     toLiteral = val: let
-        isLuaVerbatim = v: isAttrs v && (v.__luaVerbatim or false);
-
-        isNumber = orA2 isInt isFloat;
-        isStringLike = orA2 isString isPath;
-
-        isJSONLike = v: isNumber v || isStringLike v || isBool v;
+        isJSONLike = v:
+            isBool v || isInt v || isFloat v
+                || isString v || isPath v;
     in
-        assert !(isFunction val);
-
         if val == null then
-            "nil"
-        else if isLuaVerbatim val then
-            val.str
+            verbatim "nil"
         else if isJSONLike val then
-            toJSON val
+            verbatim (toJSON val)
         else if isAttrs val then
             setToTable val
         else if isList val then
             listToTable val
+        else if isFunction val then
+            throwBadType "<function>"
         else
             throwBadType (toString val);
 
-    toLuaLiteral = toLiteral;
+    # toLua : Any -> Str
+    toLua = val: let
+        isLuaVerbatim = v: (v.__luaVerbatim or false);
+    in
+        if isLuaVerbatim val
+            then val.str
+            else toLua (toLiteral val);
+
+    toLuaLiteral = toLua;
 }

@@ -49,8 +49,7 @@
         neovim.inputs.nixpkgs.follows = "nixpkgs";
         neovim.inputs.flake-utils.follows = "flake-utils";
 
-        #nil.url = github:oxalica/nil;
-        nil.url = github:jordanisaacs/nil;
+        nil.url = github:oxalica/nil;
         nil.inputs.flake-utils.follows = "flake-utils";
 
         transgui.url = github:transmission-remote-gui/transgui;

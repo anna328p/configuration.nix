@@ -48,9 +48,9 @@
 
     # System fonts
     fonts = {
-        enableDefaultFonts = true;
+        enableDefaultPackages = true;
 
-        fonts = with pkgs; [
+        packages = with pkgs; [
             source-code-pro source-sans source-serif
             noto-fonts noto-fonts-cjk noto-fonts-emoji-blob-bin
             liberation_ttf open-sans corefonts

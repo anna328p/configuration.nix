@@ -66,8 +66,8 @@
 
             inherit (L.lua) __findFile;
         in with L.lua; with L; Code [
-            (Chunk (o mapSetPairs uncurry
-                (k: v: (Set (Index <vim.opt> k) v) ) opts))
+            (Paste (o mapSetPairs uncurry
+                (k: v: (Set (Index <vim.opt> k) v)) opts))
 
             (CallOn <vim.opt.clipboard> "append" [ "unnamed" ])
 
@@ -318,7 +318,7 @@
             cmp-emoji
 
             (luaPlugin nvim-cmp (Code [
-                (SetLocal <cmp> (Require <cmp>))
+                (SetLocal <cmp> (Require "cmp"))
 
                 (CallFrom <cmp> "setup" [ {
                     snippet.expand = Function ({ args }: [
@@ -377,7 +377,7 @@
                     ts_config = { };
                 })
 
-                (Chunk (map (L.o (Call <autopairs.add_rules>) Require) [
+                (Paste (map (L.o (Call <autopairs.add_rules>) Require) [
                     "nvim-autopairs.rules.endwise-elixir"
                     "nvim-autopairs.rules.endwise-lua"
                     "nvim-autopairs.rules.endwise-ruby" ]))
