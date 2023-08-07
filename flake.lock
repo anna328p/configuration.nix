@@ -256,6 +256,24 @@
         "type": "github"
       }
     },
+    "nix-prelude": {
+      "inputs": {
+        "parsec": "parsec"
+      },
+      "locked": {
+        "lastModified": 1691446561,
+        "narHash": "sha256-dHGksZG3oXKs0ehfiVEj4LdjuZ/MgG2vZl5NgE74mLY=",
+        "owner": "anna328p",
+        "repo": "nix-prelude",
+        "rev": "7fb1afa2fd87edbbb0646b44d5b8858da5fd1994",
+        "type": "github"
+      },
+      "original": {
+        "owner": "anna328p",
+        "repo": "nix-prelude",
+        "type": "github"
+      }
+    },
     "nixos-hardware": {
       "locked": {
         "lastModified": 1690704397,
@@ -431,12 +449,12 @@
         "neovim": "neovim",
         "nil": "nil",
         "nix-colors": "nix-colors",
+        "nix-prelude": "nix-prelude",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-master": "nixpkgs-master",
         "nvim-cmp": "nvim-cmp",
         "nvim-treesitter": "nvim-treesitter",
-        "parsec": "parsec",
         "qbot": "qbot",
         "rainbow-delimiters-nvim": "rainbow-delimiters-nvim",
         "snm": "snm",

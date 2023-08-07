@@ -1,10 +1,10 @@
-{ config, lib, L, ... }:
+{ config, local-lib, lib, L, ... }:
 
 with lib; let
     T = rec {
         inherit (types) either listOf str submodule;
 
-        usbId = L.types.hexStringN 4;
+        usbId = local-lib.hexStringN 4;
         usbIds = either usbId (listOf usbId);
 
         mkIdOpt = rest: mkOption ({ type = usbIds; } // rest);

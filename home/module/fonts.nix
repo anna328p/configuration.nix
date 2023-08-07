@@ -1,9 +1,9 @@
-{ config, lib, L, ... }:
+{ config, L, lib, local-lib, ... }:
 
 with lib; let
     cfg = config.misc.fonts;
 
-    mkFontOption = L.mkGenericOption { } hm.types.fontType;
+    mkFontOption = local-lib.mkGenericOption { } hm.types.fontType;
 in {
     options.misc.fonts = {
         enable = mkEnableOption "Font management";

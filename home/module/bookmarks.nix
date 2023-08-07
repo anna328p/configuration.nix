@@ -1,9 +1,11 @@
-{ config, lib, L, ... }:
+{ config, L, lib, local-lib, ... }:
 
 with lib; let
     cfg = config.misc.bookmarks;
 
-    mkStrOption = L.mkGenericOption {} types.str;
+    inherit (local-lib) mkGenericOption;
+
+    mkStrOption = mkGenericOption {} types.str;
 
     bookmarkType = types.submodule {
         options = {
@@ -15,8 +17,8 @@ with lib; let
     bookmarksType = types.listOf bookmarkType;
     strListType = types.listOf types.str;
 
-    mkBookmarksOption = L.mkGenericOption { default = []; } bookmarksType;
-    mkStrListOption = L.mkGenericOption { default = []; } strListType;
+    mkBookmarksOption = mkGenericOption { default = []; } bookmarksType;
+    mkStrListOption = mkGenericOption { default = []; } strListType;
 in {
     options.misc.bookmarks = {
         enable = mkEnableOption "File manager bookmarks";

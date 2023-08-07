@@ -9,6 +9,8 @@
 
         # libraries
 
+        nix-prelude.url = github:anna328p/nix-prelude;
+
         flake-utils.url = flake:flake-utils;
 
         flake-compat.url = github:edolstra/flake-compat;
@@ -16,8 +18,6 @@
 
         flake-parts.url = github:hercules-ci/flake-parts;
         flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
-
-        parsec.url = github:milahu/nix-parsec;
 
         # modules
 
@@ -78,6 +78,7 @@
     outputs = { self
         , nixpkgs
         , nil
+        , nix-prelude
         , ...
     }@flakes: let
         localPkgs = import ./pkgs flakes;
@@ -130,22 +131,21 @@
 
             specialArgs = {
                 inherit flakes overlays localModules;
-                L = self.lib;
+                L = nix-prelude.lib;
+                local-lib = import ./lib { inherit (nixpkgs) lib; };
             };
         };
 
-        importMods = with self.lib;
+        importMods = with nix-prelude.lib;
             o (mapAttrValues import) (flattenSetSep "-");
 
-        mkSystems = with self.lib;
+        mkSystems = with nix-prelude.lib;
             mapAttrValues mkNixosSystem;
 
         eachExposedSystem = with nixpkgs.lib;
             genAttrs systems.flakeExposed;
 
     in {
-        lib = import ./lib { inherit flakes; };
-
         inputs = flakes;
 
         nixosModules = importMods nixosModulePaths;
