@@ -230,7 +230,7 @@
                 (SetLocal <auto_ls> [
                     "hls" "bashls" "cssls" "rust_analyzer" ])
 
-                (ForEach (IPairs <auto_ls>) ({ _, name }: [
+                (ForEach (IPairs <auto_ls>) (_: name: [
                     (CallFrom (Index <lspconfig> name) "setup" {
                         capabilities = <caps>;
                     }) ]))

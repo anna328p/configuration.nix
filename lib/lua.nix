@@ -191,13 +191,22 @@ in with L; rec {
 
     Wrap = arg: verbatim "( ${toLua arg} )";
 
-    # WARNING: nix alphabetically sorts names in a set pattern
     ForEach = iter: fn: let
-        args = fnArgNames fn;
-        body = substituteArgs fn args;
-        argList = commaJoin args;
+        bindNames = names: f: let
+            name = lambdaArgName f;
+            name' = verbatim name;
+        in
+            if isFunction f then
+                assert name != null;
+                bindNames (names ++ [name]) (f name')
+            else
+                { inherit names; body = f; };
+
+        inherit (bindNames [] fn) names body;
+        argList = commaJoin names;
     in
         assert isFunction fn;
+        assert !(hasFormals fn);
         
         verbatim ''
             for ${argList} in ${toLua iter} do

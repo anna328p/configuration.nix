@@ -4,6 +4,7 @@ let
     inherit (builtins)
         toXML
         isFunction
+        foldl'
         ;
 
     parsec-xml = import ./contrib/parse-xml.nix {
@@ -13,11 +14,19 @@ let
 
     inherit (parsec-xml) parseXml;
 
-in with L; {
+in with L; rec {
     exports = self: { inherit (self) 
         hasEllipsis
+        hasFormals
+        lambdaArgName
         ;
     };
+
+    findChild = obj: name: find (v: (v.name or null) == name) obj.children;
+
+    describe = o parseXml toXML;
+
+    dig = foldl' findChild;
 
     # Return values:
     # true  : function with set pattern, with ellipsis
@@ -26,14 +35,8 @@ in with L; {
 
     # hasEllipsis : (a -> b) -> (Bool | Null)
     hasEllipsis = f: let
-        findChild = name: obj: find (v: (v.name or null) == name) obj.children;
-
-        parseRes = o parseXml toXML f;
-
-        root = parseRes.value;
-        expr = findChild "expr" root;
-        func = findChild "function" expr;
-        attrspat = findChild "attrspat" func;
+        parseRes = describe f;
+        attrspat = dig parseRes.value [ "expr" "function" "attrspat" ];
     in
         assert isFunction f;
 
@@ -41,4 +44,22 @@ in with L; {
             null
         else
             (attrspat.attributes.ellipsis or null) == "1";
+
+    hasFormals = f: let
+        parseRes = describe f;
+        attrspat = dig parseRes.value [ "expr" "function" "attrspat" ];
+    in
+        assert isFunction f;
+        attrspat != null;
+
+    lambdaArgName = f: let
+        parseRes = describe f;
+        varpat = dig parseRes.value [ "expr" "function" "varpat" ];
+    in
+        assert isFunction f;
+
+        if varpat == null then
+            null
+        else
+            (varpat.attributes.name or "");
 }
