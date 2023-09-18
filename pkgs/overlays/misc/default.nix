@@ -5,6 +5,25 @@ final: prev:
     ruby_latest = final.ruby_3_2;
     rubyPackages_latest = final.rubyPackages_3_2;
 
+    f3d = prev.f3d.overrideAttrs (oa: {
+        buildInputs = oa.buildInputs ++ (with final; [
+            opencascade-occt
+            assimp
+            fontconfig
+        ]);
+
+        cmakeFlags = oa.cmakeFlags ++ [
+            "-DF3D_PLUGIN_BUILD_OCCT=ON"
+            "-DF3D_PLUGIN_BUILD_ASSIMP=ON"
+        ];
+    });
+
+    libjxl-with-plugins = prev.libjxl.overrideAttrs (oa: {
+        cmakeFlags = oa.cmakeFlags ++ [
+            "-DJPEGXL_ENABLE_PLUGINS=ON"
+        ];
+    });
+
     wrapDiscord = discordPkg: final.symlinkJoin {
         name = "${discordPkg.pname}-wrapped";
         paths = [ discordPkg ];

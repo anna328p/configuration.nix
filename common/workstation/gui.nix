@@ -20,12 +20,15 @@
         # Color picker
         gcolor3
 
-        # GNOME addons
-        gnome.gnome-sound-recorder gnome.gnome-tweaks
-
         # GTK theme
         adw-gtk3
-    ] ++ (with pkgs.gnomeExtensions; [
+
+        # Image rendering
+        libjxl-with-plugins
+    ] ++ (with pkgs.gnome; [
+        # GNOME addons
+        gnome-sound-recorder gnome-tweaks gnome-music
+    ]) ++ (with pkgs.gnomeExtensions; [
         gsconnect
         brightness-control-using-ddcutil
         sensory-perception
@@ -40,9 +43,7 @@
         QT_QPA_PLATFORM = "wayland";
 
         # Misc
-
         CALIBRE_USE_DARK_PALETTE = "1";
-
         SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS = "0";
     };
 

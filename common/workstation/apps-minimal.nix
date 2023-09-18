@@ -24,6 +24,8 @@
 
         # Media
         ffmpeg
+        xdot
+        f3d
 
         ## Programming / Software development
 

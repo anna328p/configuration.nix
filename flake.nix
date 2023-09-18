@@ -67,8 +67,11 @@
         nvim-treesitter.url = github:nvim-treesitter/nvim-treesitter;
         nvim-treesitter.flake = false;
 
-        nvim-cmp.url = github:PlankCipher/nvim-cmp/patch-1;
+        nvim-cmp.url = github:plankcipher/nvim-cmp/patch-1;
         nvim-cmp.flake = false;
+
+        easyeffects-presets.url = github:digitalone1/easyeffects-presets;
+        easyeffects-presets.flake = false;
     };
 
     nixConfig = {
@@ -126,13 +129,17 @@
             nil.overlays.default
         ];
 
-        mkNixosSystem = modules: nixpkgs.lib.nixosSystem {
+        mkNixosSystem = modules: let
+            L = nix-prelude.lib;
+
+            local-lib = import ./lib {
+                inherit (nixpkgs) lib; inherit L;
+            };
+        in nixpkgs.lib.nixosSystem {
             inherit modules;
 
             specialArgs = {
-                inherit flakes overlays localModules;
-                L = nix-prelude.lib;
-                local-lib = import ./lib { inherit (nixpkgs) lib; };
+                inherit flakes overlays localModules local-lib L;
             };
         };
 
@@ -164,12 +171,13 @@
                 angelia = [ systems.angelia ];
                 iris = [ systems.iris ];
             };
+        in
+            mkSystems moduleSets;
 
-        in mkSystems moduleSets;
-
-        packages = eachExposedSystem (system:
-            let pkgs = nixpkgs.legacyPackages.${system};
-                in localPkgs.mkPackageSet pkgs
+        packages = eachExposedSystem (system: let
+            pkgs = nixpkgs.legacyPackages.${system};
+        in
+            localPkgs.mkPackageSet pkgs
         );
     };
 }

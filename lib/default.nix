@@ -1,3 +1,3 @@
-{ lib }:
+{ lib, L, ... }@args:
 
-import ./options.nix { inherit lib; }
+import ./options.nix args

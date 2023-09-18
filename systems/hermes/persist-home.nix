@@ -19,6 +19,7 @@
                 ".config/syncthing"
                 ".config/discord"
                 ".local/share/TelegramDesktop"
+                ".config/easyeffects"
 
                 ".local/share/wine"
 
