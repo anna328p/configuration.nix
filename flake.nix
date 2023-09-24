@@ -67,7 +67,7 @@
         nvim-treesitter.url = github:nvim-treesitter/nvim-treesitter;
         nvim-treesitter.flake = false;
 
-        nvim-cmp.url = github:plankcipher/nvim-cmp/patch-1;
+        nvim-cmp.url = github:plankcipher/nvim-cmp/fix-inline-virt-text;
         nvim-cmp.flake = false;
 
         easyeffects-presets.url = github:digitalone1/easyeffects-presets;

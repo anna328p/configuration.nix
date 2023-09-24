@@ -48,6 +48,22 @@
         "type": "github"
       }
     },
+    "easyeffects-presets": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1660043562,
+        "narHash": "sha256-WzfVg7PAfrreKC1ckzVtCfOJ90JaUdl/h5mcXt4SFUw=",
+        "owner": "digitalone1",
+        "repo": "easyeffects-presets",
+        "rev": "1148788e2768170d704fd2de4f7f5053d32f71d4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "digitalone1",
+        "repo": "easyeffects-presets",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -353,16 +369,16 @@
     "nvim-cmp": {
       "flake": false,
       "locked": {
-        "lastModified": 1688519355,
-        "narHash": "sha256-SuQoK2jrYSDF2t+9FXpJGCSL+W+5cq9VOMiOUE+ImtU=",
-        "owner": "PlankCipher",
+        "lastModified": 1692938114,
+        "narHash": "sha256-ZQrDg5wil+wX7T7/SGZ5GbjFCMpxEr52JEptzg5pTiI=",
+        "owner": "plankcipher",
         "repo": "nvim-cmp",
-        "rev": "34dad01c80eb406631688c510fc691e5ba3992b9",
+        "rev": "7b4c476e900d30381b77b2b9f62c8e0b89d57add",
         "type": "github"
       },
       "original": {
-        "owner": "PlankCipher",
-        "ref": "patch-1",
+        "owner": "plankcipher",
+        "ref": "fix-inline-virt-text",
         "repo": "nvim-cmp",
         "type": "github"
       }
@@ -408,11 +424,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1683333354,
-        "narHash": "sha256-n/DfgqN8czzaVcN8EIud5/gWtOig/fgzzYTj0pQqWIk=",
+        "lastModified": 1695585379,
+        "narHash": "sha256-zjmzmI2NgFPMid6oxI+TYx/kxRXuj+Dje3P5cQx4R4E=",
         "owner": "arch-community",
         "repo": "qbot",
-        "rev": "6c9fdfc1c3acf3e15bfe3e86f7be268616c1f1dc",
+        "rev": "070ad46636a2095d5cc7f029e80e8fe9ddb787a8",
         "type": "github"
       },
       "original": {
@@ -439,6 +455,7 @@
     },
     "root": {
       "inputs": {
+        "easyeffects-presets": "easyeffects-presets",
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",

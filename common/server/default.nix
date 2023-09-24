@@ -6,7 +6,7 @@
         "${modulesPath}/profiles/minimal.nix"
     ];
 
-    boot.cleanTmpDir = true;
+    boot.tmp.cleanOnBoot = true;
 
     networking.firewall = {
         allowPing = true;

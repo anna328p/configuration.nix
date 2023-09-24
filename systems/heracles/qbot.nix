@@ -25,8 +25,8 @@
 
             modules = [
                 "help" "util" "admin" "queries" "colors"
-                "arch" "snippets" "figlet" "xkcd" "blacklist"
-                "polls" "fun" "tokipona" "tio" "quotes"
+                "arch" "snippets" "figlet" "xkcd"
+                "polls" "fun" "tokipona" "tio"
                 "bottom" "sitelenpona" "languages" "notes"
             ];
 
