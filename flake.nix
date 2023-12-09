@@ -34,7 +34,6 @@
         musnix.inputs.nixpkgs.follows = "nixpkgs";
 
         qbot.url = github:arch-community/qbot;
-        qbot.inputs.flake-utils.follows = "flake-utils";
 
         snm.url = gitlab:simple-nixos-mailserver/nixos-mailserver;
         snm.inputs.utils.follows = "flake-utils";
