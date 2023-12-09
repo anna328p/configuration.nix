@@ -17,7 +17,7 @@
         ];
 
         extraRuleFiles = [
-            "${pkgs.ddcutil}/share/ddcutil/data/45-ddcutil-i2c.rules"
+            "${pkgs.ddcutil}/share/ddcutil/data/60-ddcutil-i2c.rules"
             "${pkgs.libfido2}/etc/udev/rules.d/70-u2f.rules"
         ];
 

@@ -31,7 +31,6 @@
     ]) ++ (with pkgs.gnomeExtensions; [
         gsconnect
         brightness-control-using-ddcutil
-        sensory-perception
         compiz-windows-effect
         appindicator
     ]);
@@ -81,7 +80,7 @@
                             favorite-apps=[ ${genList names} ]
                         '';
                     in overrideList [
-                        "firefox-devedition" "discord" "org.telegram.desktop"
+                        "firefox-develeoper-edition" "discord" "org.telegram.desktop"
                         "org.gnome.Nautilus" "org.gnome.Terminal"
                         "logseq"
                     ];

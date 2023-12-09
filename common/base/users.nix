@@ -15,22 +15,22 @@ in {
         mutableUsers = false;
         defaultUserShell = pkgs.zsh;
 
-        users.anna = rec {
-            description = "Anna";
-            isNormalUser = true;
-
+        users.anna = let
             # consistent uid everywhere
             uid = 1000;
 
             # container support
+            subIdOffset = uid * (L.pow2 16);
+            subIdWidth = (L.pow2 16) - 1;
+        in {
+            description = "Anna";
+            isNormalUser = true;
 
-            subUidRanges = let
-                offset = uid * (L.pow2 16);
-                width = (L.pow2 16) - 1;
-            in
-                [ { startUid = offset; count = width; } ];
+            inherit uid;
 
-            subGidRanges = subUidRanges;
+            # container support
+            subUidRanges = [ { startUid = subIdOffset; count = subIdWidth; } ];
+            subGidRanges = [ { startGid = subIdOffset; count = subIdWidth; } ];
 
             # sudo rights
             extraGroups = [ "wheel" ];

@@ -190,10 +190,15 @@
 
             (luaPlugin indent-blankline-nvim (Code [
                 # show indentation levels
-                (CallFrom (Require "indent_blankline") "setup" {
-                    use_treesitter = true;
-                    show_trailing_blankline_indent = false;
-                    show_current_context = true;
+                (CallFrom (Require "ibl") "setup" {
+                    indent.char = "│";
+
+                    scope.show_start = false;
+                    scope.show_end = false;
+
+                    exclude.filetypes = [
+                        "startify"
+                    ];
                 })
             ]) { })
 

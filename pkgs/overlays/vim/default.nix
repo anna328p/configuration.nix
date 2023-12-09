@@ -4,7 +4,7 @@ final: prev: let
     nvim-pkgs = flakes.neovim.packages.${final.system};
 
 
-    buildPlugin = final.vimUtils.buildVimPluginFrom2Nix;
+    buildPlugin = final.vimUtils.buildVimPlugin;
 
     buildPluginFrom = sources: name:
         buildPlugin {

@@ -47,4 +47,10 @@
         # Misc
         espeak-ng # TTS
     ];
+
+    # Logseq 0.10 dep
+    # TODO: Remove
+    nixpkgs.config.permittedInsecurePackages = [
+        "electron-25.9.0"
+    ];
 }
