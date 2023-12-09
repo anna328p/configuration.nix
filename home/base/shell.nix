@@ -2,7 +2,7 @@
 
 {
     home.shellAliases = {
-        ls = "exa";
+        ls = "eza";
 
         ":w" = "sync";
         ":q" = "exit";

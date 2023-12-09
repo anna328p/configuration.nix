@@ -22,6 +22,8 @@ final: prev:
         cmakeFlags = oa.cmakeFlags ++ [
             "-DJPEGXL_ENABLE_PLUGINS=ON"
         ];
+
+        doCheck = false;
     });
 
     wrapDiscord = discordPkg: final.symlinkJoin {
@@ -42,10 +44,17 @@ final: prev:
         withBDplus = true;
     };
 
+    mpv = prev.mpv.override {
+        scripts = [ final.mpvScripts.mpris ];
+    };
+
     mpv-unwrapped_bd = prev.mpv-unwrapped.override {
         libbluray = final.libbluray_bd;
     };
-    mpv_bd = final.wrapMpv final.mpv-unwrapped_bd { };
+
+    mpv_bd = final.wrapMpv final.mpv-unwrapped_bd {
+        scripts = [ final.mpvScripts.mpris ];
+    };
 
     vlc_bd = prev.vlc.override { libbluray = final.libbluray_bd; };
 

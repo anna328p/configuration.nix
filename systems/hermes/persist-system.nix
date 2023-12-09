@@ -10,7 +10,6 @@
             "/etc/ssh"
 
             "/var/log"
-            "/var/cache/powertop"
 
             "/var/lib/bluetooth"
             "/var/lib/cups"
@@ -25,6 +24,14 @@
         ];
         files = [
             "/etc/machine-id"
+        ];
+    };
+
+    environment.persistence."/volatile/cache" = {
+        directories = [
+            "/var/cache/cups"
+            "/var/cache/fwupd"
+            "/var/cache/powertop"
         ];
     };
 }

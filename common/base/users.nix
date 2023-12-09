@@ -1,4 +1,4 @@
-{ pkgs, flakes, config, specialArgs, localModules, ... }:
+{ L, pkgs, flakes, config, specialArgs, localModules, ... }:
 
 let
     passwdHash = "$6$o3HFaJySc0ptEcz$tr5ndkC9HMA0RDVobaLUncgzEiveeWtSJV8"
@@ -15,7 +15,7 @@ in {
         mutableUsers = false;
         defaultUserShell = pkgs.zsh;
 
-        users.anna = {
+        users.anna = rec {
             description = "Anna";
             isNormalUser = true;
 
@@ -23,8 +23,14 @@ in {
             uid = 1000;
 
             # container support
-            subUidRanges = [ { startUid = 100000; count = 9999; } ];
-            subGidRanges = [ { startGid = 10000; count = 999; } ];
+
+            subUidRanges = let
+                offset = uid * (L.pow2 16);
+                width = (L.pow2 16) - 1;
+            in
+                [ { startUid = offset; count = width; } ];
+
+            subGidRanges = subUidRanges;
 
             # sudo rights
             extraGroups = [ "wheel" ];

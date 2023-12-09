@@ -29,7 +29,7 @@
         moreutils # coreutils addons
         psmisc # process management tools
 
-        exa # ls but better
+        eza # ls but better
         tree # ls -R replacement
         dfc # colorful df
         ripgrep # faster grep -r replacement
@@ -59,19 +59,19 @@
         VISUAL = "nvim";
     };
 
+    environment.pathsToLink = [ "/share/zsh" ];
+
     # Shell
     programs.zsh = {
         enable = true;
         interactiveShellInit = "bindkey -e";
     };
 
-    environment.pathsToLink = [ "/share/zsh" ];
-
     # enable sshd everywhere
     services.openssh.enable = true;
 
     nix.settings = {
-        experimental-features = [ "cgroups" "auto-allocate-uids" ];
+        experimental-features = [ "cgroups" "auto-allocate-uids" "ca-derivations" ];
         auto-optimise-store = true;
         auto-allocate-uids = true;
         use-cgroups = true;
