@@ -51,9 +51,6 @@
         nil.url = github:oxalica/nil;
         nil.inputs.flake-utils.follows = "flake-utils";
 
-        transgui.url = github:transmission-remote-gui/transgui;
-        transgui.flake = false;
-
         keydb.url = "https://github.com/anna328p/mirror/releases/latest/download/keydb_eng.zip";
         keydb.flake = false;
 

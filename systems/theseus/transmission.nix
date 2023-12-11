@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 let
     rpc-password = builtins.readFile ../../secrets/transmission-password;
@@ -7,6 +7,8 @@ in {
 
     services.transmission = {
         enable = true;
+
+        package = pkgs.transmission_4;
 
         settings = {
             rpc-port = 9091;

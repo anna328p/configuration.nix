@@ -26,6 +26,7 @@
         ffmpeg
         xdot
         f3d
+        tremotesf
 
         ## Programming / Software development
 

@@ -15,7 +15,6 @@
         ./mimeapps.nix
 
         ./audio.nix
-        ./transgui.nix
     ];
 
     home = {

@@ -1,4 +1,4 @@
-{ config, lib, flakes, localModules, ... }:
+{ flakes, localModules, ... }:
 
 {
     imports = with localModules; [
@@ -11,6 +11,7 @@
 
         ./hardware-configuration.nix
         ./transmission.nix
+        ./nginx.nix
 
         common.misc.ftp
     ];

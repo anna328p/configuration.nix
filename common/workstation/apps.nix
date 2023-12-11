@@ -44,8 +44,6 @@ in {
         # EDA
         kicad libxslt
 
-        transgui
-
         # Wine
         wine-custom winetricks
         samba # to provide winbind

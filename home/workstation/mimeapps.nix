@@ -33,5 +33,8 @@ in {
         "audio/ogg" "audio/x-vorbis+ogg" "audio/opus" "audio/x-opus+ogg"
         "audio/x-matroska"
             [ "mpv.desktop" ]
+
+        "x-scheme-handler/magnet"
+            [ "transgui.desktop" ]
         __ ;
 }

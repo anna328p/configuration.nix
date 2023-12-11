@@ -456,7 +456,6 @@
         "qbot": "qbot",
         "rainbow-delimiters-nvim": "rainbow-delimiters-nvim",
         "snm": "snm",
-        "transgui": "transgui",
         "vim-slim": "vim-slim"
       }
     },
@@ -530,22 +529,6 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
-        "type": "github"
-      }
-    },
-    "transgui": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1697738782,
-        "narHash": "sha256-XCokcA5lINC9B+qwg0vjkymwa16ZNHRKLI829+X7CvE=",
-        "owner": "transmission-remote-gui",
-        "repo": "transgui",
-        "rev": "b1f5c2334edb6659c04863ef4a534ba1e57284f0",
-        "type": "github"
-      },
-      "original": {
-        "owner": "transmission-remote-gui",
-        "repo": "transgui",
         "type": "github"
       }
     },
