@@ -25,6 +25,14 @@
             enable = true;
             ipv6 = true;
             nssmdns = true;
+
+            publish = {
+                enable = true;
+                workstation = true;
+                userServices = true;
+                hinfo = true;
+                domain = true;
+            };
         };
 
         mullvad-vpn = lib.mkIf config.misc.buildFull {
