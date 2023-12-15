@@ -1,9 +1,7 @@
 { ... }:
 
 {
-    environment.persistence."/safe/home" = {
-        hideMounts = true;
-
+    environment.persistence.home = {
         users.anna = {
             directories = [
                 { directory = ".gnupg"; mode = "0700"; }
@@ -44,9 +42,7 @@
         };
     };
 
-    environment.persistence."/volatile/cache" = {
-        hideMounts = true;
-        
+    environment.persistence.cache = {
         users.anna = {
             directories = [
                 ".cache"

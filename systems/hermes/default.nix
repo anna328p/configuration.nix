@@ -1,6 +1,8 @@
-{ config, pkgs, lib, localModules, flakes, ... }:
+{ pkgs, lib, localModules, flakes, ... }:
 {
-    imports = with localModules; [
+    imports = let
+        inherit (localModules) common;
+    in [
         common.base
         common.physical
         common.workstation
@@ -8,10 +10,6 @@
 
         flakes.nixos-hardware.nixosModules.lenovo-thinkpad-t14-amd-gen1
         ./disks.nix
-
-        flakes.impermanence.nixosModule
-        ./persist-system.nix
-        ./persist-home.nix
     ];
 
     boot = {
@@ -34,9 +32,9 @@
 
     misc.uuid = "46397c55-410c-4b6c-9050-5fbedb77e303";
 
-    hardware.bluetooth.powerOnBoot = false;
-
     time.timeZone = "America/Chicago";
+
+    hardware.bluetooth.powerOnBoot = false;
 
     powerManagement = {
         enable = true;

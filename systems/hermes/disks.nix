@@ -1,6 +1,19 @@
-{ ... }:
+{ localModules, ... }:
 
 {
+    imports = let
+        inherit (localModules) common;
+    in [
+        common.impermanent
+    ];
+
+    # impermanence
+    environment.persistence = {
+        system.persistentStoragePath = "/safe/system";
+        home.persistentStoragePath = "/safe/home";
+        cache.persistentStoragePath = "/volatile/cache";
+    };
+
     fileSystems = let
         dataset = subpath: {
             fsType = "zfs";
@@ -8,9 +21,6 @@
             neededForBoot = true;
         };
     in {
-        # tmpfs on root
-        "/" = { fsType = "tmpfs"; options = [ "size=100%" "huge=within_size" ]; };
-
         # EFI System Partition
         "/boot" = { device = "/dev/disk/by-uuid/EE41-5915"; };
 

@@ -1,7 +1,7 @@
 { ... }:
 
 {
-    environment.persistence."/safe/system" = {
+    environment.persistence.system = {
         directories = [
             "/etc/nixos"
 
@@ -27,7 +27,7 @@
         ];
     };
 
-    environment.persistence."/volatile/cache" = {
+    environment.persistence.cache = {
         directories = [
             "/var/cache/cups"
             "/var/cache/fwupd"

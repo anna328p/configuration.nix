@@ -94,9 +94,13 @@
                 virtual = common/virtual;
                 workstation = common/workstation;
 
-                misc.amd = common/misc/amd;
-                misc.ftp = common/misc/ftp.nix;
-                misc.small = common/misc/small;
+                impermanent = common/impermanent;
+
+                misc = {
+                    amd = common/misc/amd;
+                    ftp = common/misc/ftp;
+                    small = common/misc/small;
+                };
             };
 
             systems = {
