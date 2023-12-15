@@ -1,24 +1,50 @@
 { config, L, lib, local-lib, ... }:
 
-with lib; let
-    cfg = config.misc.bookmarks;
+let
+    inherit (lib) 
+        types
+        mkEnableOption
+        mkIf
+        ;
+
+    inherit (builtins)
+        baseNameOf
+        isString
+        ;
 
     inherit (local-lib) mkGenericOption;
 
+    cfg = config.misc.bookmarks;
+
+
     mkStrOption = mkGenericOption {} types.str;
 
-    bookmarkType = types.submodule {
+    tBookmark = types.submodule ({ config, ... }: {
         options = {
-            name = mkStrOption "Name shown in the sidebar" { default = ""; };
-            target = mkStrOption "Location that the bookmark points to" {};
+            name = mkStrOption "Name shown in the sidebar" {
+                default = baseNameOf config.target;
+            };
+
+            target = mkStrOption "Location that the bookmark points to" { };
         };
-    };
+    });
 
-    bookmarksType = types.listOf bookmarkType;
-    strListType = types.listOf types.str;
+    coerceEntry = entry:
+        if isString entry
+            then { target = entry; }
+            else entry;
 
-    mkBookmarksOption = mkGenericOption { default = []; } bookmarksType;
-    mkStrListOption = mkGenericOption { default = []; } strListType;
+    tBookmarkEntry = types.coercedTo
+        (types.either tBookmark types.str)
+        coerceEntry
+        tBookmark;
+
+    tBookmarks = types.listOf tBookmarkEntry;
+    tStrList = types.listOf types.str;
+
+    mkBookmarksOption = mkGenericOption { default = []; } tBookmarks;
+    mkStrListOption = mkGenericOption { default = []; } tStrList;
+
 in {
     options.misc.bookmarks = {
         enable = mkEnableOption "File manager bookmarks";
@@ -31,7 +57,12 @@ in {
     };
 
     config = mkIf cfg.enable {
-        gtk.gtk3.bookmarks = with L; let
+        gtk.gtk3.bookmarks = let
+            inherit (L)
+                id
+                urlencode
+                ;
+
             homeDir = config.home.homeDirectory;
             
             mkBookmarks = opt: prefix: fn: let

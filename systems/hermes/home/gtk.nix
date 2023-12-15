@@ -5,8 +5,8 @@
         enable = true;
 
         home = [
-            { name = "Docs"; target = "Documents/Docs"; }
-            { target = "work"; }
+            "Documents/Docs"
+            "work"
         ];
     };
 }
