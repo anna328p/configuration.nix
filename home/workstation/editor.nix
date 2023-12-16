@@ -169,11 +169,19 @@
 
             nvim-treesitter-endwise
 
+            vim-matchup
+
             (luaPlugin nvim-treesitter.withAllGrammars (Code [
                 (CallFrom (Require "nvim-treesitter.configs") "setup" {
                     highlight.enable = true;
                     indent.enable = true;
                     endwise.enable = true;
+
+                    matchup = {
+                        enable = true;
+                        enable_quotes = true;
+                        include_match_words = true;
+                    };
                 })
             ]) {
                 runtime."after/queries/nix/injections.scm".source =
@@ -373,7 +381,6 @@
                 }])
             ]) { })
 
-            vim-matchup
             (luaPlugin nvim-autopairs (Code [
                 (SetLocal <autopairs> (Require "nvim-autopairs"))
 
