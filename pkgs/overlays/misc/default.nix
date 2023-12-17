@@ -1,9 +1,10 @@
-{ ... }:
+{ flakes, mkFlakeVer, ... }:
 
-final: prev: 
-{
-    ruby_latest = final.ruby_3_2;
-    rubyPackages_latest = final.rubyPackages_3_2;
+final: prev: let
+    rubyVer = "3_2";
+in {
+    ruby_latest = final."ruby_${rubyVer}";
+    rubyPackages_latest = final."rubyPackages_${rubyVer}";
 
     f3d = prev.f3d.overrideAttrs (oa: {
         buildInputs = oa.buildInputs ++ (with final; [

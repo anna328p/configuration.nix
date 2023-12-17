@@ -124,10 +124,6 @@
 
         localModules = nixosModulePaths // { home = homeModulePaths; };
 
-        overlays = [
-            localPkgs.overlays.default
-            nil.overlays.default
-        ];
 
         mkNixosSystem = modules: let
             L = nix-prelude.lib;
@@ -138,7 +134,12 @@
         in nixpkgs.lib.nixosSystem {
             inherit modules;
 
-            specialArgs = {
+            specialArgs = let
+                overlays = [
+                    self.overlays.default
+                    nil.overlays.default
+                ];
+            in {
                 inherit flakes overlays localModules local-lib L;
             };
         };
@@ -174,8 +175,15 @@
         in
             mkSystems moduleSets;
 
+        overlays = {
+            inherit (localPkgs.overlays) default;
+        };
+
         packages = eachExposedSystem (system: let
-            pkgs = nixpkgs.legacyPackages.${system};
+            pkgs = import nixpkgs {
+                inherit system;
+                overlays = [ self.overlays.default ];
+            };
         in
             localPkgs.mkPackageSet pkgs
         );

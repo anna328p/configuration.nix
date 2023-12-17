@@ -10,13 +10,12 @@
         defaultEditor = true;
 
         extraPackages = with pkgs; [
-            rubyPackages_latest.solargraph
+            neovim-ruby-env
             ccls
 
             nodePackages.vscode-langservers-extracted
             nodePackages.bash-language-server
 
-            rubyPackages_latest.rubocop
             proselint
         ] ++ (lib.optionals systemConfig.misc.buildFull (with pkgs; [
             nil statix
@@ -241,23 +240,36 @@
                     <file_watching_cap> ]))
 
                 (SetLocal <auto_ls> [
-                    "hls" "bashls" "cssls" "rust_analyzer" ])
+                    "hls" "bashls" "cssls" "rust_analyzer" "ruby_ls" ])
 
                 (ForEach (IPairs <auto_ls>) (_: name: [
                     (CallFrom (Index <lspconfig> name) "setup" {
                         capabilities = <caps>;
                     }) ]))
 
-                (Call <lspconfig.solargraph.setup> {
-                    capabilities = <caps>;
-                    cmd = [
+
+                (let
+                    gemCmd = exe: test: args: [
                         "bash"
                         "-c"
-                        ("bundle exec solargraph --version"
-                            + " && exec bundle exec solargraph stdio"
-                            + " || solargraph stdio")
+                        ("bundle exec steep --version"
+                            + " && exec bundle exec steep langserver"
+                            + " || exec steep langserver")
                     ];
-                })
+
+                    rubyLS = name: cmd: extra:
+                        CallFrom (Index <lspconfig> name) "setup" {
+                            capabilities = <caps>;
+                            inherit cmd;
+                        } // extra;
+                in
+                    Paste [
+                        (rubyLS "steep"
+                            (gemCmd "steep" "--version" "langserver") { })
+
+                        (rubyLS "typeprof"
+                            (gemCmd "typeprof" "--version" "--lsp --stdio") { }) ])
+
 
                 (Call <lspconfig.nil_ls.setup> {
                     capabilities = <caps>;

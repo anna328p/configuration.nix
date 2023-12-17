@@ -8,4 +8,6 @@ let
 
 in {
     keydb = callPackage' ./keydb { };
+
+    neovim-ruby-env = callPackage' ./neovim-ruby-env { };
 }
