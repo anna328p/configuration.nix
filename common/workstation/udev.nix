@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 
 {
     misc.udev = {
@@ -17,11 +17,13 @@
         ];
 
         extraRuleFiles = [
-            "${pkgs.ddcutil}/share/ddcutil/data/60-ddcutil-i2c.rules"
             "${pkgs.libfido2}/etc/udev/rules.d/70-u2f.rules"
         ];
 
         extraRules = [
+            # DDC
+            ''SUBSYSTEM=="i2c-dev", KERNEL=="i2c-[0-9]*", ATTRS{class}=="0x030000", TAG+="uaccess"''
+
             # USB networking
             ''KERNEL=="tun", GROUP="users", MODE="0666"''
         ];

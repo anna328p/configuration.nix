@@ -24,7 +24,7 @@
         avahi = {
             enable = true;
             ipv6 = true;
-            nssmdns = true;
+            nssmdns4 = true;
 
             publish = {
                 enable = true;
