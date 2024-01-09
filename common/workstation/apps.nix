@@ -1,57 +1,52 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, ... }:
 
-let
-    isMinimal = !(config.misc.buildFull);
-in {
-    environment.systemPackages = with pkgs; if isMinimal then [
-        # Media players
-        mpv vlc
-    ] else [
-        # Media players with Blu-Ray support
-        mpv_bd vlc_bd keydb
+{
+    environment.systemPackages = with pkgs; [
+        ## Internet / Communications
 
-        # Media creation
-        audacity
-        vcv-rack
+        # Browser
+        firefox-devedition-bin
 
-        # Text, documents
-        libreoffice
-        calibre
+        # Messengers
+        discord-custom
+        tdesktop
+        nheko
+        thunderbird
 
-        # Typefaces
-        fontforge-gtk nodePackages.svgo
+        # Notes
+        logseq
 
-        # Communication
-        zoom-us
-        element-desktop 
+        # Graphics
+        gimp
 
-        # VMs
-        adoptopenjdk-openj9-bin-16
-        mono
+        # Media
+        ffmpeg
+        tremotesf
 
-        # Haskell
-        ghc
-        cabal-install cabal2nix
+        ## Programming / Software development
+
+        # Interpreters
+        nodejs
+        ruby_latest
+        python3
 
         # Nix
-        nixpkgs-review
-
-        # CAD, CAM
-        openscad
-        solvespace
-        prusa-slicer
-
-        # EDA
-        kicad libxslt
-
-        # Wine
-        wine-custom winetricks
-        samba # to provide winbind
+        nix-prefetch-git
+        cachix
 
         # Misc
-        woeusb         # Write Windows install disks
-        idevicerestore # Flash Apple devices
-        anki           # Flashcards
-        appimage-run
+        gh # GitHub CLI
+        direnv
+        _7zz
+        nix-tree
+
+        # Misc
+        espeak-ng # TTS
+    ];
+
+    # Logseq 0.10 dep
+    # TODO: Remove
+    nixpkgs.config.permittedInsecurePackages = [
+        "electron-25.9.0"
     ];
 }

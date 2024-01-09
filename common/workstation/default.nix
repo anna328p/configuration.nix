@@ -19,8 +19,8 @@
 
         ./mopidy.nix
         ./games.nix
-        ./apps-minimal.nix
         ./apps.nix
+        ./apps-extra.nix
         ./programs.nix
     ];
 

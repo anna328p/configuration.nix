@@ -35,18 +35,24 @@
 
         qbot.url = github:arch-community/qbot;
 
-        snm.url = gitlab:simple-nixos-mailserver/nixos-mailserver;
-        snm.inputs.utils.follows = "flake-utils";
-        snm.inputs.nixpkgs.follows = "nixpkgs";
-        snm.inputs.nixpkgs-22_11.follows = "nixpkgs";
-        snm.inputs.nixpkgs-23_05.follows = "nixpkgs";
-        snm.inputs.flake-compat.follows = "flake-compat";
+        snm = {
+            url = gitlab:simple-nixos-mailserver/nixos-mailserver;
+            inputs = {
+                utils.follows = "flake-utils";
+                nixpkgs.follows = "nixpkgs";
+                nixpkgs-22_11.follows = "nixpkgs";
+                nixpkgs-23_05.follows = "nixpkgs";
+                flake-compat.follows = "flake-compat";
+            };
+        };
 
         # packages
 
-        neovim.url = github:neovim/neovim?dir=contrib;
-        neovim.inputs.nixpkgs.follows = "nixpkgs";
-        neovim.inputs.flake-utils.follows = "flake-utils";
+        neovim = {
+            url = github:neovim/neovim?dir=contrib;
+            inputs.nixpkgs.follows = "nixpkgs";
+            inputs.flake-utils.follows = "flake-utils";
+        };
 
         nil.url = github:oxalica/nil;
         nil.inputs.flake-utils.follows = "flake-utils";

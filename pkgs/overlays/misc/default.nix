@@ -37,7 +37,13 @@ in {
         '';
     };
 
-    discord-custom = final.wrapDiscord final.discord;
+    discord-custom = let
+        discord = final.discord.override {
+            withOpenASAR = true;
+            withTTS = true;
+        };
+    in
+        final.wrapDiscord final.discord;
 
     libbluray_bd = prev.libbluray.override {
         withJava = true;
@@ -71,15 +77,13 @@ in {
     });
 
     mkNamedTOML = final.formats.json {} // {
-        type = with final.lib.types; let
+        type = let
+            inherit (final.lib.types)
+                oneOf bool int float str path attrsOf listOf;
+
             valueType = oneOf [
-                bool
-                int
-                float
-                str
-                path
-                (attrsOf valueType)
-                (listOf valueType)
+                bool int float str path
+                (attrsOf valueType) (listOf valueType)
             ] // {
                 description = "TOML value";
             };

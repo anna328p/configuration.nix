@@ -16,6 +16,11 @@
             client_id = 660591224482168842;
             owner = 165998239273844736;
 
+            arch = {
+                mirror = "https://mirrors.edge.kernel.org/archlinux/";
+                repos = [ "core" "extra" "multilib" ];
+            };
+
             database = {
                 type = "sqlite3";
                 db = "db.sqlite3";
