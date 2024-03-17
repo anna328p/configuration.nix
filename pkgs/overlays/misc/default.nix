@@ -24,6 +24,10 @@ in {
             "-DJPEGXL_ENABLE_PLUGINS=ON"
         ];
 
+        buildInputs = oa.buildInputs ++ [
+            final.lcms2
+        ];
+
         doCheck = false;
     });
 
@@ -46,7 +50,9 @@ in {
         final.wrapDiscord final.discord;
 
     libbluray_bd = prev.libbluray.override {
-        withJava = true;
+        # TODO: NixOS/nixpkgs#296748
+        # withJava = true;
+
         withAACS = true;
         withBDplus = true;
     };

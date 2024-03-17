@@ -1,7 +1,7 @@
 { pkgs, config, lib, flakes, L, ... }:
 
 let
-    byKind' = L.colors.byKind config.colorScheme.kind;
+    byVariant' = L.colors.byVariant config.colorScheme.variant;
 in {
     imports = [
         ./gnome.nix
@@ -42,10 +42,10 @@ in {
     gtk = {
         theme = {
             package = pkgs.adw-gtk3;
-            name = byKind' "adw-gtk3" "adw-gtk3-dark";
+            name = byVariant' "adw-gtk3" "adw-gtk3-dark";
         };
 
-        gtk2.extraConfig = "gtk-theme-name=\"${byKind' "Adwaita" "Adwaita-dark"}\"";
+        gtk2.extraConfig = "gtk-theme-name=\"${byVariant' "Adwaita" "Adwaita-dark"}\"";
     };
 
     qt = {
@@ -54,7 +54,7 @@ in {
 
         style = {
             package = pkgs.adwaita-qt;
-            name = byKind' "adwaita" "adwaita-dark";
+            name = byVariant' "adwaita" "adwaita-dark";
         };
     };
 }

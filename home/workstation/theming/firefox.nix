@@ -2,7 +2,7 @@
 
 let
     scheme = config.colorScheme;
-    formatted = L.colors.prefixHash scheme.colors;
+    formatted = L.colors.prefixHash scheme.palette;
 
     rootDefs = with formatted; {
         # Popup panels

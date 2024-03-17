@@ -5,9 +5,9 @@
         slug = "witchhazel-hypercolor";
         name = "Witch Hazel Hypercolor";
         author = "Thea Flowers (https://thea.codes)";
-        kind = "dark";
+        variant = "dark";
 
-        colors = let
+        palette = let
             sourceColors = {
                 rouge      = "#960050";
                 clay       = "#894E63";

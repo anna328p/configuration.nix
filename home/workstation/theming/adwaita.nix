@@ -2,7 +2,7 @@
 
 let
     scheme = config.colorScheme;
-    formatted = L.colors.prefixHash scheme.colors;
+    formatted = L.colors.prefixHash scheme.palette;
 
     defs = with formatted; rec {
         accent_color    = base0C;

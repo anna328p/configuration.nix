@@ -20,7 +20,7 @@
             inherit (flakes.nix-colors.lib-core.conversions) hexToRGBString;
             mkColorStrings = mapAttrs (_: hexToRGBString ", ");
 
-            colors = mkColorStrings hmcfg.colorScheme.colors;
+            colors = mkColorStrings hmcfg.colorScheme.palette;
 
         in with colors; mkConf {
             font-size = monospaceFont.size;

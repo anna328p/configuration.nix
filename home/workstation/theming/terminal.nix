@@ -5,11 +5,11 @@
         scheme = config.colorScheme;
         profileUUID = "7dc9e410-f2aa-47f5-9bf1-e65d55f704a9"; # uuidgen
 
-        colorsPrefixed = lib.mapAttrs (_: v: "#${v}") scheme.colors;
+        colorsPrefixed = lib.mapAttrs (_: v: "#${v}") scheme.palette;
     in {
         enable = true;
 
-        themeVariant = scheme.kind;
+        themeVariant = scheme.variant;
 
         profile.${profileUUID} = {
             visibleName = scheme.name;

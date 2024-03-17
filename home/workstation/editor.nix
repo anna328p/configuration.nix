@@ -113,10 +113,10 @@
             inherit (L.lua) __findFile;
         in [
             # visual
-            (luaPlugin nvim-base16 (Code [
+            (luaPlugin base16-nvim (Code [
                 (Set <vim.opt.termguicolors> true)
                 (CallFrom (Require "base16-colorscheme") "setup"
-                    (prefixHashes config.colorScheme.colors))
+                    (prefixHashes config.colorScheme.palette))
             ]) { })
 
             (luaPlugin nvim-colorizer-lua (Code [

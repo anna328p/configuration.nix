@@ -64,7 +64,6 @@
     services = {
         xserver = {
             enable = true;
-            layout = "us";
 
             desktopManager = {
                 xterm.enable = false;
@@ -96,16 +95,20 @@
             libinput.enable = true;
             wacom.enable = true;
 
-            extraLayouts = let
-                mkLayout = desc: file: {
-                    description = "English (${desc})";
-                    languages = [ "eng" ];
-                    symbolsFile = file;
+            xkb = {
+                layout = "us";
+
+                extraLayouts = let
+                    mkLayout = desc: file: {
+                        description = "English (${desc})";
+                        languages = [ "eng" ];
+                        symbolsFile = file;
+                    };
+                in {
+                    semimak-jq = mkLayout "Semimak JQ" files/symbols/semimak-jq;
+                    semimak-jqa = mkLayout "Semimak JQ, angle mod" files/symbols/semimak-jqa;
+                    canary = mkLayout "Canary" files/symbols/canary;
                 };
-            in {
-                semimak-jq = mkLayout "Semimak JQ" files/symbols/semimak-jq;
-                semimak-jqa = mkLayout "Semimak JQ, angle mod" files/symbols/semimak-jqa;
-                canary = mkLayout "Canary" files/symbols/canary;
             };
         };
 

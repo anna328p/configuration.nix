@@ -40,8 +40,6 @@
             inputs = {
                 utils.follows = "flake-utils";
                 nixpkgs.follows = "nixpkgs";
-                nixpkgs-22_11.follows = "nixpkgs";
-                nixpkgs-23_05.follows = "nixpkgs";
                 flake-compat.follows = "flake-compat";
             };
         };

@@ -3,9 +3,9 @@
 let
     scheme = config.colorScheme;
 
-    byKind' = L.colors.byKind scheme.kind;
+    byVariant' = L.colors.byVariant scheme.variant;
 
-    formatted = L.colors.prefixHash scheme.colors;
+    formatted = L.colors.prefixHash scheme.palette;
 
     defs = with formatted; rec {
         header-primary = base05;
@@ -241,7 +241,7 @@ let
             border-right: 1px solid ${base01} !important;
         }
 
-        ${sel nav "guilds"} > ul { ${bg (byKind' "white" "black")} }
+        ${sel nav "guilds"} > ul { ${bg (byVariant' "white" "black")} }
 
         ${sel nav "guilds"} ${sel div "scrollerBase"} {
             background-color: ${base00}aa !important;
@@ -260,7 +260,7 @@ let
         ${sel div "homeContainer"} { ${bg' base00 "aa"} }
 
         ${sel div "userPanelInner"} > ${sel div "scrollerBase"} {
-            backdrop-filter: brightness(${byKind' "1.4" "0.55"});
+            backdrop-filter: brightness(${byVariant' "1.4" "0.55"});
         }
 
         ${sel div "usageWrapper"} > ${sel div "option"} { ${bg base01} }
@@ -328,8 +328,8 @@ let
 
         ${sel span "key"} {
             ${color base00}
-            ${bg (byKind' base03 base04)}
-            box-shadow: inset 0 -4px 0 ${(byKind' base04 base03)} !important;
+            ${bg (byVariant' base03 base04)}
+            box-shadow: inset 0 -4px 0 ${(byVariant' base04 base03)} !important;
         }
 
         ${sel "*" "colorPrimary"} { ${color base05} }
