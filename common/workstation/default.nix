@@ -16,6 +16,7 @@
         ./sound.nix
         ./video.nix
         ./gui.nix
+        ./rygel.nix
 
         ./mopidy.nix
         ./games.nix

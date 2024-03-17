@@ -28,5 +28,9 @@
         dates = "weekly";
     };
 
+    documentation = {
+        info.enable = false;
+    };
+
     system.autoUpgrade.enable = true;
 }

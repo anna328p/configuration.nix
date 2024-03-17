@@ -39,6 +39,7 @@
         direnv
         _7zz
         nix-tree
+        binutils # strings
 
         # Misc
         espeak-ng # TTS

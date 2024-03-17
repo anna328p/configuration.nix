@@ -25,4 +25,5 @@ in composeOverlays (map importOverlay [
     ./misc
     ./transmission
     ./vim
+    ./bluray
 ])

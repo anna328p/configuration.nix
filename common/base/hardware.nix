@@ -1,7 +1,10 @@
 { pkgs, ... }:
 
 {
-    boot.tmp.useTmpfs = true;
+    boot = {
+        tmp.useTmpfs = true;
+        initrd.systemd.enable = true;
+    };
 
     # TTY appearance
     console = {
@@ -15,7 +18,6 @@
         hdparm
 
         # Disk usage viewers
-        iotop
         lsof
 
         # Partition table editors
@@ -25,4 +27,6 @@
 
     # Trim SSDs and sparse images
     services.fstrim.enable = true;
+
+    programs.iotop.enable = true;
 }

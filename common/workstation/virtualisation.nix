@@ -19,9 +19,9 @@
         };
     };
 
+    programs.virt-manager.enable = true;
+
     users.users.anna.extraGroups = [ "libvirtd" ];
 
-    environment.systemPackages = with pkgs; [
-        virt-manager spice-gtk
-    ];
+    environment.systemPackages = [ pkgs.spice-gtk ];
 }

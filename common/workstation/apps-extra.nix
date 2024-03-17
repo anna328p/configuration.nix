@@ -32,7 +32,6 @@ in {
         element-desktop 
 
         # VMs
-        adoptopenjdk-openj9-bin-16
         mono
 
         # Haskell
@@ -61,4 +60,6 @@ in {
         anki           # Flashcards
         appimage-run
     ];
+
+    programs.java.enable = config.misc.buildFull;
 }

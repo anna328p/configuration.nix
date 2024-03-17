@@ -5,9 +5,10 @@
 
     programs.neovim = {
         enable = true;
-        withRuby = false;
-
         defaultEditor = true;
+
+        withRuby = false;
+        withPython3 = false;
 
         extraPackages = with pkgs; [
             neovim-ruby-env
