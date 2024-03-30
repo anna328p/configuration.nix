@@ -1,7 +1,10 @@
-{ pkgs, config, lib, flakes, L, ... }:
+{ pkgs, config, local-lib, ... }:
 
 let
-    byVariant' = L.colors.byVariant config.colorScheme.variant;
+    inherit (local-lib) colors;
+
+    byVariant' = colors.byVariant config.colorScheme.variant;
+
 in {
     imports = [
         ./gnome.nix

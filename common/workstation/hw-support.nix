@@ -6,25 +6,23 @@
         binfmt.emulatedSystems = lib.optionals config.misc.buildFull
             [ "aarch64-linux" ];
 
-        # TODO: build broken with kernel 6.3, 2023-04-28
         # Control connected monitors' settings
-        # kernelModules = [ "i2c-dev" "ddcci" ];
-        # extraModulePackages = [ config.boot.kernelPackages.ddcci-driver ];
-        kernelModules = [ "i2c-dev" ];
+        kernelModules = [ "i2c-dev" "ddcci" ];
+        extraModulePackages = [ config.boot.kernelPackages.ddcci-driver ];
     };
 
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = let p = pkgs; in [
         # DDC monitor control
-        ddcutil
+        p.ddcutil
 
         # PostScript interpreter for printing
-        ghostscript
+        p.ghostscript
 
         # Mouse config GUI
-        piper
+        p.piper
 
         # Smart cards, Yubikey
-        opensc pcsctools yubikey-manager yubikey-manager-qt
+        p.opensc p.pcsctools p.yubikey-manager p.yubikey-manager-qt
 
         # Power management
         config.boot.kernelPackages.cpupower
@@ -52,17 +50,17 @@
     # can't be configured more declaratively :(
     services.printing = {
         enable = true;
-        drivers = with pkgs; [
-            gutenprint gutenprintBin
-            brlaser
-            hll2390dw-cups
+        drivers = let p = pkgs; in [
+            p.gutenprint p.gutenprintBin
+            p.brlaser
+            p.hll2390dw-cups
         ];
     };
 
     # Scanning
     hardware.sane = {
         enable = true;
-        extraBackends = with pkgs; [ sane-airscan ];
+        extraBackends = [ pkgs.sane-airscan ];
 
         brscan5 = {
             enable = true;

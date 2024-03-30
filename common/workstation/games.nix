@@ -1,22 +1,22 @@
 { pkgs, lib, config, ifFullBuild, ... }:
 
 {
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = let p = pkgs; in [
         # Controller support
-        linuxConsoleTools
-    ] ++ (lib.optionals config.misc.buildFull (with pkgs; [
+        p.linuxConsoleTools
+    ] ++ (lib.optionals config.misc.buildFull [
         # Steam
-        protontricks
+        p.protontricks
 
         # Meta Quest app store
-        sidequest
+        p.sidequest
 
         # Games
-        osu-lazer
-        wesnoth
-        # TODO: reenable when nixpkgs#229358 fixed
-        # prismlauncher # Minecraft
-    ]));
+        p.osu-lazer
+        p.wesnoth
+
+        p.prismlauncher # Minecraft
+    ]);
 
     programs.steam.enable = config.misc.buildFull;
 }

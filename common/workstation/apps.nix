@@ -1,48 +1,48 @@
 { pkgs, ... }:
 
 {
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = let p = pkgs; in [
         ## Internet / Communications
 
         # Browser
-        firefox-devedition-bin
+        p.firefox-devedition-bin
 
         # Messengers
-        discord-custom
-        tdesktop
-        nheko
-        thunderbird
+        p.discord-custom
+        p.tdesktop
+        p.nheko
+        p.thunderbird
 
         # Notes
-        logseq
+        p.logseq
 
         # Graphics
-        gimp
+        p.gimp
 
         # Media
-        ffmpeg
-        tremotesf
+        p.ffmpeg
+        p.tremotesf
 
         ## Programming / Software development
 
         # Interpreters
-        nodejs
-        ruby_latest
-        python3
+        p.nodejs
+        p.ruby_latest
+        p.python3
 
         # Nix
-        nix-prefetch-git
-        cachix
+        p.nix-prefetch-git
+        p.cachix
 
         # Misc
-        gh # GitHub CLI
-        direnv
-        _7zz
-        nix-tree
-        binutils # strings
+        p.gh # GitHub CLI
+        p.direnv
+        p._7zz
+        p.nix-tree
+        p.binutils # strings
 
         # Misc
-        espeak-ng # TTS
+        p.espeak-ng # TTS
     ];
 
     # Logseq 0.10 dep

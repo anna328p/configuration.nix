@@ -3,62 +3,64 @@
 let
     isMinimal = !(config.misc.buildFull);
 in {
-    environment.systemPackages = with pkgs; if isMinimal then [
+    environment.systemPackages = let
+        p = pkgs;
+    in if isMinimal then [
         # Media players
-        mpv vlc
+        p.mpv p.vlc
     ] else [
         # Media players with Blu-Ray support
-        mpv_bd vlc_bd keydb
+        p.mpv_bd p.vlc_bd p.keydb
 
         # Media creation
-        audacity
-        vcv-rack
+        p.audacity
+        p.vcv-rack
 
         # Graphics
-        inkscape
-        imagemagick
-        img2pdf
+        p.inkscape
+        p.imagemagick
+        p.img2pdf
 
         # Text, documents
-        libreoffice
-        calibre
-        xdot
+        p.libreoffice
+        p.calibre
+        p.xdot
 
         # Typefaces
-        fontforge-gtk nodePackages.svgo
+        p.fontforge-gtk p.nodePackages.svgo
 
         # Communication
-        zoom-us
-        element-desktop 
+        p.zoom-us
+        p.element-desktop 
 
         # VMs
-        mono
+        p.mono
 
         # Haskell
-        ghc
-        cabal-install cabal2nix
+        p.ghc
+        p.cabal-install p.cabal2nix
 
         # Nix
-        nixpkgs-review
+        p.nixpkgs-review
 
         # CAD, CAM
-        openscad
-        solvespace
-        prusa-slicer
-        f3d
+        p.openscad
+        p.solvespace
+        p.prusa-slicer
+        p.f3d
 
         # EDA
-        kicad libxslt
+        p.kicad p.libxslt
 
         # Wine
-        wine-custom winetricks
-        samba # to provide winbind
+        p.wine-custom p.winetricks
+        p.samba # to provide winbind
 
         # Misc
-        woeusb         # Write Windows install disks
-        idevicerestore # Flash Apple devices
-        anki           # Flashcards
-        appimage-run
+        p.woeusb         # Write Windows install disks
+        p.idevicerestore # Flash Apple devices
+        p.anki           # Flashcards
+        p.appimage-run
     ];
 
     programs.java.enable = config.misc.buildFull;

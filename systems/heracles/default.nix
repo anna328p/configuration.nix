@@ -1,7 +1,9 @@
 { lib, localModules, ... }:
 
 {
-    imports = with localModules; [
+    imports = let
+        inherit (localModules) common;
+    in [
         common.base
         common.server
         common.virtual

@@ -7,22 +7,19 @@
     };
 
     # TTY appearance
-    console = {
-        font = "Lat2-Terminus16";
-        keyMap = "us";
-    };
+    console.keyMap = "us";
 
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = let p = pkgs; in [
         # Misc disk tools
-        multipath-tools
-        hdparm
+        p.multipath-tools
+        p.hdparm
 
         # Disk usage viewers
-        lsof
+        p.lsof
 
         # Partition table editors
-        parted
-        gptfdisk
+        p.parted
+        p.gptfdisk
     ];
 
     # Trim SSDs and sparse images

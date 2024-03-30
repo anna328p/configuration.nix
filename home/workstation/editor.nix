@@ -10,20 +10,23 @@
         withRuby = false;
         withPython3 = false;
 
-        extraPackages = with pkgs; [
-            neovim-ruby-env
-            ccls
+        extraPackages = let
+            p = pkgs;
+            n = pkgs.nodePackages;
+        in [
+            p.neovim-ruby-env
+            p.ccls
 
-            nodePackages.vscode-langservers-extracted
-            nodePackages.bash-language-server
+            n.vscode-langservers-extracted
+            n.bash-language-server
 
-            proselint
-        ] ++ (lib.optionals systemConfig.misc.buildFull (with pkgs; [
-            nil statix
-            haskell-language-server
-            rust-analyzer
-            shellcheck
-        ]));
+            p.proselint
+        ] ++ (lib.optionals systemConfig.misc.buildFull [
+            p.nil p.statix
+            p.haskell-language-server
+            p.rust-analyzer
+            p.shellcheck
+        ]);
 
         extraLuaConfig = let
             rg = lib.getExe pkgs.ripgrep;
@@ -65,7 +68,13 @@
             };
 
             inherit (L.lua) __findFile;
-        in with L.lua; with L; Code [
+
+            inherit (L)
+                o
+                mapSetPairs
+                uncurry
+                ;
+        in with L.lua; Code [
             (Paste (o mapSetPairs uncurry
                 (k: v: (Set (Index <vim.opt> k) v)) opts))
 
@@ -103,7 +112,9 @@
             }])
         ];
 
-        plugins = with pkgs.vimPlugins; with L.lua; let
+        plugins = with L.lua; let
+            v = pkgs.vimPlugins;
+
             luaPlugin = plugin: config: rest: {
                 inherit plugin config;
                 type = "lua";
@@ -114,19 +125,19 @@
             inherit (L.lua) __findFile;
         in [
             # visual
-            (luaPlugin base16-nvim (Code [
+            (luaPlugin v.base16-nvim (Code [
                 (Set <vim.opt.termguicolors> true)
                 (CallFrom (Require "base16-colorscheme") "setup"
                     (prefixHashes config.colorScheme.palette))
             ]) { })
 
-            (luaPlugin nvim-colorizer-lua (Code [
+            (luaPlugin v.nvim-colorizer-lua (Code [
                 (CallFrom (Require "colorizer") "setup" {
                     user_default_options.mode = "virtualtext";
                 })
             ]) { })
 
-            (luaPlugin rainbow-delimiters-nvim (Code (let
+            (luaPlugin v.rainbow-delimiters-nvim (Code (let
                 links = {
                     "RainbowDelimiterRed"    =  "rainbowcol1";
                     "RainbowDelimiterYellow" =  "rainbowcol2";
@@ -141,15 +152,16 @@
                     (Call <vim.api.nvim_set_hl>
                         [ 0 group { link = target; } ]);
 
+                inherit (L) o mapSetPairs uncurry;
             in
-                with L; o mapSetPairs uncurry mkHighlight links
+                o mapSetPairs uncurry mkHighlight links
             )) { })
 
-            (luaPlugin gitsigns-nvim (Code [
+            (luaPlugin v.gitsigns-nvim (Code [
                 (CallFrom (Require "gitsigns") "setup" { })
             ]) { })
 
-            (luaPlugin lualine-nvim (Code [
+            (luaPlugin v.lualine-nvim (Code [
                 (CallFrom (Require "lualine") "setup" {
                     options = {
                         icons_enabled = false;
@@ -158,7 +170,7 @@
                  })
             ]) { })
 
-            (luaPlugin tabline-nvim (Code [
+            (luaPlugin v.tabline-nvim (Code [
                 (CallFrom (Require "tabline") "setup" {
                     options = {
                         show_devicons = false;
@@ -167,11 +179,11 @@
                  })
             ]) { })
 
-            nvim-treesitter-endwise
+            v.nvim-treesitter-endwise
 
-            vim-matchup
+            v.vim-matchup
 
-            (luaPlugin nvim-treesitter.withAllGrammars (Code [
+            (luaPlugin v.nvim-treesitter.withAllGrammars (Code [
                 (CallFrom (Require "nvim-treesitter.configs") "setup" {
                     highlight.enable = true;
                     indent.enable = true;
@@ -188,15 +200,15 @@
                     ./nvim/nix-injections.scm;
             })
 
-            playground
+            v.playground
 
-            (luaPlugin nvim-treesitter-context (Code [
+            (luaPlugin v.nvim-treesitter-context (Code [
                 (CallFrom (Require "treesitter-context") "setup" {
                     enable = true;
                 })
             ]) { })
 
-            (luaPlugin indent-blankline-nvim (Code [
+            (luaPlugin v.indent-blankline-nvim (Code [
                 # show indentation levels
                 (CallFrom (Require "ibl") "setup" {
                     indent.char = "│";
@@ -210,7 +222,7 @@
                 })
             ]) { })
 
-            (luaPlugin nvim-surround (Code [
+            (luaPlugin v.nvim-surround (Code [
                 (CallFrom (Require "nvim-surround") "setup" { })
             ]) { })
 
@@ -218,9 +230,9 @@
 
             # language servers
 
-            cmp-nvim-lsp
+            v.cmp-nvim-lsp
 
-            (luaPlugin nvim-lspconfig (Code [
+            (luaPlugin v.nvim-lspconfig (Code [
                 (SetLocal <lspconfig> (Require "lspconfig"))
 
                 (SetLocal <lsp_caps>
@@ -320,7 +332,7 @@
                     disabled = [ "unquoted_uri" "empty_pattern" ];
                 };
 
-            in luaPlugin null-ls-nvim (Code [
+            in luaPlugin v.null-ls-nvim (Code [
                 (SetLocal <null_ls> (Require "null-ls"))
 
                 (CallFrom <null_ls> "setup" {
@@ -337,13 +349,24 @@
             ]) { })
 
             # completions
-            luasnip cmp_luasnip cmp-nvim-lua
-            cmp-omni
-            cmp-treesitter
-            cmp-buffer cmp-tmux
-            cmp-emoji
+            v.luasnip v.cmp_luasnip v.cmp-nvim-lua
+            v.cmp-omni
+            v.cmp-treesitter
+            v.cmp-buffer v.cmp-tmux
+            v.cmp-emoji
 
-            (luaPlugin nvim-cmp (Code [
+            (luaPlugin v.copilot-lua (Code [
+                (CallFrom (Require "copilot") "setup" [ {
+                    suggestion.enabled = false;
+                    panel.enabled = false;
+                } ])
+            ]) { })
+
+            (luaPlugin v.copilot-cmp (Code [
+                (CallFrom (Require "copilot_cmp") "setup" [])
+            ]) { })
+
+            (luaPlugin v.nvim-cmp (Code [
                 (SetLocal <cmp> (Require "cmp"))
 
                 (CallFrom <cmp> "setup" [ {
@@ -382,7 +405,8 @@
                         wrapNames = map (name: { inherit name; });
                     in
                         Call <cmp.config.sources> (map wrapNames [
-                            [ "nvim_lsp" "luasnip" "nvim_lua" "omni" ]
+                            [ "nvim_lsp" "nvim_lua" "omni" ]
+                            [ "copilot" "luasnip" ]
                             [ "treesitter" ]
                             [ "buffer" "tmux" ]
                             [ "emoji" ]
@@ -394,7 +418,7 @@
                 }])
             ]) { })
 
-            (luaPlugin nvim-autopairs (Code [
+            (luaPlugin v.nvim-autopairs (Code [
                 (SetLocal <autopairs> (Require "nvim-autopairs"))
 
                 (Call <autopairs.setup> {
@@ -447,7 +471,7 @@
             ]) { })
 
             # languages
-            vim-slim
+            v.vim-slim
 
             # navigation
             (let
@@ -481,7 +505,7 @@
                     };
                 };
 
-            in luaPlugin nvim-tree-lua (Code [
+            in luaPlugin v.nvim-tree-lua (Code [
                 (CallFrom (Require "nvim-tree") "setup" settings)
 
                 (SetLocal <tree_api> (Require "nvim-tree.api"))
@@ -512,9 +536,9 @@
                     }])
             ]) { })
 
-            popup-nvim plenary-nvim
+            v.popup-nvim v.plenary-nvim
 
-            (luaPlugin telescope-nvim (Code (let
+            (luaPlugin v.telescope-nvim (Code (let
                 mkMapping = from: to:
                     (Call <vim.keymap.set> [ "n" from to ]);
             in [
@@ -528,8 +552,8 @@
             ])) { })
 
             # misc
-            vim-sensible
-            vim-startify
+            v.vim-sensible
+            v.vim-startify
         ];
         viAlias = true;
         vimAlias = true;

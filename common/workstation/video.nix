@@ -3,16 +3,22 @@
 {
     # Virtual camera support
     boot.kernelModules = [ "v4l2loopback" ];
-    boot.extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
+    boot.extraModulePackages = let
+        k = config.boot.kernelPackages;
+    in
+        [ k.v4l2loopback ];
 
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = [
         # Webcam viewer
-        guvcview
+        pkgs.guvcview
     ];
 
     # Allow webcam access (not sure if this is useful)
     users.users.anna.extraGroups = [ "video" ];
 
     # Hardware video decoding
-    hardware.opengl.extraPackages = with pkgs; [ libva1 vaapiVdpau libvdpau-va-gl ];
+    hardware.opengl.extraPackages = let
+        p = pkgs;
+    in
+        [ p.libva1 p.vaapiVdpau p.libvdpau-va-gl ];
 }

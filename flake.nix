@@ -55,8 +55,11 @@
         nil.url = github:oxalica/nil;
         nil.inputs.flake-utils.follows = "flake-utils";
 
-        keydb.url = "https://github.com/anna328p/mirror/releases/latest/download/keydb_eng.zip";
-        keydb.flake = false;
+        keydb = {
+            url = "https://github.com/anna328p/mirror/releases/latest/download/keydb_eng.zip";
+            type = "file";
+            flake = false;
+        };
 
         vim-slim.url = github:slim-template/vim-slim;
         vim-slim.flake = false;
@@ -67,11 +70,11 @@
         nvim-treesitter.url = github:nvim-treesitter/nvim-treesitter;
         nvim-treesitter.flake = false;
 
-        nvim-cmp.url = github:plankcipher/nvim-cmp/fix-inline-virt-text;
-        nvim-cmp.flake = false;
-
         easyeffects-presets.url = github:digitalone1/easyeffects-presets;
         easyeffects-presets.flake = false;
+
+        modemmanager-enz7360.url = gitlab:ShaneParslow/ModemManager/enz7360?host=gitlab.freedesktop.org;
+        modemmanager-enz7360.flake = false;
     };
 
     nixConfig = {
@@ -87,11 +90,13 @@
         localPkgs = import ./pkgs flakes;
 
         nixosModulePaths = rec {
-            default = common.module;
+            default = local.misc;
+
+            local = {
+                misc = modules/nixos/misc;
+            };
 
             common = {
-                module = common/module;
-
                 base = common/base;
                 physical = common/physical;
                 server = common/server;
@@ -119,7 +124,11 @@
         };
 
         homeModulePaths = rec {
-            default = module;
+            default = local.misc;
+
+            local = {
+                misc = modules/home/misc;
+            };
 
             module = home/module;
             base = home/base;
@@ -148,13 +157,19 @@
             };
         };
 
-        importMods = with nix-prelude.lib;
+        importMods = let
+            inherit (nix-prelude.lib) o mapAttrValues flattenSetSep;
+        in
             o (mapAttrValues import) (flattenSetSep "-");
 
-        mkSystems = with nix-prelude.lib;
+        mkSystems = let
+            inherit (nix-prelude.lib) mapAttrValues;
+        in
             mapAttrValues mkNixosSystem;
 
-        eachExposedSystem = with nixpkgs.lib;
+        eachExposedSystem = let
+            inherit (nixpkgs.lib) genAttrs systems;
+        in
             genAttrs systems.flakeExposed;
 
     in {
@@ -164,7 +179,9 @@
         homeManagerModules = importMods homeModulePaths;
 
         nixosConfigurations = let
-            moduleSets = with localModules; rec {
+            moduleSets = let
+                inherit (localModules) systems common;
+            in rec {
                 hermes = [ systems.hermes ];
                 hermes-small = hermes ++ [ common.misc.small ];
 

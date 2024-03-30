@@ -6,34 +6,43 @@
         supportedLocales = [ "en_US.UTF-8/UTF-8" "ja_JP.UTF-8/UTF-8" ];
         inputMethod = {
             enabled = "ibus";
-            ibus.engines = with pkgs.ibus-engines; [ mozc ];
+
+            ibus.engines = let
+                i = pkgs.ibus-engines;
+            in
+                [ i.mozc ];
         };
     };
 
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = let
+        p = pkgs;
+        g = pkgs.gnome;
+        e = pkgs.gnomeExtensions;
+    in [
         # Clipboard management
-        xclip
+        p.xclip
 
         # Automation
-        ydotool
+        p.ydotool
 
         # Color picker
-        gcolor3
+        p.gcolor3
 
         # GTK theme
-        adw-gtk3
+        p.adw-gtk3
 
         # Image rendering
-        libjxl-with-plugins
-    ] ++ (with pkgs.gnome; [
+        p.libjxl-with-plugins
+
         # GNOME addons
-        gnome-sound-recorder gnome-tweaks gnome-music
-    ]) ++ (with pkgs.gnomeExtensions; [
-        brightness-control-using-ddcutil
-        compiz-windows-effect
-        appindicator
-        transmission-daemon-indicator-ng
-    ]);
+        g.gnome-sound-recorder g.gnome-tweaks g.gnome-music
+
+        # GNOME extensions
+        e.brightness-control-using-ddcutil
+        e.compiz-windows-effect
+        e.appindicator
+        e.transmission-daemon-indicator-ng
+    ];
 
     environment.variables = {
         # Force Wayland support
@@ -50,14 +59,16 @@
     fonts = {
         enableDefaultPackages = true;
 
-        packages = with pkgs; [
-            source-code-pro source-sans source-serif
-            noto-fonts noto-fonts-cjk noto-fonts-emoji-blob-bin
-            liberation_ttf open-sans corefonts
+        packages = let
+            p = pkgs;
+        in [
+            p.source-code-pro p.source-sans p.source-serif
+            p.noto-fonts p.noto-fonts-cjk p.noto-fonts-emoji-blob-bin
+            p.liberation_ttf p.open-sans p.corefonts
 
-        ] ++ (lib.optionals config.misc.buildFull (with pkgs; [
-            google-fonts
-        ]));
+        ] ++ (lib.optionals config.misc.buildFull [
+            p.google-fonts
+        ]);
     };
 
     services = {

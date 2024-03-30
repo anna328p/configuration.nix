@@ -1,20 +1,26 @@
-{ flakes, mkFlakeVer
+{ flakes
 , stdenv
-, lib
+, unzip
 , ... }:
 
 stdenv.mkDerivation rec {
-    pname = "keydb";
+    pname = "keydb-eng";
 
     src = flakes.keydb;
     version = "latest";
 
-    dontUnpack = true;
     dontBuild = true;
+
+    nativeBuildInputs = [ unzip ];
+
+    unpackPhase = ''
+        unzip "$src"
+    '';
 
     installPhase = ''
         dir="$out/etc/xdg/aacs"
-        mkdir -p "$dir"
-        cp $src "$dir/KEYDB.cfg"
+
+        install -d "$dir"
+        install -T keydb.cfg "$dir/KEYDB.cfg"
     '';
 }

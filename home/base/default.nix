@@ -1,8 +1,8 @@
-{ config, pkgs, lib, flakes, ... }:
+{ localModules, config, pkgs, lib, flakes, ... }:
 
 {
     imports = [
-        ../module
+        localModules.home.local.misc
 
         ./tmux.nix
         ./shell.nix

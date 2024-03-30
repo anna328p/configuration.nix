@@ -5,7 +5,14 @@
         ./gsconnect.nix
     ];
 
-    dconf.settings = let self = with lib.hm.gvariant; {
+    dconf.settings = let self = let
+        inherit (lib.hm.gvariant)
+            type
+            mkArray
+            mkUint32
+            mkTuple
+            ;
+    in {
         "org/gnome/shell" = {
             welcome-dialog-last-shown-version = "99.0.0";
 
@@ -56,7 +63,7 @@
         };
 
         "org/gnome/desktop/input-sources" = let
-            inherit (lib.hm.gvariant.type) string tupleOf;
+            inherit (type) string tupleOf;
 
             mkStrPairArray = list:
                 mkArray (tupleOf [string string]) (map mkTuple list);

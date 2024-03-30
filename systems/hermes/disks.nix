@@ -1,6 +1,11 @@
 { localModules, ... }:
 
-{
+let
+    devs = {
+        boot = "/dev/disk/by-uuid/EE41-5915";
+        swap = "/dev/disk/by-uuid/32f7549b-4744-4c8f-a6a1-9179eaec338a";
+    };
+in {
     imports = let
         inherit (localModules) common;
     in [
@@ -22,7 +27,7 @@
         };
     in {
         # EFI System Partition
-        "/boot" = { device = "/dev/disk/by-uuid/EE41-5915"; };
+        "/boot" = { device = devs.boot; };
 
         # Nix store
         "/nix" = dataset "volatile/nix";
@@ -36,6 +41,6 @@
     };
 
     swapDevices = [
-        { device = "/dev/disk/by-uuid/32f7549b-4744-4c8f-a6a1-9179eaec338a"; }
+        { device = devs.swap; }
     ];
 }

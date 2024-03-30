@@ -3,8 +3,8 @@
 {
     # Enable documentation globally
 
-    environment.systemPackages = with pkgs; [
-        man-pages man-pages-posix stdman linux-manual
+    environment.systemPackages = let p = pkgs; in [
+        p.man-pages p.man-pages-posix p.stdman p.linux-manual
     ];
 
     documentation = {

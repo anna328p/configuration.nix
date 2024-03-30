@@ -1,8 +1,10 @@
-{ pkgs, lib, config, L, ... }:
+{ pkgs, config, local-lib, ... }:
 
 let
+    inherit (local-lib) colors;
+
     scheme = config.colorScheme;
-    formatted = L.colors.prefixHash scheme.palette;
+    formatted = colors.prefixHash scheme.palette;
 
     rootDefs = with formatted; {
         # Popup panels
@@ -57,7 +59,7 @@ let
         /* github.com/MrOtherGuy/firefox-csshacks Mozilla Public License v. 2.0 */
 
         :root {
-            ${L.colors.genVarDecls rootDefs}
+            ${colors.genVarDecls rootDefs}
         }
 
         /* line between nav-bar and tabs toolbar,
@@ -123,7 +125,7 @@ let
         /* Kind of a hack, should ideally be more specific */
         @-moz-document regexp("^moz-extension://.*/sidebar/index\.html$") {
             #root {
-                ${L.colors.genVarDecls sbDefs}
+                ${colors.genVarDecls sbDefs}
             }
         }
 

@@ -1,6 +1,8 @@
 { lib, ... }:
 
-with lib; {
+let
+    inherit (lib) mkOption types;
+in {
     imports = [
         ./udev.nix
         ./rebuilds.nix

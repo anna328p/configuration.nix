@@ -1,8 +1,8 @@
-{ config, lib, pkgs, ... }:
+{ localModules, config, lib, pkgs, ... }:
 
 {
     imports = [
-        ../module
+        localModules.local.misc
 
         ./users.nix
         ./hardware.nix
@@ -21,42 +21,42 @@
     };
 
     environment = {
-        systemPackages = with pkgs; [
+        systemPackages = let p = pkgs; in [
             ## Standard utilities
 
-            tmux
-            (neovim.override { withPython3 = false; })
+            p.tmux
+            (p.neovim.override { withPython3 = false; })
 
-            moreutils # coreutils addons
-            psmisc # process management tools
+            p.moreutils # coreutils addons
+            p.psmisc # process management tools
 
-            eza # ls but better
-            tree # ls -R replacement
-            dfc # colorful df
-            ripgrep # faster grep -r replacement
-            fd # easier find replacement
-            pv # stream progress viewer
+            p.eza # ls but better
+            p.tree # ls -R replacement
+            p.dfc # colorful df
+            p.ripgrep # faster grep -r replacement
+            p.fd # easier find replacement
+            p.pv # stream progress viewer
 
-            jq # json query tool
-            file # query file types
-            bc units # calculators
+            p.jq # json query tool
+            p.file # query file types
+            p.bc p.units # calculators
 
-            neofetch # why not?
+            p.neofetch # why not?
 
             # Compressors, archivers
-            zstd xz pigz
-            zip unzip
+            p.zstd p.xz p.pigz
+            p.zip p.unzip
 
             ## Networking
-            speedtest-cli
-            wget
-            nmap dnsutils whois
+            p.speedtest-cli
+            p.wget
+            p.nmap p.dnsutils p.whois
 
             # Misc
-            rsync
-            strace
+            p.rsync
+            p.strace
 
-            (nixos-rebuild.override { nix = config.nix.package.out; })
+            (p.nixos-rebuild.override { nix = config.nix.package.out; })
         ];
 
         defaultPackages = lib.mkDefault [];
@@ -79,10 +79,7 @@
 
     system.disableInstallerTools = true;
 
-    system.etc.overlay = {
-        enable = true;
-        mutable = false;
-    };
+    system.etc.overlay.enable = true;
 
     programs = {
         # Shell

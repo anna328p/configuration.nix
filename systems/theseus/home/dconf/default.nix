@@ -1,7 +1,13 @@
 { lib, ... }:
 
 {
-    dconf.settings = with lib.hm.gvariant; {
+    dconf.settings = let
+        inherit (lib.hm.gvariant)
+            mkUint32
+            mkArray
+            ;
+
+    in {
         "org/gnome/settings-daemon/plugins/power".idle-dim = false;
 
         "org/gnome/desktop/session".idle-delay = mkUint32 0;

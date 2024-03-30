@@ -1,7 +1,9 @@
 { lib, systemConfig, ... }:
 
 {
-    dconf.settings = with lib.hm.gvariant; {
+    dconf.settings = let
+        inherit (lib.hm.gvariant) mkArray type;
+    in {
         "org/gnome/shell/extensions/gsconnect" = {
             enabled = true;
 

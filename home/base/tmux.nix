@@ -10,8 +10,10 @@
         newSession = true;
         sensibleOnTop = true;
 
-        plugins = with pkgs.tmuxPlugins; [
-            sensible yank
+        plugins = let
+            t = pkgs.tmuxPlugins;
+        in [
+            t.sensible t.yank
         ];
 
         terminal = "tmux-256color";

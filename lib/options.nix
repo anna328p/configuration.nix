@@ -1,6 +1,20 @@
-{ L, lib }:
+{ L, lib, ... }:
 
-with lib; rec {
+let
+    inherit (lib)
+        types
+        mkOption
+        ;
+in rec {
+    exports = self: { inherit (self)
+        mkGenericOption
+        hexString
+        hexStringN
+        unrollArgSequence
+        __
+        ;
+    };
+
     mkGenericOption = defaults: type: description: args:
         mkOption ({ inherit type description; } // defaults // args);
 

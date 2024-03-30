@@ -1,4 +1,4 @@
-{ lib, config, pkgs, flakes, L, ... }:
+{ config, pkgs, flakes, local-lib, ... }:
 
 {
     dconf.settings = let
@@ -13,8 +13,8 @@
             logoScale = 4.0;
         };
 
-        byVariant' = L.colors.byVariant scheme.variant;
-    in with lib.hm.gvariant; {
+        byVariant' = local-lib.colors.byVariant scheme.variant;
+    in {
         "org/gnome/desktop/interface" = {
             font-antialiasing = "rgba";
             font-hinting = "slight";

@@ -7,11 +7,13 @@ in {
     rubyPackages_latest = final."rubyPackages_${rubyVer}";
 
     f3d = prev.f3d.overrideAttrs (oa: {
-        buildInputs = oa.buildInputs ++ (with final; [
-            opencascade-occt
-            assimp
-            fontconfig
-        ]);
+        buildInputs = let
+            f = final;
+        in oa.buildInputs ++ [
+            f.opencascade-occt
+            f.assimp
+            f.fontconfig
+        ];
 
         cmakeFlags = oa.cmakeFlags ++ [
             "-DF3D_PLUGIN_BUILD_OCCT=ON"

@@ -1,6 +1,17 @@
 { config, L, lib, local-lib, ... }:
 
-with lib; let
+let
+    inherit (builtins)
+        concatMap
+        toString
+        ;
+
+    inherit (lib)
+        hm
+        mkEnableOption
+        mkIf
+        ;
+
     cfg = config.misc.fonts;
 
     mkFontOption = local-lib.mkGenericOption { } hm.types.fontType;

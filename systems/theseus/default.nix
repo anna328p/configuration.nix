@@ -1,7 +1,9 @@
 { flakes, localModules, ... }:
 
 {
-    imports = with localModules; [
+    imports = let
+        inherit (localModules) common;
+    in [
         common.base
         common.physical
         common.workstation

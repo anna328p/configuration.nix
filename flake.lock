@@ -147,11 +147,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1710532761,
-        "narHash": "sha256-SUXGZNrXX05YA9G6EmgupxhOr3swI1gcxLUeDMUhrEY=",
+        "lastModified": 1711625603,
+        "narHash": "sha256-W+9dfqA9bqUIBV5u7jaIARAzMe3kTq/Hp2SpSVXKRQw=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "206f457fffdb9a73596a4cb2211a471bd305243d",
+        "rev": "c0ef0dab55611c676ad7539bf4e41b3ec6fa87d2",
         "type": "github"
       },
       "original": {
@@ -177,14 +177,32 @@
     "keydb": {
       "flake": false,
       "locked": {
-        "lastModified": 1710648260,
-        "narHash": "sha256-h6vigOlFhCY+DgiD+NeZcZ1tc8i0PyU33n5DUjVzA2M=",
-        "type": "tarball",
+        "narHash": "sha256-QJ0dpLy5F7L2jq2qGw9Nly4RfBGVj1wqG73ztuWLRtQ=",
+        "type": "file",
         "url": "https://github.com/anna328p/mirror/releases/latest/download/keydb_eng.zip"
       },
       "original": {
-        "type": "tarball",
+        "type": "file",
         "url": "https://github.com/anna328p/mirror/releases/latest/download/keydb_eng.zip"
+      }
+    },
+    "modemmanager-enz7360": {
+      "flake": false,
+      "locked": {
+        "host": "gitlab.freedesktop.org",
+        "lastModified": 1680909413,
+        "narHash": "sha256-ekVlqBBuM1FlgOH1iIMYPJaBTHSiZewJZWxN69cWnQ4=",
+        "owner": "ShaneParslow",
+        "repo": "ModemManager",
+        "rev": "102884bece36a9781d9157f815085f9e8c5fcfde",
+        "type": "gitlab"
+      },
+      "original": {
+        "host": "gitlab.freedesktop.org",
+        "owner": "ShaneParslow",
+        "ref": "enz7360",
+        "repo": "ModemManager",
+        "type": "gitlab"
       }
     },
     "musnix": {
@@ -218,11 +236,11 @@
       },
       "locked": {
         "dir": "contrib",
-        "lastModified": 1710670169,
-        "narHash": "sha256-rnLHyD97Z1F97CWxPdjLa2mL3j5wjfBnCWKs3SFr0SQ=",
+        "lastModified": 1711646337,
+        "narHash": "sha256-JMns31bCE2yO8912Q2PC8q1+9hr5KAYz2JxVT/N3p4U=",
         "owner": "neovim",
         "repo": "neovim",
-        "rev": "08986bb5972d5289b5ae581eee20c56387cf5ddd",
+        "rev": "cff8c15977bc5b012b64ffa8a802b0b0b1c2a87c",
         "type": "github"
       },
       "original": {
@@ -280,11 +298,11 @@
         "parsec": "parsec"
       },
       "locked": {
-        "lastModified": 1710118603,
-        "narHash": "sha256-/ctO4f4Brm6kbCJ4aW+cd40ZMTPQdKLcOYVNkcpqE4c=",
+        "lastModified": 1711652907,
+        "narHash": "sha256-Y+yGV0xIADdjEKC22ozrXJbqzkDtmRfUxkar7xlOXBE=",
         "owner": "anna328p",
         "repo": "nix-prelude",
-        "rev": "704508f389864844b755bc79460cba21569963ac",
+        "rev": "0975efe020e415b0150b26f87c690e8d4601dbaa",
         "type": "github"
       },
       "original": {
@@ -295,11 +313,11 @@
     },
     "nixos-hardware": {
       "locked": {
-        "lastModified": 1710622004,
-        "narHash": "sha256-6zR642tXcZzzk3C8BHxlCrR0yh8z8zMXLiuXpWDIpX0=",
+        "lastModified": 1711352745,
+        "narHash": "sha256-luvqik+i3HTvCbXQZgB6uggvEcxI9uae0nmrgtXJ17U=",
         "owner": "NixOS",
         "repo": "nixos-hardware",
-        "rev": "968952f950a59dee9ed1e8799dda38c6dfa1bad3",
+        "rev": "9a763a7acc4cfbb8603bb0231fec3eda864f81c0",
         "type": "github"
       },
       "original": {
@@ -325,11 +343,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1710705499,
-        "narHash": "sha256-UlN+mJMRAwAv3t4/BetpGOL9urTL+n9tRzb4DOstykA=",
+        "lastModified": 1711651867,
+        "narHash": "sha256-QR1P5wE+K+P86HsTcA1vK7zPVIibrEfykETUGE8aZ9A=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "b286b8df1c0ecff4baa44a7224282aeccc6695c2",
+        "rev": "7cdbfcbbd2b142800ef6ca2d53ce86b24b1c5f1f",
         "type": "github"
       },
       "original": {
@@ -340,11 +358,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1710672219,
-        "narHash": "sha256-Bp3Jsq1Jn8q4EesBlcOVNwnEipNpzYs73kvR3+3EUC4=",
+        "lastModified": 1711616573,
+        "narHash": "sha256-FvZiEl6D4iLXqSQ3oGjQ/qehhPZ5E7iTHr/YA1Rw8kY=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "f471be9644f3ab2f3cb868de1787ab70a537b0e7",
+        "rev": "c99b66784962e8984444b4d9e72d00d3549afdb2",
         "type": "github"
       },
       "original": {
@@ -385,31 +403,14 @@
         "type": "github"
       }
     },
-    "nvim-cmp": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1692938114,
-        "narHash": "sha256-ZQrDg5wil+wX7T7/SGZ5GbjFCMpxEr52JEptzg5pTiI=",
-        "owner": "plankcipher",
-        "repo": "nvim-cmp",
-        "rev": "7b4c476e900d30381b77b2b9f62c8e0b89d57add",
-        "type": "github"
-      },
-      "original": {
-        "owner": "plankcipher",
-        "ref": "fix-inline-virt-text",
-        "repo": "nvim-cmp",
-        "type": "github"
-      }
-    },
     "nvim-treesitter": {
       "flake": false,
       "locked": {
-        "lastModified": 1710673865,
-        "narHash": "sha256-dVMqbTQX1NEpBxQPxkWx7EZGRdz3dh3ZcJyhGculYx4=",
+        "lastModified": 1711610847,
+        "narHash": "sha256-rtwm8pVsagN4/Cunlt74+BGBx+33xSRi5MwrDFlFepM=",
         "owner": "nvim-treesitter",
         "repo": "nvim-treesitter",
-        "rev": "bb3dd60ebcf6f75f73f39c44724b4a426ece6b7b",
+        "rev": "23ba63028c6acca29be6462c0a291fc4a1b9eae8",
         "type": "github"
       },
       "original": {
@@ -456,11 +457,11 @@
     "rainbow-delimiters-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1710546143,
-        "narHash": "sha256-Apn9vZwB//hiPL0UiS5MyTqIVPj97gzkB3F6sQNMexw=",
+        "lastModified": 1711207221,
+        "narHash": "sha256-DCwZMWeH9elJC/amq4lmo3Ql+6mitw+xMg59Aj27id8=",
         "owner": "hiphish",
         "repo": "rainbow-delimiters.nvim",
-        "rev": "2200900e3c1aae21dadb65c2ea2e91bcc39ca368",
+        "rev": "580bc045c7ab3ab3ebd267774038c0d8cc19c789",
         "type": "gitlab"
       },
       "original": {
@@ -478,6 +479,7 @@
         "home-manager": "home-manager",
         "impermanence": "impermanence",
         "keydb": "keydb",
+        "modemmanager-enz7360": "modemmanager-enz7360",
         "musnix": "musnix",
         "neovim": "neovim",
         "nil": "nil",
@@ -486,7 +488,6 @@
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-master": "nixpkgs-master",
-        "nvim-cmp": "nvim-cmp",
         "nvim-treesitter": "nvim-treesitter",
         "qbot": "qbot",
         "rainbow-delimiters-nvim": "rainbow-delimiters-nvim",

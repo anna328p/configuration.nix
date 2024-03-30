@@ -1,8 +1,10 @@
-{ lib, config, L, ... }:
+{ config, local-lib, ... }:
 
 let
+    inherit (local-lib) colors;
+
     scheme = config.colorScheme;
-    formatted = L.colors.prefixHash scheme.palette;
+    formatted = colors.prefixHash scheme.palette;
 
     defs = with formatted; rec {
         accent_color    = base0C;
@@ -46,7 +48,7 @@ let
         popover_fg_color = base05;
     };
 
-    css = L.colors.genDecls (k: v: "@define-color ${k} ${v};") defs;
+    css = colors.genDecls (k: v: "@define-color ${k} ${v};") defs;
 in {
     xdg.configFile = {
         "gtk-3.0/gtk.css".text = css;

@@ -1,21 +1,19 @@
 { pkgs, ... }:
 
 {
-    environment.systemPackages = with pkgs; [
-        mpdris2
-    ];
-
     services = {
         mopidy = {
             # enable = true; # broken
-            extensionPackages = with pkgs; [
-                mopidy-mpd mopidy-iris mopidy-scrobbler
-                mopidy-ytmusic mopidy-somafm
+            extensionPackages = let p = pkgs; in [
+                p.mopidy-mpd p.mopidy-iris p.mopidy-scrobbler
+                p.mopidy-ytmusic p.mopidy-somafm
             ];
 
             configuration = builtins.readFile files/mopidy.conf;
         };
     };
+
+    environment.systemPackages = [ pkgs.mpdris2 ];
 
     systemd.user.services.mpdris2 = {
         description = "MPRIS2 support for MPD";

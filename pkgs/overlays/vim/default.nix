@@ -38,6 +38,5 @@ in {
         } // buildPluginsFrom flakes [
             "vim-slim"
             "rainbow-delimiters-nvim"
-            "nvim-cmp"
         ]);
 }

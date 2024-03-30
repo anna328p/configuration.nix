@@ -1,4 +1,4 @@
-{ L, pkgs, flakes, config, specialArgs, localModules, ... }:
+{ lib, L, pkgs, flakes, config, specialArgs, localModules, ... }:
 
 {
     imports = [
@@ -13,7 +13,7 @@
         passwdHash = "$6$o3HFaJySc0ptEcz$tr5ndkC9HMA0RDVobaLUncgzEiveeWtSJV8"
                       + "659EYdA2EnrNxB9vTrSmJVv5lAlF8nR0fu4HpBJ5e5wP02LHqq0";
     in {
-        mutableUsers = false;
+        # mutableUsers = false; # HACK: allow using sysusers with a mutable /etc
         defaultUserShell = pkgs.zsh;
 
         users.anna = let
@@ -61,11 +61,21 @@
     };
 
     security = {
-        # https://xkcd.com/1200
-        sudo.wheelNeedsPassword = false;
+        sudo.enable = false;
+        
+        doas.enable = true;
+        doas.wheelNeedsPassword = false; # https://xkcd.com/1200
 
         allowUserNamespaces = true;
     };
+
+    environment.systemPackages = let
+        doas-sudo-wrapper = pkgs.writeShellScriptBin "sudo" ''
+            exec doas "$@"
+        '';
+    in [
+        doas-sudo-wrapper
+    ];
 
     nix.settings.trusted-users = [ "root" "@wheel" ];
 }

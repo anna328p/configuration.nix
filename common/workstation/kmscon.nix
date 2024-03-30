@@ -12,7 +12,11 @@
             { inherit (monospaceFont) name package; }
         ];
 
-        extraConfig = with lib; with L; let
+        extraConfig = let
+            inherit (builtins) toString;
+            inherit (lib) mapAttrsToList mapAttrs;
+            inherit (L) o concatLines;
+
             toLine = k: v: "${k}=${toString v}";
 
             mkConf = o concatLines (mapAttrsToList toLine);

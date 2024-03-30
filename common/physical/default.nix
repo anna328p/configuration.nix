@@ -27,19 +27,19 @@
         };
     };
 
-    environment.systemPackages = with pkgs; [
-        acpi
+    environment.systemPackages = let p = pkgs; in [
+        p.acpi
 
         # Query hardware configuration
-        usbutils
-        pciutils
-        dmidecode
+        p.usbutils
+        p.pciutils
+        p.dmidecode
 
         # Sensors
-        lm_sensors
+        p.lm_sensors
 
         # Firmware integration
-        efibootmgr
+        p.efibootmgr
     ];
 
     hardware.enableRedistributableFirmware = true;

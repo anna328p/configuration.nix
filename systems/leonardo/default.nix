@@ -1,7 +1,9 @@
 { config, pkgs, lib, localModules, ... }:
 
 {
-    imports = with localModules; [
+    imports = let
+        inherit (localModules) common;
+    in [
         common.base
         common.server
         common.virtual
@@ -144,9 +146,8 @@
             php = pkgs.php82;
 
             phpEnv = php.buildEnv {
-                extensions = { enabled, all }: enabled ++ (with all; [
-                    imagick opcache
-                ]);
+                extensions = { enabled, all }:
+                    enabled ++ [ all.imagick all.opcache ];
 
                 extraConfig = ''
                     upload_max_filesize = 128M

@@ -1,6 +1,8 @@
 { config, lib, ... }:
 
-with lib; {
+let
+    inherit (lib) mkOption mkIf types;
+in {
     options.misc = {
         buildFull = mkOption {
             type = types.bool;

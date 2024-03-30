@@ -1,11 +1,13 @@
-{ lib, config, pkgs, L, ... }:
+{ lib, config, pkgs, local-lib, ... }:
 
 let
+    inherit (local-lib) colors;
+
     scheme = config.colorScheme;
 
-    byVariant' = L.colors.byVariant scheme.variant;
+    byVariant' = colors.byVariant scheme.variant;
 
-    formatted = L.colors.prefixHash scheme.palette;
+    formatted = colors.prefixHash scheme.palette;
 
     defs = with formatted; rec {
         header-primary = base05;
@@ -195,7 +197,15 @@ let
         search-popout-date-picker-hint-value-background-hover = text-brand + "cc";
     };
 
-    css = with lib; let
+    css = let
+        inherit (lib)
+            map
+            concatMapStrings
+            concatMapStringsSep
+            listToAttrs
+            nameValuePair
+            ;
+
         sel = tag: prefix:
             ":is(${tag}[class^='${prefix}-'], ${tag}[class*=' ${prefix}-'])";
 
@@ -210,7 +220,7 @@ let
         color' = addOpacity color;
         bg' = addOpacity bg;
 
-        mkIdSet = names: with lib;
+        mkIdSet = names:
             listToAttrs (map (x: nameValuePair x x) names);
 
         tagNames = [ "span" "div" "nav" "section" "input" "button" ];
@@ -221,7 +231,7 @@ let
         }
 
         :root, .theme-dark {
-            ${L.colors.genVarDecls defs}
+            ${colors.genVarDecls defs}
         }
 
         ${sel div "name"} { font-size: 15px !important; }
@@ -356,7 +366,7 @@ let
         ${sel div "menu"} { ${bg base00} }
     '';
 in {
-    home.packages = with pkgs; [ lexend ];
+    home.packages = [ pkgs.lexend ];
 
     programs.discocss = {
         enable = false;

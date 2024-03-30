@@ -8,9 +8,9 @@
     sound.enable = true;
 
     # Manage audio server stuff
-    environment.systemPackages = with pkgs; [
-        pavucontrol
-        # helvum # TODO: broken 2023-02-08
+    environment.systemPackages = let p = pkgs; in [
+        p.pavucontrol
+        p.helvum
     ];
 
     # Allow audio access (I have no idea if this does anything)

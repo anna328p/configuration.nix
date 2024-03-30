@@ -16,8 +16,12 @@ let
     };
 
 in {
-    imports = with flakes.nixos-hardware.nixosModules; [
-        common-pc-ssd common-cpu-amd common-gpu-amd
+    imports = let
+        nh = flakes.nixos-hardware.nixosModules;
+    in [
+        nh.common-pc-ssd
+        nh.common-cpu-amd
+        nh.common-gpu-amd
     ];
 
     hardware.amdgpu.opencl = config.misc.buildFull;

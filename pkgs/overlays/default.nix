@@ -2,7 +2,13 @@
 
 { lib, flakes, mkFlakeVer, ... }:
 
-with lib; let
+let
+    inherit (lib)
+        foldl
+        composeExtensions
+        subtractLists
+        ;
+
     init = _: _: { };
     composeOverlays = foldl composeExtensions init;
 
@@ -26,4 +32,5 @@ in composeOverlays (map importOverlay [
     ./transmission
     ./vim
     ./bluray
+#    ./modemmanager
 ])

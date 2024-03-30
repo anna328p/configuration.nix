@@ -8,7 +8,9 @@
         controlPersist = "30m";
         forwardAgent = true;
 
-        matchBlocks = with lib; let
+        matchBlocks = let
+            inherit (lib) flip genAttrs;
+
             mkServerBlocks = domain:
                 (flip genAttrs) (name: {
                     user = config.home.username;

@@ -1,3 +1,8 @@
 { lib, L, ... }@args:
 
-import ./options.nix args
+L.mkLibrary args ({ using, ... }:
+    using {
+        options = ./options.nix;
+        colors = ./colors.nix;
+    } (_: {})
+)

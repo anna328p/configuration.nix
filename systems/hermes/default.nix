@@ -13,7 +13,7 @@
     ];
 
     boot = {
-        zfs.enableUnstable = true;
+        zfs.package = pkgs.zfs_unstable;
 
         kernelParams = [
             "iwlwifi.swcrypto=0" "bluetooth.disable_ertm=1"
@@ -47,7 +47,7 @@
 
     home-manager.users.anna.imports = [ ./home ];
 
-    environment.systemPackages = with pkgs; [ powertop ];
+    environment.systemPackages = [ pkgs.powertop ];
 
     system.stateVersion = "22.05";
 }
