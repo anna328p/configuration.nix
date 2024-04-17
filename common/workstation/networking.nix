@@ -11,6 +11,8 @@
 
             # Fix auth issues
             wifi.scanRandMacAddress = false;
+
+            dns = "systemd-resolved";
         };
 
         # Just gets in the way on workstations
@@ -58,6 +60,46 @@
         };
     };
 
-    # Reduce startup delay
-    systemd.services.NetworkManager-wait-online.enable = false;
+    environment.etc = {
+        mullvad-vpn = lib.mkIf config.misc.buildFull {
+            source = "/var/opt/mullvad-vpn";
+            mode = "symlink";
+        };
+
+        avahi = {
+            source = "/var/opt/avahi";
+            mode = "symlink";
+        };
+
+        NetworkManager = {
+            source = "/var/opt/NetworkManager";
+            mode = "symlink";
+        };
+    };
+
+    systemd = {
+        tmpfiles.settings."91-var-opt" = {
+            "/var/opt/avahi".d = {
+                user = "root";
+                group = "root";
+                mode = "0755";
+            };
+
+            "/var/opt/mullvad-vpn".d = {
+                user = "root";
+                group = "root";
+                mode = "0700";
+            };
+
+            "/var/opt/NetworkManager".d = {
+                user = "root";
+                group = "root";
+                mode = "0700";
+            };
+        };
+
+        # Reduce startup delay
+        services.NetworkManager-wait-online.enable = false;
+        network.wait-online.enable = false;
+    };
 }

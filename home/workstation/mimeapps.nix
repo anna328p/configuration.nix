@@ -26,7 +26,7 @@ in {
             [ "org.gnome.eog.desktop" ]
 
         "x-scheme-handler/sms" "x-scheme-handler/tel"
-            [ "org.gnome.Shell.Extensions.GSConnect.desktop" ]
+            [ "org.gnome.Shell.Extensions.GSConnect.desktop;" ]
 
         "audio/aac" "audio/mpeg"
         "audio/wav" "audio/x-wav" "audio/flac"

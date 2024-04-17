@@ -37,18 +37,27 @@ in {
         storageOpts =
             [ "nofail" "noauto" "x-systemd.automount" "compress-force=zstd" ];
 
+
+        subvolume = device: subvol: rest:
+            btrfsEntry device ([ "subvol=${subvol}" ] ++ rest);
+
     in {
-        "/" = btrfsEntry devs.root [];
+        "/"               = btrfsEntry devs.root    [ ];
 
-        "/boot" = { device = devs.boot; };
+        "/boot"           = { device = devs.boot; };
 
-        "/media/storage" = btrfsEntry devs.storage storageOpts;
-        "/media/backup" = btrfsEntry devs.backup storageOpts;
-        "/media/backup2" = btrfsEntry devs.backup2 storageOpts;
+        "/media/raw-root" = btrfsEntry devs.root    [ ];
+        "/media/storage"  = btrfsEntry devs.storage storageOpts;
+        "/media/backup"   = btrfsEntry devs.backup  storageOpts;
+        "/media/backup2"  = btrfsEntry devs.backup2 storageOpts;
 
-        "/home" = btrfsEntry devs.home [ "subvol=@home" ];
-        "/media/games" = btrfsEntry devs.home [ "subvol=@games" ];
-        "/media/raw-home" = btrfsEntry devs.home [ "subvol=/" ];
+        "/home"           = subvolume  devs.home    "@home" [ ];
+        "/media/games"    = subvolume  devs.home    "@games" [ ];
+        "/media/raw-home" = subvolume  devs.home    "/" [ ];
+    };
+
+    environment.etc = {
+        nixos = { source = "/media/raw-root/etc/nixos"; mode = "symlink"; };
     };
 
     swapDevices = [

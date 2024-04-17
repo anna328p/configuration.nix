@@ -4,15 +4,12 @@
     imports = [
         localModules.local.misc
 
+        ./networking.nix
         ./users.nix
         ./hardware.nix
         ./flake-support.nix
+        ./machine-id.nix
     ];
-
-    networking = {
-        enableIPv6 = true;
-        domain = "lan.ap5.network";
-    };
 
     # english
     i18n = {
@@ -47,13 +44,7 @@
             p.zstd p.xz p.pigz
             p.zip p.unzip
 
-            ## Networking
-            p.speedtest-cli
-            p.wget
-            p.nmap p.dnsutils p.whois
-
             # Misc
-            p.rsync
             p.strace
 
             (p.nixos-rebuild.override { nix = config.nix.package.out; })
@@ -69,17 +60,27 @@
 
         pathsToLink = [ "/share/zsh" ];
 
-        # local time compatibility with perlless activation / etc overlay
-        # HACK: NixOS/nixpkgs#284641
-        etc = lib.optionalAttrs (config.time.timeZone != null) {
-            localtime.source = "/etc/zoneinfo/${config.time.timeZone}";
-            localtime.mode = lib.mkForce "symlink";
+        etc = {
+            # local time compatibility with perlless activation / etc overlay
+            # HACK: NixOS/nixpkgs#284641
+            localtime = lib.optionalAttrs (config.time.timeZone != null) {
+                source = "/etc/zoneinfo/${config.time.timeZone}";
+                mode = lib.mkForce "symlink";
+            };
+
+            mtab = {
+                source = "/proc/mounts";
+                mode = "symlink";
+            };
         };
     };
 
     system.disableInstallerTools = true;
 
-    system.etc.overlay.enable = true;
+    system.etc.overlay = {
+        enable = true;
+        mutable = false;
+    };
 
     programs = {
         # Shell
@@ -98,12 +99,7 @@
         nano.enable = false;
     };
 
-    services = {
-        # enable sshd everywhere
-        openssh.enable = true;
-
-        dbus.implementation = lib.mkIf config.services.dbus.enable "broker";
-    };
+    services.dbus.implementation = "broker";
 
     nix.settings = {
         experimental-features = [ "cgroups" "auto-allocate-uids" "ca-derivations" ];

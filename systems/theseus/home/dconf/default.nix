@@ -5,6 +5,7 @@
         inherit (lib.hm.gvariant)
             mkUint32
             mkArray
+            type
             ;
 
     in {

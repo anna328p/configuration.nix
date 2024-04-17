@@ -13,7 +13,7 @@
         passwdHash = "$6$o3HFaJySc0ptEcz$tr5ndkC9HMA0RDVobaLUncgzEiveeWtSJV8"
                       + "659EYdA2EnrNxB9vTrSmJVv5lAlF8nR0fu4HpBJ5e5wP02LHqq0";
     in {
-        # mutableUsers = false; # HACK: allow using sysusers with a mutable /etc
+        mutableUsers = false;
         defaultUserShell = pkgs.zsh;
 
         users.anna = let
@@ -55,7 +55,7 @@
 
         sharedModules = [ localModules.home.base ];
 
-        backupFileExtension = "home-manager.backup";
+        backupFileExtension = "hm-backup";
         
         users.anna = { };
     };

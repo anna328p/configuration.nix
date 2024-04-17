@@ -5,11 +5,11 @@
         directories = [
             "/etc/nixos"
 
-            "/etc/mullvad-vpn"
-            "/etc/NetworkManager/system-connections"
             "/etc/ssh"
 
             "/var/log"
+
+            "/var/opt"
 
             "/var/lib/bluetooth"
             "/var/lib/cups"

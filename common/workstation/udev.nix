@@ -16,8 +16,15 @@
             { vid = "0451"; pid = "b672"; }
         ];
 
-        extraRuleFiles = [
-            "${pkgs.libfido2}/etc/udev/rules.d/70-u2f.rules"
+        extraRuleFiles = let
+            libfido2-rules = "${pkgs.libfido2}/etc/udev/rules.d/70-u2f.rules";
+            badstr = ''GROUP="plugdev", '';
+
+            text = builtins.readFile libfido2-rules;
+            text' = builtins.replaceStrings [ badstr ] [ "" ] text;
+            file = builtins.toFile "70-u2f.rules" text';
+        in [
+            file
         ];
 
         extraRules = [
