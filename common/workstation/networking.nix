@@ -71,8 +71,8 @@
             mode = "symlink";
         };
 
-        NetworkManager = {
-            source = "/var/opt/NetworkManager";
+        "NetworkManager/system-connections" = {
+            source = "/var/opt/NetworkManager/system-connections";
             mode = "symlink";
         };
     };
@@ -91,7 +91,7 @@
                 mode = "0700";
             };
 
-            "/var/opt/NetworkManager".d = {
+            "/var/opt/NetworkManager/system-connections".d = {
                 user = "root";
                 group = "root";
                 mode = "0700";

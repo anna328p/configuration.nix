@@ -32,5 +32,5 @@ in composeOverlays (map importOverlay [
     ./transmission
     ./vim
     ./bluray
-#    ./modemmanager
+    ./modemmanager
 ])

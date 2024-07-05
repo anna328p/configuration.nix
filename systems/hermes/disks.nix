@@ -19,6 +19,12 @@ in {
         cache.persistentStoragePath = "/volatile/cache";
     };
 
+    intransience.datastores = {
+        system.path = "/safe/system";
+        home.path = "/safe/home";
+        cache.path = "/volatile/cache";
+    };
+
     fileSystems = let
         dataset = subpath: {
             fsType = "zfs";

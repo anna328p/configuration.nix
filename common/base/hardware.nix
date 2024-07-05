@@ -6,6 +6,11 @@
         initrd.systemd.enable = true;
     };
 
+    system.etc.overlay = {
+        enable = true;
+        mutable = false;
+    };
+
     # TTY appearance
     console.keyMap = "us";
 

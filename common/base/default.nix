@@ -77,11 +77,6 @@
 
     system.disableInstallerTools = true;
 
-    system.etc.overlay = {
-        enable = true;
-        mutable = false;
-    };
-
     programs = {
         # Shell
         zsh = {

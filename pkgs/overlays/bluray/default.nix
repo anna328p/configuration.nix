@@ -17,7 +17,8 @@ final: prev: {
         libbluray = final.libbluray_bd;
     };
 
-    mpv_bd = final.wrapMpv final.mpv-unwrapped_bd {
+    mpv_bd = final.mpv-unwrapped.wrapper {
+        mpv = final.mpv-unwrapped_bd;
         scripts = [ final.mpvScripts.mpris ];
     };
 

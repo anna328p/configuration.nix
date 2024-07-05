@@ -15,10 +15,10 @@
         nbsk = nbs + k;
         nbsf = nbs + f;
 
-        nbstf = nbst + f;
-        nbsft = nbsf + t;
-        nbskf = nbsk + f;
-        nbsfk = nbsf + k;
+        nbstf = nbs + t + f;
+        nbsft = nbs + f + t;
+        nbskf = nbs + k + f;
+        nbsfk = nbs + f + k;
 
         nsn = "nix search nixpkgs";
     };

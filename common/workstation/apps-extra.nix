@@ -61,6 +61,7 @@ in {
         p.idevicerestore # Flash Apple devices
         p.anki           # Flashcards
         p.appimage-run
+        p.gnome-decoder  # Scan QR codes from screenshots
     ];
 
     programs.java.enable = config.misc.buildFull;

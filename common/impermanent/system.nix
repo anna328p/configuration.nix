@@ -1,37 +1,41 @@
 { ... }:
 
 {
-    environment.persistence.system = {
-        directories = [
-            "/etc/nixos"
+    intransience.datastores.system = {
+        etc = {
+            dirs = [
+                "nixos"
+            ];
 
-            "/etc/ssh"
+            files = [
+                "machine-id"
+            ];
+        };
 
-            "/var/log"
-
-            "/var/opt"
-
-            "/var/lib/bluetooth"
-            "/var/lib/cups"
-            "/var/lib/flatpak"
-            "/var/lib/libvirt"
-            "/var/lib/mopidy"
-            "/var/lib/NetworkManager"
-            "/var/lib/zerotier-one"
-
-            "/var/lib/systemd/coredump"
-            "/var/lib/systemd/backlight"
+        byPath."/var".dirs = [
+            "log"
+            "opt"
         ];
-        files = [
-            "/etc/machine-id"
+
+        byPath."/var/lib".dirs = [
+            "bluetooth"
+            "cups"
+            "flatpak"
+            "libvirt"
+            "mopidy"
+            "NetworkManager"
+            "zerotier-one"
+
+            "systemd/coredump"
+            "systemd/backlight"
         ];
     };
 
-    environment.persistence.cache = {
-        directories = [
-            "/var/cache/cups"
-            "/var/cache/fwupd"
-            "/var/cache/powertop"
+    intransience.datastores.cache = {
+        byPath."/var/cache".dirs = [
+            "cups"
+            "fwupd"
+            "powertop"
         ];
     };
 }

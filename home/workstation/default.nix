@@ -24,9 +24,11 @@
         };
     };
 
-    xdg = {
+    xdg.enable = true;
+
+    xdg.userDirs = {
         enable = true;
-        userDirs.enable = true;
+        createDirectories = true;
     };
 
     services.fluidsynth.enable = systemConfig.misc.buildFull;

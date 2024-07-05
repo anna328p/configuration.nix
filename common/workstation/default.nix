@@ -6,6 +6,7 @@
         ./hw-support.nix
         ./storage.nix
         ./networking.nix
+        ./printing.nix
 
         ./virtualisation.nix
         ./zswap.nix
@@ -32,9 +33,7 @@
     };
 
     # Import home configs
-    home-manager = {
-        users.anna.imports = [ localModules.home.workstation ];
-    };
+    home-manager.users.anna.imports = [ localModules.home.workstation ];
 
     # Don't interfere with home-manager's zsh config
     programs.zsh.promptInit = "";

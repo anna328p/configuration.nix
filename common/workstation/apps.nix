@@ -7,6 +7,9 @@
         # Browser
         p.firefox-devedition-bin
 
+        # Password manager
+        p.keepassxc
+
         # Messengers
         p.discord-custom
         p.tdesktop
@@ -48,6 +51,6 @@
     # Logseq 0.10 dep
     # TODO: Remove
     nixpkgs.config.permittedInsecurePackages = [
-        "electron-25.9.0"
+        "electron-27.3.11"
     ];
 }

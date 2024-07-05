@@ -4,17 +4,16 @@
 {
     options.misc.udev = let
         inherit (lib) mkOption mkEnableOption;
-        inherit (lib.types) either listOf str submodule;
+        t = lib.types;
 
         usbId = local-lib.hexStringN 4;
-        usbIds = either usbId (listOf usbId);
 
-        mkIdOpt = rest: mkOption ({ type = usbIds; } // rest);
+        usbIds = t.coercedTo usbId (v: [ v ]) (t.listOf usbId);
 
-        usbDevSpec = submodule {
+        usbDevSpec = t.submodule {
             options = {
-                vid = mkIdOpt { };
-                pid = mkIdOpt { };
+                vid = mkOption { type = usbIds; };
+                pid = mkOption { type = usbIds; };
             };
         };
     in {
@@ -22,18 +21,18 @@
 
         extraRuleFiles = mkOption {
             description = "List of files containing udev rules to import";
-            type = listOf str;
+            type = t.listOf t.str;
         };
 
         extraRules = mkOption {
             description = "List of strings containing udev rules";
-            type = listOf str;
+            type = t.listOf t.str;
         };
 
         usb = {
             uaccessDevices = mkOption {
                 description = "List of USB device IDs to mark with the uaccess flag";
-                type = listOf usbDevSpec;
+                type = t.listOf usbDevSpec;
             };
         };
     };
@@ -41,21 +40,20 @@
     config = let
         cfg = config.misc;
 
-        inherit (builtins) mapAttrs concatMap readFile;
-        inherit (L) o pipe' concatLines concatMapLines;
-        inherit (lib) mkIf cartesianProductOfSets toList;
+        inherit (builtins) readFile concatLists;
+        inherit (L) pipe' concatLines concatMapLines;
+        inherit (lib) mkIf cartesianProduct;
 
     in {
         services.udev = mkIf cfg.udev.enable {
             extraRules = let
-                denormalize = o cartesianProductOfSets (mapAttrs (_: toList));
-
                 uaccessRule = { vid, pid }:
                     ''SUBSYSTEMS=="usb", ATTRS{idVendor}=="${vid}", '' +
                     ''ATTRS{idProduct}=="${pid}", TAG+="uaccess"'';
 
                 uaccessRules = pipe' [
-                    (concatMap denormalize)
+                    (map cartesianProduct)
+                    concatLists
                     (map uaccessRule)
                     concatLines
                 ];

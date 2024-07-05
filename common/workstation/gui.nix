@@ -35,7 +35,7 @@
         p.libjxl-with-plugins
 
         # GNOME addons
-        g.gnome-sound-recorder g.gnome-tweaks g.gnome-music
+        g.gnome-sound-recorder p.gnome-tweaks g.gnome-music
 
         # GNOME extensions
         e.brightness-control-using-ddcutil
@@ -59,9 +59,7 @@
     fonts = {
         enableDefaultPackages = true;
 
-        packages = let
-            p = pkgs;
-        in [
+        packages = let p = pkgs; in [
             p.source-code-pro p.source-sans p.source-serif
             p.noto-fonts p.noto-fonts-cjk p.noto-fonts-emoji-blob-bin
             p.liberation_ttf p.open-sans p.corefonts
@@ -102,7 +100,6 @@
                 wayland = true;
             };
 
-            libinput.enable = true;
             wacom.enable = true;
 
             xkb = {
@@ -121,6 +118,8 @@
                 };
             };
         };
+
+        libinput.enable = true;
 
         gnome.core-developer-tools.enable = true;
     };

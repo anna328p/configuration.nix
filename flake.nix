@@ -23,6 +23,7 @@
 
         nixos-hardware.url = flake:nixos-hardware;
         impermanence.url = github:nix-community/impermanence;
+        intransience.url = github:anna328p/intransience;
 
         nix-colors.url = github:misterio77/nix-colors;
         nix-colors.inputs.nixpkgs-lib.follows = "nixpkgs";
@@ -38,18 +39,22 @@
         snm = {
             url = gitlab:simple-nixos-mailserver/nixos-mailserver;
             inputs = {
-                utils.follows = "flake-utils";
                 nixpkgs.follows = "nixpkgs";
+                nixpkgs-24_05.follows = "nixpkgs";
                 flake-compat.follows = "flake-compat";
             };
         };
 
         # packages
 
-        neovim = {
-            url = github:neovim/neovim?dir=contrib;
-            inputs.nixpkgs.follows = "nixpkgs";
-            inputs.flake-utils.follows = "flake-utils";
+        neovim-nightly-overlay = {
+            url = github:nix-community/neovim-nightly-overlay;
+
+            inputs = {
+                nixpkgs.follows = "nixpkgs";
+                flake-parts.follows = "flake-parts";
+                flake-compat.follows = "flake-compat";
+            };
         };
 
         nil.url = github:oxalica/nil;

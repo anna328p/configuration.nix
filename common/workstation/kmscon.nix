@@ -15,41 +15,41 @@
         extraConfig = let
             inherit (builtins) toString;
             inherit (lib) mapAttrsToList mapAttrs;
-            inherit (L) o concatLines;
+            inherit (L) concatLines;
 
             toLine = k: v: "${k}=${toString v}";
 
-            mkConf = o concatLines (mapAttrsToList toLine);
+            mkConf = attrs: concatLines (mapAttrsToList toLine attrs);
 
             inherit (flakes.nix-colors.lib-core.conversions) hexToRGBString;
             mkColorStrings = mapAttrs (_: hexToRGBString ", ");
 
-            colors = mkColorStrings hmcfg.colorScheme.palette;
+            c = mkColorStrings hmcfg.colorScheme.palette;
 
-        in with colors; mkConf {
+        in mkConf {
             font-size = monospaceFont.size;
 
             palette = "custom";
 
-            palette-black = base00;
-            palette-red = base08;
-            palette-green = base0B;
-            palette-yellow = base0A;
-            palette-blue = base0D;
-            palette-magenta = base0E;
-            palette-cyan = base0C;
-            palette-light-grey = base05;
-            palette-dark-grey = base03;
-            palette-light-red = base08;
-            palette-light-green = base0B;
-            palette-light-yellow = base0A;
-            palette-light-blue = base0D;
-            palette-light-magenta = base0E;
-            palette-light-cyan = base0C;
-            palette-white = base07;
+            palette-black = c.base00;
+            palette-red = c.base08;
+            palette-green = c.base0B;
+            palette-yellow = c.base0A;
+            palette-blue = c.base0D;
+            palette-magenta = c.base0E;
+            palette-cyan = c.base0C;
+            palette-light-grey = c.base05;
+            palette-dark-grey = c.base03;
+            palette-light-red = c.base08;
+            palette-light-green = c.base0B;
+            palette-light-yellow = c.base0A;
+            palette-light-blue = c.base0D;
+            palette-light-magenta = c.base0E;
+            palette-light-cyan = c.base0C;
+            palette-white = c.base07;
 
-            palette-background = base00;
-            palette-foreground = base05;
+            palette-background = c.base00;
+            palette-foreground = c.base05;
         };
     };
 }

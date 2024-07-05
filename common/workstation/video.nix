@@ -17,8 +17,7 @@
     users.users.anna.extraGroups = [ "video" ];
 
     # Hardware video decoding
-    hardware.opengl.extraPackages = let
-        p = pkgs;
-    in
-        [ p.libva1 p.vaapiVdpau p.libvdpau-va-gl ];
+    hardware.graphics.extraPackages = let p = pkgs; in [
+        p.libva1 p.vaapiVdpau p.libvdpau-va-gl
+    ];
 }

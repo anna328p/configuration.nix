@@ -1,13 +1,16 @@
 { pkgs, ... }:
 
 {
-    programs = {
-        git = {
-            package = pkgs.gitAndTools.gitFull;
+    programs.git = {
+        package = pkgs.gitAndTools.gitFull;
 
-            userName = "Anna Kudriavtsev";
-            userEmail = "anna328p@gmail.com";
-        };
+        userName = "Anna Kudriavtsev";
+        userEmail = "anna328p@gmail.com";
+
+        ignores = [
+            ".ccls_cache"
+            ".direnv"
+        ];
     };
 
     xdg.configFile = {

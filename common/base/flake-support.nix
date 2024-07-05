@@ -23,10 +23,10 @@
 
     nix = {
         settings.experimental-features = [
-            "nix-command" "flakes" "repl-flake"
+            "nix-command" "flakes"
         ];
 
-        package = pkgs.nixVersions.unstable;
+        package = pkgs.nixVersions.latest;
 
         registry.nixpkgs.flake = flakes.nixpkgs;
 

@@ -1,8 +1,7 @@
 { flakes, ... }:
 
 final: prev: let
-    nvim-pkgs = flakes.neovim.packages.${final.system};
-
+    nvim-pkgs = flakes.neovim-nightly-overlay.packages.${final.system};
 
     buildPlugin = final.vimUtils.buildVimPlugin;
 
