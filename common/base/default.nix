@@ -97,7 +97,11 @@
     services.dbus.implementation = "broker";
 
     nix.settings = {
-        experimental-features = [ "cgroups" "auto-allocate-uids" "ca-derivations" ];
+        experimental-features = [
+            "cgroups" "auto-allocate-uids" "ca-derivations"
+            # "pipe-operators" # TODO: pending nix 2.24
+        ];
+
         auto-optimise-store = true;
         auto-allocate-uids = true;
         use-cgroups = true;

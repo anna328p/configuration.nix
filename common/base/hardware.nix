@@ -8,7 +8,9 @@
 
     system.etc.overlay = {
         enable = true;
-        mutable = false;
+
+        # mutable = false;
+        # TODO: broken by nixpkgs#328926
     };
 
     # TTY appearance

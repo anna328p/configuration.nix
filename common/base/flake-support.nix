@@ -26,7 +26,7 @@
             "nix-command" "flakes"
         ];
 
-        package = pkgs.nixVersions.latest;
+        package = pkgs.nixVersions.git;
 
         registry.nixpkgs.flake = flakes.nixpkgs;
 

@@ -9,19 +9,19 @@ let
 
     formatted = colors.prefixHash scheme.palette;
 
-    defs = with formatted; rec {
-        header-primary = base05;
-        header-secondary = base06;
+    defs = let c = formatted; in rec {
+        header-primary = c.base05;
+        header-secondary = c.base06;
 
-        text-normal = base05;
-        text-muted = base04;
-        text-link = base0C;
-        text-link-low-saturation = base0C;
+        text-normal = c.base05;
+        text-muted = c.base04;
+        text-link = c.base0C;
+        text-link-low-saturation = c.base0C;
 
-        text-positive = base0B;
-        text-warning = base0A;
-        text-danger = base09;
-        text-brand = base0E;
+        text-positive = c.base0B;
+        text-warning = c.base0A;
+        text-danger = c.base09;
+        text-brand = c.base0E;
 
         status-yellow-400 = text-warning;
         status-green-600 = text-positive;
@@ -31,54 +31,54 @@ let
         brand-experiment-600 = text-brand + "99";
         brand-500 = text-brand;
 
-        interactive-normal = base04;
-        interactive-hover = base05;
-        interactive-active = base05;
-        interactive-muted = base03;
+        interactive-normal = c.base04;
+        interactive-hover = c.base05;
+        interactive-active = c.base05;
+        interactive-muted = c.base03;
 
         mention-foreground = text-brand;
-        mention-background = base02;
+        mention-background = c.base02;
 
-        background-primary = base01;
-        background-secondary = base00;
-        background-secondary-alt = base02 + "77";
-        background-tertiary = base00;
-        background-accent = base02;
-        background-floating = base01;
-        background-nested-floating = base02;
+        background-primary = c.base01;
+        background-secondary = c.base00;
+        background-secondary-alt = c.base02 + "77";
+        background-tertiary = c.base00;
+        background-accent = c.base02;
+        background-floating = c.base01;
+        background-nested-floating = c.base02;
 
-        background-mobile-primary = base01;
-        background-mobile-secondary = base00;
+        background-mobile-primary = c.base01;
+        background-mobile-secondary = c.base00;
 
         deprecated-card-bg = background-secondary;
 
-        chat-background = base01;
-        chat-border = base02;
-        chat-input-container-background = base00;
+        chat-background = c.base01;
+        chat-border = c.base02;
+        chat-input-container-background = c.base00;
 
-        background-modifier-hover = base03 + "44";
-        background-modifier-active = base02;
-        background-modifier-selected = base02 + "cc";
-        background-modifier-accent = base01;
+        background-modifier-hover = c.base03 + "44";
+        background-modifier-active = c.base02;
+        background-modifier-selected = c.base02 + "cc";
+        background-modifier-accent = c.base01;
 
-        info-positive-background = base00;
+        info-positive-background = c.base00;
         info-positive-foreground = text-positive;
         info-positive-text = text-normal;
 
-        info-warning-background = base00;
+        info-warning-background = c.base00;
         info-warning-foreground = text-warning;
         info-warning-text = text-normal;
 
-        info-danger-background = base00;
+        info-danger-background = c.base00;
         info-danger-foreground = text-danger;
         info-danger-text = text-normal;
 
-        info-help-background = base00;
-        info-help-foreground = base0F;
+        info-help-background = c.base00;
+        info-help-foreground = c.base0F;
         info-help-text = text-normal;
 
         status-positive-background = button-positive-background;
-        status-positive-text = base02;
+        status-positive-text = c.base02;
 
         status-warning-background = text-warning;
         status-warning-text = text-normal;
@@ -100,10 +100,10 @@ let
         button-positive-background-active = text-positive;
         button-positive-background-disabled = text-positive + "99";
 
-        button-secondary-background = base02 + "bb";
-        button-secondary-background-hover = base02 + "dd";
-        button-secondary-background-active = base02;
-        button-secondary-background-disabled = base02 + "99";
+        button-secondary-background = c.base02 + "bb";
+        button-secondary-background-hover = c.base02 + "dd";
+        button-secondary-background-active = c.base02;
+        button-secondary-background-disabled = c.base02 + "99";
 
         button-outline-danger-text = text-normal;
         button-outline-danger-text-hover = text-normal;
@@ -148,28 +148,28 @@ let
         modal-background = background-primary;
         modal-footer-background = background-secondary;
 
-        scrollbar-thin-thumb = base01;
+        scrollbar-thin-thumb = c.base01;
 
-        scrollbar-auto-thumb = base00;
-        scrollbar-auto-track = base00 + "88";
-        scrollbar-auto-scrollbar-color-thumb = base00;
-        scrollbar-auto-scrollbar-color-track = base00 + "88";
+        scrollbar-auto-thumb = c.base00;
+        scrollbar-auto-track = c.base00 + "88";
+        scrollbar-auto-scrollbar-color-thumb = c.base00;
+        scrollbar-auto-scrollbar-color-track = c.base00 + "88";
 
-        input-background = base00;
-        input-placeholder-text = base03;
+        input-background = c.base00;
+        input-placeholder-text = c.base03;
 
-        channels-default = base04;
-        channel-icon = base04 + "99";
+        channels-default = c.base04;
+        channel-icon = c.base04 + "99";
 
         channel-text-area-placeholder = input-placeholder-text;
         channeltextarea-background = input-background;
 
         activity-card-background = background-secondary;
         
-        textbox-markdown-syntax = base03;
+        textbox-markdown-syntax = c.base03;
 
-        spoiler-hidden-background = base00;
-        spoiler-revealed-background = base02;
+        spoiler-hidden-background = c.base00;
+        spoiler-revealed-background = c.base02;
 
         font-code = config.misc.fonts.monospace.name;
 
@@ -185,14 +185,14 @@ let
         search-popout-option-fade-hover = "transparent";
         search-popout-option-user-nickname = text-normal;
         search-popout-option-user-username = text-muted;
-        search-popout-option-filter-text = base04;
-        search-popout-option-non-text-color = base03;
-        search-popout-option-filter-color = base03;
-        search-popout-option-answer-color = base03;
+        search-popout-option-filter-text = c.base04;
+        search-popout-option-non-text-color = c.base03;
+        search-popout-option-filter-color = c.base03;
+        search-popout-option-answer-color = c.base03;
 
-        search-popout-date-picker-border = "1px solid ${base00}cc";
-        search-popout-date-picker-hint-text = base04;
-        search-popout-date-picker-hint-value-text = base01;
+        search-popout-date-picker-border = "1px solid ${c.base00}cc";
+        search-popout-date-picker-hint-text = c.base04;
+        search-popout-date-picker-hint-value-text = c.base01;
         search-popout-date-picker-hint-value-background = text-brand;
         search-popout-date-picker-hint-value-background-hover = text-brand + "cc";
     };
@@ -220,12 +220,15 @@ let
         color' = addOpacity color;
         bg' = addOpacity bg;
 
-        mkIdSet = names:
-            listToAttrs (map (x: nameValuePair x x) names);
+        span = "span";
+        div = "div";
+        nav = "nav";
+        section = "section";
+        input = "input";
+        button = "button";
 
-        tagNames = [ "span" "div" "nav" "section" "input" "button" ];
-
-    in with mkIdSet tagNames; with formatted; ''
+        c = formatted;
+    in ''
         :root {
             font-size: 93.75% !important;
         }
@@ -242,128 +245,128 @@ let
         }
 
         ${sel div "divider"} {
-            border-top-color: ${base02} !important;
+            border-top-color: ${c.base02} !important;
         }
 
-        ${sel div "checked"} { ${bg' base0B "88"} }
+        ${sel div "checked"} { ${bg' c.base0B "88"} }
 
         ${sel nav "guilds"} {
-            border-right: 1px solid ${base01} !important;
+            border-right: 1px solid ${c.base01} !important;
         }
 
         ${sel nav "guilds"} > ul { ${bg (byVariant' "white" "black")} }
 
         ${sel nav "guilds"} ${sel div "scrollerBase"} {
-            background-color: ${base00}aa !important;
+            background-color: ${c.base00}aa !important;
         }
 
-        ${sels div [ "autocomplete" "categoryHeader" ]} { ${bg base00} }
+        ${sels div [ "autocomplete" "categoryHeader" ]} { ${bg c.base00} }
 
         ${sel div "rail"} > ${sel div "list"} {
-            ${bg' base01 "55"}
-            border-right: 1px solid ${base01};
+            ${bg' c.base01 "55"}
+            border-right: 1px solid ${c.base01};
         }
 
         ${sel section "background"},
-        ${sels div ["background" "fieldList"]} { ${bg base01} }
+        ${sels div ["background" "fieldList"]} { ${bg c.base01} }
 
-        ${sel div "homeContainer"} { ${bg' base00 "aa"} }
+        ${sel div "homeContainer"} { ${bg' c.base00 "aa"} }
 
         ${sel div "userPanelInner"} > ${sel div "scrollerBase"} {
             backdrop-filter: brightness(${byVariant' "1.4" "0.55"});
         }
 
-        ${sel div "usageWrapper"} > ${sel div "option"} { ${bg base01} }
+        ${sel div "usageWrapper"} > ${sel div "option"} { ${bg c.base01} }
 
-        ${sel span "spoilerText"}:not(${sel span "hidden"}) { ${bg' base02 "77"} }
+        ${sel span "spoilerText"}:not(${sel span "hidden"}) { ${bg' c.base02 "77"} }
 
         ${sel' span ["spoilerText" "hidden"]} { opacity: 80% }
 
         ${sel div "chat"}, ${sel section "title"} {
-            box-shadow: inset 1px 0 ${base00}44,
+            box-shadow: inset 1px 0 ${c.base00}44,
                         inset 1px 0 "white";
         }
 
-        ${sel' "*" ["colorBrand" "lookFilled"]} { ${color base01} }
+        ${sel' "*" ["colorBrand" "lookFilled"]} { ${color c.base01} }
 
-        ${sel div "textBadge"} { ${bg base03} }
-        ${sel div "akaBadge"} { ${color base00} ${bg base04} }
+        ${sel div "textBadge"} { ${bg c.base03} }
+        ${sel div "akaBadge"} { ${color c.base00} ${bg c.base04} }
 
-        ${sel div "authedApp"} { ${bg base00} }
+        ${sel div "authedApp"} { ${bg c.base00} }
 
-        ${sel "*" "emptyStateHeader"} { ${color base05} }
-        ${sel "*" "emptyStateSubtext"} { ${color base06} }
+        ${sel "*" "emptyStateHeader"} { ${color c.base05} }
+        ${sel "*" "emptyStateSubtext"} { ${color c.base06} }
 
         ${sels div ["payment" "paymentPane" "summaryInfo" "paginator"]} {
-            ${bg base00} ${color base05}
+            ${bg c.base00} ${color c.base05}
         }
 
         ${sels div ["paymentRow" "bottomDivider"]} {
-            border-bottom-color: ${base01} !important;
+            border-bottom-color: ${c.base01} !important;
         }
 
         ${sels div ["pageActions" "pageButtonPrev" "pageButtonNext" "pageIndicator"]} {
-            border-color: ${base02} !important;
+            border-color: ${c.base02} !important;
         }
 
         ${sel div "codeRedemptionRedirect"} {
-            ${color base05} ${bg base00}
-            border-color: ${base02} !important;
+            ${color c.base05} ${bg c.base00}
+            border-color: ${c.base02} !important;
         }
 
-        ${sel div "slider"} ${sel div "bar"} { ${bg base02} }
-        ${sel div "markDash"} { ${bg base02} }
+        ${sel div "slider"} ${sel div "bar"} { ${bg c.base02} }
+        ${sel div "markDash"} { ${bg c.base02} }
 
-        ${sel' div ["bar" "mention"]} { ${bg base09} }
+        ${sel' div ["bar" "mention"]} { ${bg c.base09} }
 
-        ${sel div "micTest"} ${sel div "progress"} { ${bg base01} }
+        ${sel div "micTest"} ${sel div "progress"} { ${bg c.base01} }
 
-        ${sel div "gameName"}, ${sel input "gameNameInput"} { ${color base05} }
+        ${sel div "gameName"}, ${sel input "gameNameInput"} { ${color c.base05} }
 
         ${sel input "gameNameInput"}:focus,
-        ${sel input "gameNameInput"}:hover { ${bg base00} }
+        ${sel input "gameNameInput"}:hover { ${bg c.base00} }
 
         ${sel' div ["card" "game"]} {
-            box-shadow: 0 1px 0 0 ${base02} !important;
+            box-shadow: 0 1px 0 0 ${c.base02} !important;
         }
 
-        ${sel div "nowPlayingAdd"} { ${color base04} }
+        ${sel div "nowPlayingAdd"} { ${color c.base04} }
 
         ${sel div "queryContainer"} {
-            ${color base04} ${bg base00}
-            border-bottom: 1px solid ${base02} !important;
+            ${color c.base04} ${bg c.base00}
+            border-bottom: 1px solid ${c.base02} !important;
         }
 
-        ${sel div "queryContainer"} strong { ${color base05} }
+        ${sel div "queryContainer"} strong { ${color c.base05} }
 
         ${sel span "key"} {
-            ${color base00}
-            ${bg (byVariant' base03 base04)}
-            box-shadow: inset 0 -4px 0 ${(byVariant' base04 base03)} !important;
+            ${color c.base00}
+            ${bg (byVariant' c.base03 c.base04)}
+            box-shadow: inset 0 -4px 0 ${(byVariant' c.base04 c.base03)} !important;
         }
 
-        ${sel "*" "colorPrimary"} { ${color base05} }
-        ${sel button "lookLink"} { ${color base04} }
+        ${sel "*" "colorPrimary"} { ${color c.base05} }
+        ${sel button "lookLink"} { ${color c.base04} }
 
-        ${sel' button ["fieldButton" "lookFilled"]} { ${bg base04} ${color base00} }
+        ${sel' button ["fieldButton" "lookFilled"]} { ${bg c.base04} ${color c.base00} }
 
-        ${sel div "folder"} { ${bg base01} }
-        ${sel span "expandedFolderBackground"} { ${bg base01} }
+        ${sel div "folder"} { ${bg c.base01} }
+        ${sel span "expandedFolderBackground"} { ${bg c.base01} }
 
         ${sel div "feedItemHeader"} {
-            border-bottom: 1px solid ${base02}44 !important;
+            border-bottom: 1px solid ${c.base02}44 !important;
         }
 
         ${sel div "headerBarInner"}::after {
             background: transparent !important;
         }
 
-        ${sel div "emojiAliasPlaceholderContent"} { ${color base05} }
+        ${sel div "emojiAliasPlaceholderContent"} { ${color c.base05} }
 
-        ${sel div "directoryModal"} { ${bg base01} }
+        ${sel div "directoryModal"} { ${bg c.base01} }
 
         ${sel div "userPopoutOuter"} { backdrop-filter: blur(8px); }
-        ${sel div "menu"} { ${bg base00} }
+        ${sel div "menu"} { ${bg c.base00} }
     '';
 in {
     home.packages = [ pkgs.lexend ];

@@ -5,7 +5,8 @@
         flakes.home-manager.nixosModule
     ];
 
-    systemd.sysusers.enable = true;
+    # systemd.sysusers.enable = true;
+    # TODO: broken by nixpkgs#328926; pending on systemd-homed integration
 
     users = let
         sshPubKey = builtins.readFile files/ssh-public-key;

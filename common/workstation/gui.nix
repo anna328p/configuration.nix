@@ -5,7 +5,8 @@
     i18n = {
         supportedLocales = [ "en_US.UTF-8/UTF-8" "ja_JP.UTF-8/UTF-8" ];
         inputMethod = {
-            enabled = "ibus";
+            enable = true;
+            type = "ibus";
 
             ibus.engines = let
                 i = pkgs.ibus-engines;

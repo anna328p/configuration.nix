@@ -18,6 +18,7 @@
         ];
 
         byPath."/var/lib".dirs = [
+            "alsa"
             "bluetooth"
             "cups"
             "flatpak"

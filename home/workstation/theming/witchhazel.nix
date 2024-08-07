@@ -34,24 +34,25 @@
             };
 
             dehashed = lib.mapAttrs (_: lib.removePrefix "#") sourceColors;
-        in with dehashed; {
-            base00 = purps;
-            base01 = shadow;
-            base02 = midtone;
-            base03 = fadedlilac;
-            base04 = lilac;
-            base05 = linen;
-            base06 = lightgrey;
-            base07 = amethyst';
+            c = dehashed;
+        in {
+            base00 = c.purps;
+            base01 = c.shadow;
+            base02 = c.midtone;
+            base03 = c.fadedlilac;
+            base04 = c.lilac;
+            base05 = c.linen;
+            base06 = c.lightgrey;
+            base07 = c.amethyst';
 
-            base08 = pink;
-            base09 = brick;
-            base0A = other;
-            base0B = mint;
-            base0C = turquoise;
-            base0D = darklilac;
-            base0E = clay';
-            base0F = lilac;
+            base08 = c.pink;
+            base09 = c.brick;
+            base0A = c.other;
+            base0B = c.mint;
+            base0C = c.turquoise;
+            base0D = c.darklilac;
+            base0E = c.clay';
+            base0F = c.lilac;
         };
     };
 }

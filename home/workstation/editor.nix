@@ -253,7 +253,7 @@
                     <file_watching_cap> ]))
 
                 (SetLocal <auto_ls> [
-                    "hls" "bashls" "cssls" "rust_analyzer" "ruby_ls" ])
+                    "hls" "bashls" "cssls" "rust_analyzer" "ruby_lsp" ])
 
                 (ForEach (IPairs <auto_ls>) (_: name: [
                     (CallFrom (Index <lspconfig> name) "setup" {

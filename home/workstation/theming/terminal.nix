@@ -17,19 +17,19 @@
 
             showScrollbar = false;
 
-            colors = with colorsPrefixed; {
-                backgroundColor = base00;
-                foregroundColor = base05;
+            colors = let c = colorsPrefixed; in {
+                backgroundColor = c.base00;
+                foregroundColor = c.base05;
 
-                cursor.background = base05;
-                cursor.foreground = base02;
+                cursor.background = c.base05;
+                cursor.foreground = c.base02;
 
-                highlight.background = base04;
-                highlight.foreground = base01;
+                highlight.background = c.base04;
+                highlight.foreground = c.base01;
 
                 palette = [
-                    base00 base08 base0B base0A base0D base0E base0C base05
-                    base03 base08 base0B base0A base0D base0E base0C base07
+                    c.base00 c.base08 c.base0B c.base0A c.base0D c.base0E c.base0C c.base05
+                    c.base03 c.base08 c.base0B c.base0A c.base0D c.base0E c.base0C c.base07
                 ];
             };
         };

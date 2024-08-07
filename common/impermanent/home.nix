@@ -29,6 +29,7 @@
                 ".local/share/logseq"
 
                 ".mozilla/firefox"
+                ".mozilla/native-messaging-hosts"
 
                 "Documents"
                 "Music"

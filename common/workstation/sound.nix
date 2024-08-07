@@ -4,9 +4,6 @@
     # MIDI support
     boot.kernelModules = [ "snd-seq" "snd-rawmidi" ];
 
-    # hardware stuff?
-    sound.enable = true;
-
     # Manage audio server stuff
     environment.systemPackages = let p = pkgs; in [
         p.pavucontrol

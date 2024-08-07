@@ -6,46 +6,46 @@ let
     scheme = config.colorScheme;
     formatted = colors.prefixHash scheme.palette;
 
-    defs = with formatted; rec {
-        accent_color    = base0C;
+    defs = let c = formatted; in rec {
+        accent_color    = c.base0C;
         accent_bg_color = accent_color;
-        accent_fg_color = base05;
+        accent_fg_color = c.base05;
 
-        destructive_color    = base08;
+        destructive_color    = c.base08;
         destructive_bg_color = destructive_color;
-        destructive_fg_color = base05;
+        destructive_fg_color = c.base05;
 
-        success_color    = base0B;
+        success_color    = c.base0B;
         success_bg_color = success_color;
-        success_fg_color = base05;
+        success_fg_color = c.base05;
 
-        warning_color    = base0A;
+        warning_color    = c.base0A;
         warning_bg_color = warning_color;
-        warning_fg_color = base05;
+        warning_fg_color = c.base05;
 
         error_color    = destructive_color;
         error_bg_color = error_color;
-        error_fg_color = base05;
+        error_fg_color = c.base05;
 
-        window_bg_color = base00;
-        window_fg_color = base05;
+        window_bg_color = c.base00;
+        window_fg_color = c.base05;
 
-        view_bg_color = base01;
-        view_fg_color = base05;
+        view_bg_color = c.base01;
+        view_fg_color = c.base05;
 
-        headerbar_bg_color = base01;
-        headerbar_fg_color = base05;
-        headerbar_border_color = base04;
-        headerbar_backdrop_color = base00;
+        headerbar_bg_color = c.base01;
+        headerbar_fg_color = c.base05;
+        headerbar_border_color = c.base04;
+        headerbar_backdrop_color = c.base00;
 
-        card_bg_color = base01;
-        card_fg_color = base05;
+        card_bg_color = c.base01;
+        card_fg_color = c.base05;
 
-        dialog_bg_color = base01;
-        dialog_fg_color = base05;
+        dialog_bg_color = c.base01;
+        dialog_fg_color = c.base05;
 
-        popover_bg_color = base01;
-        popover_fg_color = base05;
+        popover_bg_color = c.base01;
+        popover_fg_color = c.base05;
     };
 
     css = colors.genDecls (k: v: "@define-color ${k} ${v};") defs;
