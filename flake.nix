@@ -19,6 +19,17 @@
         flake-parts.url = github:hercules-ci/flake-parts;
         flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
 
+        # home-manager
+
+        home-manager.url = flake:home-manager;
+        home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+        # android
+
+        nix-on-droid.url = github:nix-community/nix-on-droid;
+        nix-on-droid.inputs.nixpkgs.follows = "nixpkgs";
+        nix-on-droid.inputs.home-manager.follows = "home-manager";
+
         # modules
 
         nixos-hardware.url = flake:nixos-hardware;
@@ -27,9 +38,6 @@
 
         nix-colors.url = github:misterio77/nix-colors;
         nix-colors.inputs.nixpkgs-lib.follows = "nixpkgs";
-
-        home-manager.url = flake:home-manager;
-        home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
         musnix.url = github:musnix/musnix;
         musnix.inputs.nixpkgs.follows = "nixpkgs";
@@ -90,11 +98,15 @@
         , nixpkgs
         , nil
         , nix-prelude
+        , nix-on-droid
         , ...
     }@flakes: let
         localPkgs = import ./pkgs flakes;
 
-        nixosModulePaths = rec {
+        ##
+        # Module paths
+
+        modulePaths.nixos = rec {
             default = local.misc;
 
             local = {
@@ -128,7 +140,7 @@
             };
         };
 
-        homeModulePaths = rec {
+        modulePaths.home = rec {
             default = local.misc;
 
             local = {
@@ -140,53 +152,68 @@
             workstation = home/workstation;
         };
 
-        localModules = nixosModulePaths // { home = homeModulePaths; };
-
-
-        mkNixosSystem = modules: let
-            L = nix-prelude.lib;
-
-            local-lib = import ./lib {
-                inherit (nixpkgs) lib; inherit L;
-            };
-        in nixpkgs.lib.nixosSystem {
-            inherit modules;
-
-            specialArgs = let
-                overlays = [
-                    self.overlays.default
-                    nil.overlays.default
-                ];
-            in {
-                inherit flakes overlays localModules local-lib L;
+        modulePaths.android = {
+            devices = {
+                aither = android/devices/aither;
             };
         };
 
-        importMods = let
-            inherit (nix-prelude.lib) o mapAttrValues flattenSetSep;
-        in
-            o (mapAttrValues import) (flattenSetSep "-");
+        localModules = modulePaths.nixos // {
+            inherit (modulePaths) home android;
+        };
 
-        mkSystems = let
-            inherit (nix-prelude.lib) mapAttrValues;
-        in
-            mapAttrValues mkNixosSystem;
+        ##
+        # Generic config generation
 
-        eachExposedSystem = let
-            inherit (nixpkgs.lib) genAttrs systems;
+        specialArgs = let
+            L = nix-prelude.lib;
+
+            local-lib = import ./lib {
+                inherit (nixpkgs) lib;
+                inherit L;
+            };
+
+            overlays = [
+                self.overlays.default
+                nil.overlays.default
+            ];
         in
-            genAttrs systems.flakeExposed;
+            { inherit flakes overlays localModules local-lib L; };
+
+        mkNixosSystem = modules: nixpkgs.lib.nixosSystem {
+            inherit modules specialArgs;
+        };
+
+        mkAndroidEnv = modules: let
+            pkgs = import nixpkgs {
+                system = "aarch64-linux";
+                inherit (specialArgs) overlays;
+            };
+        in nix-on-droid.lib.nixOnDroidConfiguration {
+            inherit modules pkgs;
+            extraSpecialArgs = specialArgs;
+        };
+
+        ##
+        # Flake stuff
+
+        inherit (nix-prelude.lib) o mapAttrValues flattenSetSep;
+        inherit (nixpkgs.lib) genAttrs systems;
+
+        importMods = o (mapAttrValues import) (flattenSetSep "-");
+        eachExposedSystem = genAttrs systems.flakeExposed;
 
     in {
         inputs = flakes;
 
-        nixosModules = importMods nixosModulePaths;
-        homeManagerModules = importMods homeModulePaths;
+        nixosModules = importMods modulePaths.nixos;
+        homeManagerModules = importMods modulePaths.home;
+        nixOnDroidModules = importMods modulePaths.android;
 
         nixosConfigurations = let
-            moduleSets = let
-                inherit (localModules) systems common;
-            in rec {
+            inherit (localModules) systems common;
+
+            moduleSets = rec {
                 hermes = [ systems.hermes ];
                 hermes-small = hermes ++ [ common.misc.small ];
 
@@ -199,7 +226,16 @@
                 iris = [ systems.iris ];
             };
         in
-            mkSystems moduleSets;
+            mapAttrValues mkNixosSystem moduleSets;
+
+        nixOnDroidConfigurations = let
+            inherit (localModules.android) devices;
+
+            moduleSets = {
+                aither = [ devices.aither ];
+            };
+        in
+            mapAttrValues mkAndroidEnv moduleSets;
 
         overlays = {
             inherit (localPkgs.overlays) default;

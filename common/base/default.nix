@@ -53,9 +53,9 @@
         defaultPackages = lib.mkDefault [];
 
         # Set default text editor
-        variables = {
+        variables = rec {
             EDITOR = "nvim";
-            VISUAL = "nvim";
+            VISUAL = EDITOR;
         };
 
         pathsToLink = [ "/share/zsh" ];
