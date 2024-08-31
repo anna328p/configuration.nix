@@ -1,7 +1,7 @@
 { flakes, mkFlakeVer, ... }:
 
 final: prev: let
-    rubyVer = "3_2";
+    rubyVer = "3_3";
 in {
     ruby_latest = final."ruby_${rubyVer}";
     rubyPackages_latest = final."rubyPackages_${rubyVer}";
