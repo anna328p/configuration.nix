@@ -6,13 +6,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Free up space
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: true
+      #- name: Free up space
+      #  uses: jlumbroso/free-disk-space@main
+      #  with:
+      #    tool-cache: true
 
-      - name: Get free space
-        run: df -h
+      - name: Ensure disk space
+        run: |
+          lsblk
+          df -h
+          sudo mkdir -p /mnt/nix /nix
+          sudo mount --bind /mnt/nix /nix
 
       - name: Checkout repository
         uses: actions/checkout@v4
