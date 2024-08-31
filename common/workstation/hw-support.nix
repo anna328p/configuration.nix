@@ -8,7 +8,7 @@
 
         # Control connected monitors' settings
         kernelModules = [ "i2c-dev" "ddcci" ];
-        extraModulePackages = [ config.boot.kernelPackages.ddcci-driver ];
+        #extraModulePackages = [ config.boot.kernelPackages.ddcci-driver ];
     };
 
     environment.systemPackages = let p = pkgs; in [

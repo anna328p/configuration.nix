@@ -54,9 +54,14 @@
         };
     };
     
-    programs.direnv = {
-        enable = true;
-        nix-direnv.enable = true;
-        enableZshIntegration = true;
+    programs = {
+        direnv = {
+            enable = true;
+            nix-direnv.enable = true;
+            enableZshIntegration = true;
+        };
+
+        less.enable = true;
+        lesspipe.enable = true;
     };
 }

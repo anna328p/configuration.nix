@@ -36,7 +36,7 @@
         p.libjxl-with-plugins
 
         # GNOME addons
-        g.gnome-sound-recorder p.gnome-tweaks g.gnome-music
+        p.gnome-sound-recorder p.gnome-tweaks p.gnome-music
 
         # GNOME extensions
         e.brightness-control-using-ddcutil

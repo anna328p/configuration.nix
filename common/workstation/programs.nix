@@ -4,20 +4,19 @@
     # flatpak
     services.flatpak.enable = true;
 
-    # gpg agent
     programs = {
-        gnupg.agent = {
-            enable = true;
-            enableSSHSupport = true;
-        };
-
-        less.lessopen = "|${pkgs.lesspipe}/bin/lesspipe.sh %s"; # default
-
         nix-index = {
             enable = true;
             enableZshIntegration = true;
         };
 
-        git.package = pkgs.gitFull;
+        git.package = if config.misc.buildFull
+            then pkgs.gitFull
+            else pkgs.gitMinimal;
+
+        appimage = {
+            enable = config.misc.buildFull;
+            binfmt = config.misc.buildFull;
+        };
     };
 }

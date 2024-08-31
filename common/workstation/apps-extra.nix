@@ -60,7 +60,6 @@ in {
         p.woeusb         # Write Windows install disks
         p.idevicerestore # Flash Apple devices
         p.anki           # Flashcards
-        p.appimage-run
         p.gnome-decoder  # Scan QR codes from screenshots
     ];
 

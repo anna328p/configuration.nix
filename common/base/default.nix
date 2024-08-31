@@ -67,11 +67,6 @@
                 source = "/etc/zoneinfo/${config.time.timeZone}";
                 mode = lib.mkForce "symlink";
             };
-
-            mtab = {
-                source = "/proc/mounts";
-                mode = "symlink";
-            };
         };
     };
 

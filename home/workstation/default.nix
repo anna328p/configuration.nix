@@ -1,4 +1,4 @@
-{ flakes, lib, systemConfig, ... }:
+{ flakes, lib, ... }:
 
 {
     imports = [
@@ -8,6 +8,8 @@
         ./ssh.nix
         ./git.nix
         ./editor.nix
+
+        ./programs.nix
 
         ./dconf
         ./theming
@@ -30,10 +32,6 @@
         enable = true;
         createDirectories = true;
     };
-
-    services.fluidsynth.enable = systemConfig.misc.buildFull;
-
-    programs.obs-studio.enable = systemConfig.misc.buildFull;
 
     manual.manpages.enable = lib.mkForce true;
 }

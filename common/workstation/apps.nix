@@ -48,9 +48,12 @@
         p.espeak-ng # TTS
     ];
 
-    # Logseq 0.10 dep
     # TODO: Remove
     nixpkgs.config.permittedInsecurePackages = [
+        # Logseq 0.10 dep
         "electron-27.3.11"
+
+        # nheko dep
+        "olm-3.2.16"
     ];
 }

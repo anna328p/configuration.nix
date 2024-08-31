@@ -1,29 +1,36 @@
 { pkgs, ... }:
 
 {
-    programs.git = {
-        package = pkgs.gitAndTools.gitFull;
+    programs = {
+        git = {
+            package = pkgs.gitAndTools.gitFull;
 
-        userName = "Anna Kudriavtsev";
-        userEmail = "anna328p@gmail.com";
+            userName = "Anna Kudriavtsev";
+            userEmail = "anna328p@gmail.com";
 
-        ignores = [
-            ".ccls_cache"
-            ".direnv"
-        ];
-    };
+            ignores = [
+                ".ccls_cache"
+                ".direnv"
+            ];
+        };
 
-    xdg.configFile = {
-        "gh/config.yml".text = builtins.toJSON {
-            version = "1";
-            editor = "";
-            git_protocol = "ssh";
+        gh = {
+            enable = true;
 
-            aliases = {
-                rc = "repo create";
+            settings = {
+                editor = "";
+                git_protocol = "ssh";
+
+                aliases = {
+                    rc = "repo create";
+                };
             };
         };
 
+        gh-dash.enable = true;
+    };
+
+    xdg.configFile = {
         # gh/hosts.yml is the credential store for gh.
         # For ssh key auth, gh defers to ssh to find keys, so this file
         # contains no secrets and can be generated declaratively.
