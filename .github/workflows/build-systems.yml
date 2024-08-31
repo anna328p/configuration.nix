@@ -6,15 +6,26 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Delete huge unnecessary tools folder
+        run: rm -rf /opt/hostedtoolcache
 
-      - uses: cachix/install-nix-action@v27
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: cachix/cachix-action@v15
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
+
+      - name: Setup Cachix
+        uses: cachix/cachix-action@v15
         with:
           name: anna328p
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
-      - run: nix flake update keydb
-      - run: nix build 'path:.#nixosConfigurations.hermes.config.system.build.toplevel'
-      - run: echo 'OK'
+      - name: Update volatile inputs
+        run: nix flake update keydb
+
+      - name: Build hermes configuration
+        run: nix build --accept-flake-config 'path:.#nixosConfigurations.hermes.config.system.build.toplevel'
+
+      - name: Confirm success
+        run: echo 'OK'

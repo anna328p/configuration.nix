@@ -26,9 +26,11 @@
 
         # android
 
-        nix-on-droid.url = github:nix-community/nix-on-droid;
-        nix-on-droid.inputs.nixpkgs.follows = "nixpkgs";
-        nix-on-droid.inputs.home-manager.follows = "home-manager";
+        nix-on-droid = {
+            url = github:nix-community/nix-on-droid;
+            inputs.nixpkgs.follows = "nixpkgs";
+            inputs.home-manager.follows = "home-manager";
+        };
 
         # modules
 
@@ -92,6 +94,17 @@
 
     nixConfig = {
         allow-import-from-derivation = "true";
+
+        extra-substituters = ""
+            + " https://nix-community.cachix.org"
+            + " https://anna328p.cachix.org";
+
+        extra-trusted-public-keys = ""
+            + "nix-community.cachix.org-1"
+            + ":mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= "
+
+            + "anna328p.cachix.org-1"
+            + ":HcPUMrtQ7qT+bfx2fQ2HyJV5wCYQ2A3WwhxxrxDkvG0= ";
     };
 
     outputs = { self
