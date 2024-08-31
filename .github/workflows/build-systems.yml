@@ -6,14 +6,23 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Get free space
+        run: df -h
+
       - name: Delete huge unnecessary tools folder
         run: rm -rf /opt/hostedtoolcache
+
+      - name: Get free space
+        run: df -h
 
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install Nix
         uses: cachix/install-nix-action@v27
+
+      - name: Setup Magic Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
 
       - name: Setup Cachix
         uses: cachix/cachix-action@v15
