@@ -26,6 +26,8 @@
             p.haskell-language-server
             p.rust-analyzer
             p.shellcheck
+            p.pyright
+            p.ruff
         ]);
 
         extraLuaConfig = let
@@ -253,7 +255,8 @@
                     <file_watching_cap> ]))
 
                 (SetLocal <auto_ls> [
-                    "hls" "bashls" "cssls" "rust_analyzer" "ruby_lsp" ])
+                    "hls" "bashls" "cssls" "rust_analyzer"
+                    "ruby_lsp" "pyright" "ruff" ])
 
                 (ForEach (IPairs <auto_ls>) (_: name: [
                     (CallFrom (Index <lspconfig> name) "setup" {
@@ -358,12 +361,21 @@
             (luaPlugin v.copilot-lua (Code [
                 (CallFrom (Require "copilot") "setup" [ {
                     suggestion.enabled = false;
-                    panel.enabled = false;
+                    panel = {
+                        enabled = false;
+                        auto_refresh = true;
+                    };
                 } ])
             ]) { })
 
             (luaPlugin v.copilot-cmp (Code [
                 (CallFrom (Require "copilot_cmp") "setup" [])
+            ]) { })
+
+            (luaPlugin v.CopilotChat-nvim (Code [
+                (CallFrom (Require "CopilotChat") "setup" [ {
+                    auto_insert_mode = true;
+                } ])
             ]) { })
 
             (luaPlugin v.nvim-cmp (Code [
