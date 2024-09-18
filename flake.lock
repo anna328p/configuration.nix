@@ -32,6 +32,22 @@
         "type": "gitlab"
       }
     },
+    "copilot-lualine": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1725375487,
+        "narHash": "sha256-PXiJ7rdlE8J93TFtu+D+8398Wg7DhK7EZ0Aw4JDoqWM=",
+        "owner": "AndreM222",
+        "repo": "copilot-lualine",
+        "rev": "f40450c3e138766026327e7807877ea860618258",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AndreM222",
+        "repo": "copilot-lualine",
+        "type": "github"
+      }
+    },
     "easyeffects-presets": {
       "flake": false,
       "locked": {
@@ -471,7 +487,9 @@
         "nixpkgs": [
           "nixpkgs"
         ],
-        "nixpkgs-docs": "nixpkgs-docs",
+        "nixpkgs-docs": [
+          "nixpkgs"
+        ],
         "nixpkgs-for-bootstrap": "nixpkgs-for-bootstrap",
         "nmd": "nmd"
       },
@@ -507,6 +525,29 @@
         "type": "github"
       }
     },
+    "nixos-generators": {
+      "inputs": {
+        "nixlib": [
+          "nixpkgs"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1725497951,
+        "narHash": "sha256-fayKyVs/9FQdYH+3SCOkQM1GCsEPPVE+lSiVGlYQ7i0=",
+        "owner": "nix-community",
+        "repo": "nixos-generators",
+        "rev": "15a07ebf4a041bf232026263f1f96f2af390f3bc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nixos-generators",
+        "type": "github"
+      }
+    },
     "nixos-hardware": {
       "locked": {
         "lastModified": 1724878143,
@@ -533,22 +574,6 @@
       "original": {
         "owner": "nixos",
         "ref": "nixpkgs-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs-docs": {
-      "locked": {
-        "lastModified": 1705957679,
-        "narHash": "sha256-Q8LJaVZGJ9wo33wBafvZSzapYsjOaNjP/pOnSiKVGHY=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "9a333eaa80901efe01df07eade2c16d183761fa3",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "release-23.05",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -738,6 +763,7 @@
     },
     "root": {
       "inputs": {
+        "copilot-lualine": "copilot-lualine",
         "easyeffects-presets": "easyeffects-presets",
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",
@@ -753,6 +779,7 @@
         "nix-colors": "nix-colors",
         "nix-on-droid": "nix-on-droid",
         "nix-prelude": "nix-prelude",
+        "nixos-generators": "nixos-generators",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-master": "nixpkgs-master",

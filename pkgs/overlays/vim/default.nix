@@ -37,5 +37,6 @@ in {
         } // buildPluginsFrom flakes [
             "vim-slim"
             "rainbow-delimiters-nvim"
+            "copilot-lualine"
         ]);
 }

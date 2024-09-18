@@ -1,13 +1,13 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
     boot = {
-        tmp.useTmpfs = true;
-        initrd.systemd.enable = true;
+        tmp.useTmpfs = lib.mkDefault true;
+        initrd.systemd.enable = lib.mkDefault true;
     };
 
     system.etc.overlay = {
-        enable = true;
+        enable = lib.mkDefault true;
 
         # mutable = false;
         # TODO: broken by nixpkgs#328926

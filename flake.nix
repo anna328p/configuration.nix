@@ -26,10 +26,11 @@
 
         # android
 
-        nix-on-droid = {
-            url = github:nix-community/nix-on-droid;
-            inputs.nixpkgs.follows = "nixpkgs";
-            inputs.home-manager.follows = "home-manager";
+        nix-on-droid.url = github:nix-community/nix-on-droid;
+        nix-on-droid.inputs = {
+            nixpkgs.follows = "nixpkgs";
+            nixpkgs-docs.follows = "nixpkgs";
+            home-manager.follows = "home-manager";
         };
 
         # modules
@@ -37,6 +38,12 @@
         nixos-hardware.url = flake:nixos-hardware;
         impermanence.url = github:nix-community/impermanence;
         intransience.url = github:anna328p/intransience;
+
+        nixos-generators.url = github:nix-community/nixos-generators;
+        nixos-generators.inputs = {
+            nixpkgs.follows = "nixpkgs";
+            nixlib.follows = "nixpkgs";
+        };
 
         nix-colors.url = github:misterio77/nix-colors;
         nix-colors.inputs.nixpkgs-lib.follows = "nixpkgs";
@@ -46,25 +53,20 @@
 
         qbot.url = github:arch-community/qbot;
 
-        snm = {
-            url = gitlab:simple-nixos-mailserver/nixos-mailserver;
-            inputs = {
-                nixpkgs.follows = "nixpkgs";
-                nixpkgs-24_05.follows = "nixpkgs";
-                flake-compat.follows = "flake-compat";
-            };
+        snm.url = gitlab:simple-nixos-mailserver/nixos-mailserver;
+        snm.inputs = {
+            nixpkgs.follows = "nixpkgs";
+            nixpkgs-24_05.follows = "nixpkgs";
+            flake-compat.follows = "flake-compat";
         };
 
         # packages
 
-        neovim-nightly-overlay = {
-            url = github:nix-community/neovim-nightly-overlay;
-
-            inputs = {
-                nixpkgs.follows = "nixpkgs";
-                flake-parts.follows = "flake-parts";
-                flake-compat.follows = "flake-compat";
-            };
+        neovim-nightly-overlay.url = github:nix-community/neovim-nightly-overlay;
+        neovim-nightly-overlay.inputs = {
+            nixpkgs.follows = "nixpkgs";
+            flake-parts.follows = "flake-parts";
+            flake-compat.follows = "flake-compat";
         };
 
         nil.url = github:oxalica/nil;
@@ -84,6 +86,9 @@
 
         nvim-treesitter.url = github:nvim-treesitter/nvim-treesitter;
         nvim-treesitter.flake = false;
+
+        copilot-lualine.url = github:AndreM222/copilot-lualine;
+        copilot-lualine.flake = false;
 
         easyeffects-presets.url = github:digitalone1/easyeffects-presets;
         easyeffects-presets.flake = false;
@@ -112,9 +117,10 @@
         , nil
         , nix-prelude
         , nix-on-droid
+        , nixos-generators
         , ...
     }@flakes: let
-        localPkgs = import ./pkgs flakes;
+        localPkgs = import ./pkgs { inherit flakes; };
 
         ##
         # Module paths
@@ -150,6 +156,8 @@
                 angelia = systems/angelia;
                 heracles = systems/heracles;
                 iris = systems/iris;
+
+                iso = systems/iso;
             };
         };
 
@@ -260,7 +268,11 @@
                 overlays = [ self.overlays.default ];
             };
         in
-            localPkgs.mkPackageSet pkgs
+            (localPkgs.mkPackageSet pkgs)
+            // {
+                iso-x86_64 = import ./images/iso-x86_64
+                    { inherit pkgs flakes specialArgs; };
+            }
         );
     };
 }

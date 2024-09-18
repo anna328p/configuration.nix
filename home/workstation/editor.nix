@@ -163,11 +163,15 @@
                 (CallFrom (Require "gitsigns") "setup" { })
             ]) { })
 
+            v.copilot-lualine
+
             (luaPlugin v.lualine-nvim (Code [
                 (CallFrom (Require "lualine") "setup" {
                     options = {
                         icons_enabled = false;
                         theme = "base16";
+
+                        sections.lualine_y = [ "copilot" "progress" ];
                     };
                  })
             ]) { })
@@ -268,9 +272,9 @@
                     gemCmd = exe: test: args: [
                         "bash"
                         "-c"
-                        ("bundle exec steep --version"
-                            + " && exec bundle exec steep langserver"
-                            + " || exec steep langserver")
+                        ("bundle exec ${exe} ${test}"
+                            + " && exec bundle exec ${exe} ${args}"
+                            + " || exec ${exe} ${args}")
                     ];
 
                     rubyLS = name: cmd: extra:
@@ -314,6 +318,7 @@
                     single_file_support = true;
                 })
 
+                # make nil-ls a semanticTokensProvider
                 (Call <vim.api.nvim_create_autocmd> [ "LspAttach" {
                     callback = Function ({ args }: [
                         (SetLocal <cid>
@@ -328,6 +333,10 @@
                                     "semanticTokensProvider" ])
                                 null) ])]);
                 } ])
+
+                # code action keybind to alt+enter
+                (Call <vim.keymap.set> [ "n" "<M-CR>"
+                    <vim.lsp.buf.code_action> ])
             ]) { })
 
             (let

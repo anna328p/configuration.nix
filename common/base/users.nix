@@ -43,7 +43,7 @@
         };
 
         users.root = {
-            initialHashedPassword = passwdHash;
+            initialHashedPassword = lib.mkDefault passwdHash;
             openssh.authorizedKeys.keys = [ sshPubKey ];
         };
     };

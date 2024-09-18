@@ -1,6 +1,8 @@
-{ nixpkgs, ... }@flakes:
+{ flakes }:
 
 let
+    inherit (flakes) nixpkgs;
+
     truncateRev = builtins.substring 0 7;
 
     mkFlakeVer = flake: prefix:

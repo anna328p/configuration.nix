@@ -23,6 +23,7 @@
                 ".config/discord"
                 ".config/easyeffects"
                 ".config/keepassxc"
+                ".config/github-copilot"
 
                 ".config/Logseq"
                 ".logseq"
