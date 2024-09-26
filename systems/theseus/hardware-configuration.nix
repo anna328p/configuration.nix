@@ -24,7 +24,7 @@ in {
         nh.common-gpu-amd
     ];
 
-    hardware.amdgpu.opencl = config.misc.buildFull;
+    hardware.amdgpu.opencl.enable = config.misc.buildFull;
 
     fileSystems = let
         btrfsEntry = device: options': {

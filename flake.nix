@@ -158,6 +158,7 @@
                 iris = systems/iris;
 
                 iso = systems/iso;
+                generic = systems/generic;
             };
         };
 
@@ -245,6 +246,9 @@
                 leonardo = [ systems.leonardo ];
                 angelia = [ systems.angelia ];
                 iris = [ systems.iris ];
+
+                generic = [ systems.generic ];
+                generic-small = generic ++ [ common.misc.small ];
             };
         in
             mapAttrValues mkNixosSystem moduleSets;

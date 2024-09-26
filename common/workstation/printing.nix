@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 {
     # PostScript interpreter for printing
@@ -12,7 +12,9 @@
     # CUPS
     # can't be configured more declaratively :(
     services.printing = {
-        enable = true;
+        # CVE-2024-47176, CVE-2024-47076, CVE-2024-47175, and CVE-2024-47177
+        enable = lib.mkForce false;
+
         drivers = let p = pkgs; in [
             p.gutenprint p.gutenprintBin
             p.brlaser
