@@ -23,4 +23,6 @@ final: prev: {
     };
 
     vlc_bd = prev.vlc.override { libbluray = final.libbluray_bd; };
+
+    ffmpeg_bd = prev.ffmpeg-full.override { libbluray = final.libbluray_bd; };
 }

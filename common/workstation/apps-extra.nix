@@ -8,9 +8,11 @@ in {
     in if isMinimal then [
         # Media players
         p.mpv p.vlc
+        p.ffmpeg
     ] else [
         # Media players with Blu-Ray support
         p.mpv_bd p.vlc_bd p.keydb
+        p.ffmpeg_bd
 
         # Media creation
         p.audacity

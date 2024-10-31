@@ -23,7 +23,6 @@
         p.gimp
 
         # Media
-        p.ffmpeg
         p.tremotesf
 
         ## Programming / Software development
