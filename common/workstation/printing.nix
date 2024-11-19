@@ -12,8 +12,7 @@
     # CUPS
     # can't be configured more declaratively :(
     services.printing = {
-        # CVE-2024-47176, CVE-2024-47076, CVE-2024-47175, and CVE-2024-47177
-        enable = lib.mkForce false;
+        enable = true;
 
         drivers = let p = pkgs; in [
             p.gutenprint p.gutenprintBin

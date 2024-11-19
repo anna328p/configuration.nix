@@ -16,7 +16,7 @@
         flake-compat.url = github:edolstra/flake-compat;
         flake-compat.flake = false;
 
-        flake-parts.url = github:hercules-ci/flake-parts;
+        flake-parts.url = flake:flake-parts;
         flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
 
         # home-manager
@@ -89,6 +89,10 @@
 
         copilot-lualine.url = github:AndreM222/copilot-lualine;
         copilot-lualine.flake = false;
+        
+        # TODO remove once nvimdev/guard.nvim#160 merged
+        guard-nvim.url = github:anna328p/guard.nvim;
+        guard-nvim.flake = false;
 
         easyeffects-presets.url = github:digitalone1/easyeffects-presets;
         easyeffects-presets.flake = false;

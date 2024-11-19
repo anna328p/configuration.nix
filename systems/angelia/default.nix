@@ -1,4 +1,4 @@
-{ localModules, ... }:
+{ localModules, lib, ... }:
 
 {
     imports = let

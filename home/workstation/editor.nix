@@ -3,7 +3,12 @@
 {
     home.sessionVariables.VISUAL = "nvim";
 
-    programs.neovim = {
+    programs.neovim = let
+        pylancePath = ../../secrets/pylance.nix;
+
+        pylanceExists = builtins.pathExists pylancePath;
+        pylance = pkgs.callPackage pylancePath { };
+    in {
         enable = true;
         defaultEditor = true;
 
@@ -13,6 +18,7 @@
         extraPackages = let
             p = pkgs;
             n = pkgs.nodePackages;
+
         in [
             p.neovim-ruby-env
             p.ccls
@@ -28,7 +34,7 @@
             p.shellcheck
             p.pyright
             p.ruff
-        ]);
+        ]) ++ lib.optional pylanceExists pylance;
 
         extraLuaConfig = let
             rg = lib.getExe pkgs.ripgrep;
@@ -112,6 +118,15 @@
                 callback = Function ({ }: [
                     (Call <vim.diagnostic.open_float> []) ]);
             }])
+
+
+            # define a textobject to select the entire file
+            (Call <vim.keymap.set> [ [ "x" "o" ] "ae" 
+                ":<C-U>lockmarks normal! ggVG<CR>"
+                { silent = true; }])
+
+            # keybind for lsp formatting
+            (Call <vim.keymap.set> [ [ "n" ] "grq" <vim.lsp.buf.format> ])
         ];
 
         plugins = with L.lua; let
@@ -189,6 +204,8 @@
 
             v.vim-matchup
 
+            v.nvim-treesitter-textobjects
+
             (luaPlugin v.nvim-treesitter.withAllGrammars (Code [
                 (CallFrom (Require "nvim-treesitter.configs") "setup" {
                     highlight.enable = true;
@@ -200,10 +217,26 @@
                         enable_quotes = true;
                         include_match_words = true;
                     };
+
+                    textobjects = {
+                        select = {
+                            enable = true;
+                            lookahead = true;
+
+                            keymaps = {
+                                "iT" = "@type.inner";
+                                "aT" = "@type.outer";
+                            };
+                        };
+                    };
                 })
             ]) {
                 runtime."after/queries/nix/injections.scm".source =
                     ./nvim/nix-injections.scm;
+                runtime."after/queries/python/injections.scm".source =
+                    ./nvim/python-injections.scm;
+                runtime."after/queries/python/textobjects.scm".source =
+                    ./nvim/python-textobjects.scm;
             })
 
             v.playground
@@ -266,6 +299,31 @@
                     (CallFrom (Index <lspconfig> name) "setup" {
                         capabilities = <caps>;
                     }) ]))
+
+
+                (CallFrom (Index <lspconfig> "pyright") "setup" (
+                    if pylanceExists then let
+                        pylanceMagic = builtins.readFile
+                            ../../secrets/pylance-license.json;
+                    in {
+                        cmd = [ "${pylance}/bin/pylance" ];
+
+                        init_options = {
+                            clientVerification = pylanceMagic;
+                        };
+
+                        settings.python.analysis.inlayHints = {
+                            variableTypes = true;
+                            functionReturnTypes = true;
+                            callArgumentNames = true;
+                            pytestParameters = true;
+                        };
+
+                        capabilities = <caps>;
+                    } else {
+                        capabilities = <caps>;
+                    }
+                ))
 
 
                 (let
@@ -333,32 +391,92 @@
                                     "semanticTokensProvider" ])
                                 null) ])]);
                 } ])
-
-                # code action keybind to alt+enter
-                (Call <vim.keymap.set> [ "n" "<M-CR>"
-                    <vim.lsp.buf.code_action> ])
             ]) { })
+
+            v.guard-collection
 
             (let
                 statixConfig = pkgs.mkNamedTOML.generate "statix.toml" {
                     disabled = [ "unquoted_uri" "empty_pattern" ];
                 };
 
-            in luaPlugin v.null-ls-nvim (Code [
-                (SetLocal <null_ls> (Require "null-ls"))
+            in luaPlugin v.guard-nvim (Code [
+                (SetLocal <ft> (Require "guard.filetype"))
+                (SetLocal <lint> (Require "guard.lint"))
 
-                (CallFrom <null_ls> "setup" {
-                    sources = [
-                        <null_ls.builtins.diagnostics.shellcheck>
-                        <null_ls.builtins.code_actions.shellcheck>
-                        <null_ls.builtins.code_actions.statix>
+                (SetLocal <statix_lint> {
+                    cmd = "statix";
+                    args = [ "-c" "${statixConfig}" "-s" "-o" "json" ];
+                    stdin = true;
 
-                        (CallFrom <null_ls.builtins.diagnostics.statix> "with" {
-                            extra_args = [ "--config" "${statixConfig}" ];
-                        })
-                    ];
-                 })
+                    parse = Call <lint.from_json> [ {
+                        source = "statix";
+
+                        get_diagnostics = Function ({ input }: [
+                            (ReturnOne
+                                (Index (Call <vim.json.decode> input) "report"))
+                        ]);
+
+                        attributes = let
+                            dig = keys: Function ({ obj }: [
+                                (ReturnOne (Index' obj keys))
+                            ]);
+                        in {
+                            lnum = dig [ "diagnostics" 0 "at" "from" "line" ];
+                            lnum_end = dig [ "diagnostics" 0 "at" "to" "line" ];
+                            col = dig [ "diagnostics" 0 "at" "from" "column" ];
+                            col_end = dig [ "diagnostics" 0 "at" "to" "column" ];
+                            severity = "severity";
+                            message = dig [ "diagnostics" 0 "message" ];
+                            code = "code";
+                        };
+
+                        severities = {
+                            Warn = <lint.severities.warning>;
+                            Error = <lint.severities.error>;
+                            Hint = <lint.severities.style>;
+                        };
+                    } ];
+                })
+
+                (Chain (Call <ft> [ "nix" ]) [
+                    [ "lint" [ <statix_lint> ] ]
+                ])
+
+                (Chain (Call <ft> [ "sh,bash" ]) [
+                    [ "lint" [ "shellcheck" ] ]
+                ])
+
+                (Chain (Call <ft> [ "python" ]) [
+                    [ "lint" [ "lsp" ] ]
+                    [ "fmt" [ "lsp" ] ]
+                ])
+
+                (CallFrom (Require "guard") "setup" [{
+                    fmt_on_save = false;
+                }])
             ]) { })
+
+            # (let
+            #     statixConfig = pkgs.mkNamedTOML.generate "statix.toml" {
+            #         disabled = [ "unquoted_uri" "empty_pattern" ];
+            #     };
+
+            # in luaPlugin v.null-ls-nvim (Code [
+            #     (SetLocal <null_ls> (Require "null-ls"))
+
+            #     (CallFrom <null_ls> "setup" {
+            #         sources = [
+            #             <null_ls.builtins.diagnostics.shellcheck>
+            #             <null_ls.builtins.code_actions.shellcheck>
+            #             <null_ls.builtins.code_actions.statix>
+
+            #             (CallFrom <null_ls.builtins.diagnostics.statix> "with" {
+            #                 extra_args = [ "--config" "${statixConfig}" ];
+            #             })
+            #         ];
+            #      })
+            # ]) { })
 
             # completions
             v.luasnip v.cmp_luasnip v.cmp-nvim-lua
@@ -559,17 +677,36 @@
 
             v.popup-nvim v.plenary-nvim
 
+            v.telescope-ui-select-nvim
+
             (luaPlugin v.telescope-nvim (Code (let
                 mkMapping = from: to:
                     (Call <vim.keymap.set> [ "n" from to ]);
             in [
-                # telescope mappings
+                (SetLocal <telescope> (Require "telescope"))
                 (SetLocal <tb> (Require "telescope.builtin"))
+                (SetLocal <tt> (Require "telescope.themes"))
 
+                # telescope mappings
                 (mkMapping "<leader>ff" <tb.find_files>)
                 (mkMapping "<leader>fg" <tb.live_grep>)
                 (mkMapping "<leader>fb" <tb.buffers>)
                 (mkMapping "<leader>fh" <tb.help_tags>)
+
+                (CallFrom <telescope> "setup" [ {
+                    defaults = {
+                        layout_config.vertical = { width = 80; height = 24; };
+                    };
+
+                    extensions.ui-select = {
+                        sorting_strategy = "ascending";
+                        layout_strategy = "bottom_pane";
+                        layout_config.height = 8;
+                        border = true;
+                    };
+                } ])
+
+                (CallFrom <telescope> "load_extension" [ "ui-select" ])
             ])) { })
 
             # misc

@@ -94,7 +94,7 @@
     nix.settings = {
         experimental-features = [
             "cgroups" "auto-allocate-uids" "ca-derivations"
-            # "pipe-operators" # TODO: pending nix 2.24
+            "pipe-operators" "git-hashing"
         ];
 
         auto-optimise-store = true;

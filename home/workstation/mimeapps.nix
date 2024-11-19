@@ -1,7 +1,7 @@
-{ local-lib, ... }:
+{ L, ... }:
 
 let
-    inherit (local-lib) unrollArgSequence __;
+    inherit (L) unrollArgSequence __;
     inherit (builtins) isList;
 in {
     xdg.mimeApps.enable = true;

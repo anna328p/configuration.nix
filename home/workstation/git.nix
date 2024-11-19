@@ -12,6 +12,8 @@
                 ".ccls_cache"
                 ".direnv"
             ];
+
+            difftastic.enable = true;
         };
 
         gh = {

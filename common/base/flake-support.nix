@@ -28,7 +28,12 @@
 
         package = pkgs.nixVersions.git;
 
-        registry.nixpkgs.flake = flakes.nixpkgs;
+        # registry.nixpkgs.flake = flakes.nixpkgs;
+        # BUG: nix fails to load the flake if this option is set
+        registry.nixpkgs.flake =
+            lib.removeAttrs
+                flakes.nixpkgs
+                [ "lastModified" ];
 
         nixPath = [
             "nixpkgs=${flakes.nixpkgs}"

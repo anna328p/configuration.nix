@@ -38,5 +38,6 @@ in {
             "vim-slim"
             "rainbow-delimiters-nvim"
             "copilot-lualine"
+            "guard-nvim"
         ]);
 }

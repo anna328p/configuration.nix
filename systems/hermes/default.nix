@@ -15,6 +15,8 @@
     boot = {
         zfs.package = pkgs.zfs_unstable;
 
+        kernelPackages = pkgs.linuxPackages_6_11;
+
         kernelParams = [
             "iwlwifi.swcrypto=0" "bluetooth.disable_ertm=1"
             "pcie_aspm=force"

@@ -42,6 +42,7 @@
         p._7zz
         p.nix-tree
         p.binutils # strings
+        p.difftastic
 
         # Misc
         p.espeak-ng # TTS

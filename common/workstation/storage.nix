@@ -1,7 +1,8 @@
 { lib, config, ... }:
 
 let
-    kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
+    kernelPackages = lib.mkDefault
+        config.boot.zfs.package.latestCompatibleLinuxPackages;
 in {
     boot = {
         inherit kernelPackages;
