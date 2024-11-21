@@ -94,8 +94,6 @@
 
             "b.inexcomp.com" = redirect "boards.inexpensivecomputers.net";
 
-            "nixnest.org" = base "/var/www/nixnest.org" {};
-
             "_" = { root = "/var/www/arachne.ap5.network"; };
         };
 

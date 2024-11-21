@@ -1,10 +1,10 @@
-{ pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
-    networking = rec {
+    networking = {
         enableIPv6 = true;
-        domain = "lan.ap5.network";
-        search = [ domain ];
+        domain = lib.mkDefault "lan.ap5.network";
+        search = [ config.networking.domain ];
     };
 
     services = {
