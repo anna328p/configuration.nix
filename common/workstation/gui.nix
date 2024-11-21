@@ -62,7 +62,7 @@
 
         packages = let p = pkgs; in [
             p.source-code-pro p.source-sans p.source-serif
-            p.noto-fonts p.noto-fonts-cjk p.noto-fonts-emoji-blob-bin
+            p.noto-fonts p.noto-fonts-cjk-sans p.noto-fonts-emoji-blob-bin
             p.liberation_ttf p.open-sans p.corefonts
 
         ] ++ (lib.optionals config.misc.buildFull [

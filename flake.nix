@@ -156,7 +156,7 @@
                 hermes = systems/hermes;
                 theseus = systems/theseus;
 
-                leonardo = systems/leonardo;
+                arachne = systems/arachne;
                 angelia = systems/angelia;
                 heracles = systems/heracles;
                 iris = systems/iris;
@@ -247,7 +247,7 @@
                 theseus-small = theseus ++ [ common.misc.small ];
 
                 heracles = [ systems.heracles ];
-                leonardo = [ systems.leonardo ];
+                arachne = [ systems.arachne ];
                 angelia = [ systems.angelia ];
                 iris = [ systems.iris ];
 

@@ -1,4 +1,4 @@
-{ localModules, lib, ... }:
+{ config, pkgs, lib, localModules, ... }:
 
 {
     imports = let
@@ -12,7 +12,10 @@
         ./networking.nix
 
         ./nginx.nix
-        ./synapse.nix
+        ./mysql.nix
+        ./php.nix
+
+        common.misc.ftp
     ];
 
     nixpkgs.hostPlatform = lib.systems.examples.gnu64;
@@ -20,10 +23,11 @@
     time.timeZone = "Etc/UTC";
 
     networking = {
-        hostName = "angelia";
+        hostName = "arachne";
         domain = "oci.ap5.network";
+
         firewall.allowedTCPPorts = [ 80 443 ];
     };
 
-    system.stateVersion = "20.03";
+    system.stateVersion = "19.09";
 }

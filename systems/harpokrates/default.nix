@@ -17,16 +17,8 @@
     };
 
     networking = {
-        hostName = "leonardo";
-
-        firewall = {
-            # vsftpd, nginx
-            allowedTCPPorts = [ 21 80 443 4567 ];
-
-            # vsftpd
-            allowedTCPPortRanges = [ { from = 51000; to = 51999; } ];
-        };
+        hostName = "harpokrates";
     };
 
-    system.stateVersion = "19.09";
+    system.stateVersion = "24.11";
 }

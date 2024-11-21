@@ -39,7 +39,7 @@
         #   settings = {
         #       bridge = {
         #           domain = "ap5.network";
-        #           homeserverUrl = "https://synapse.angelia.ap5.network";
+        #           homeserverUrl = "https://synapse.srv.ap5.network";
         #       };
         #   };
         # };

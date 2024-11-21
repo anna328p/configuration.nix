@@ -9,46 +9,18 @@
         forwardAgent = true;
 
         matchBlocks = let
-            inherit (lib) flip genAttrs;
-
             mkServerBlocks = domain:
-                (flip genAttrs) (name: {
+                (lib.flip lib.genAttrs) (name: {
                     user = config.home.username;
                     hostname = "${name}.${domain}";
                 });
-
-            serverNames = [
-                "leonardo" "angelia" "iris" "heracles" "cyamites"
-                "theseus"
-            ];
-
-        in (mkServerBlocks "dk0.us" serverNames) // {
-            "github" = {
-                user = "git";
-                hostname = "github.com";
+        in
+            (mkServerBlocks "oci.ap5.network" [ "arachne" "angelia" "heracles" ]) //
+            (mkServerBlocks "gcloud.ap5.network" [ "iris" ]) //
+            (mkServerBlocks "zerotier.ap5.network" [ "theseus" ]) //
+            {
+                "github" = { user = "git"; hostname = "github.com"; };
+                "gitlab" = { user = "git"; hostname = "gitlab.com"; };
             };
-
-            "gitlab" = {
-                user = "git";
-                hostname = "gitlab.com";
-                identityFile = "~/.ssh/id_rsa";
-            };
-
-            "ews" = {
-                user = "anna10";
-                hostname = "linux.ews.illinois.edu";
-            };
-
-            "uiweb" = {
-                user = "anna10";
-                hostname = "anna10.web.illinois.edu";
-            };
-
-            "ghd" = {
-                user = "git";
-                hostname = "github-dev.cs.illinois.edu";
-                identityFile = "~/.ssh/id_ghd";
-            };
-        };
     };
 }

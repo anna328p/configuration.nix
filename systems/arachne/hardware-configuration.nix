@@ -6,6 +6,7 @@
             device = "/dev/sda";
             efiSupport = true;
         };
+
         efi = {
             efiSysMountPoint = "/boot/efi";
             canTouchEfiVariables = false;

@@ -14,6 +14,8 @@
 
     nixpkgs.hostPlatform = lib.systems.examples.aarch64-multiplatform;
 
+    time.timeZone = "Etc/UTC";
+
     networking = {
         hostName = "heracles";
 
