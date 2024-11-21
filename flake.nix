@@ -156,6 +156,8 @@
                 hermes = systems/hermes;
                 theseus = systems/theseus;
 
+                hephaistos = systems/hephaistos;
+
                 arachne = systems/arachne;
                 angelia = systems/angelia;
                 heracles = systems/heracles;
@@ -245,6 +247,8 @@
 
                 theseus = [ systems.theseus ];
                 theseus-small = theseus ++ [ common.misc.small ];
+
+                hephaistos = [ systems.hephaistos ];
 
                 heracles = [ systems.heracles ];
                 arachne = [ systems.arachne ];
