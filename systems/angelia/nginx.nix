@@ -50,8 +50,6 @@
                     proxyPass = "http://[::1]:8008";
                 };
             };
-
-            "element.ap5.network" = base pkgs.element-web { };
         });
 
         appendHttpConfig = ''

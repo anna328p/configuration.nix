@@ -36,5 +36,5 @@
         ];
     };
 
-    services.udev.packages = [ pkgs.gnome.gnome-settings-daemon ];
+    services.udev.packages = [ pkgs.gnome-settings-daemon ];
 }

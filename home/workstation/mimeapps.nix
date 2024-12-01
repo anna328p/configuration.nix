@@ -23,7 +23,7 @@ in {
         "image/jpeg" "image/png" "image/jxl"
         "image/webp" "image/heic" "image/avif"
         "image/svg+xml"
-            [ "org.gnome.eog.desktop" ]
+            [ "org.gnome.Loupe.desktop" ]
 
         "x-scheme-handler/sms" "x-scheme-handler/tel"
             [ "org.gnome.Shell.Extensions.GSConnect.desktop;" ]

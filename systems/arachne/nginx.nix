@@ -89,6 +89,8 @@
                 "^~ /data".extraConfig = "deny all;";
             };
 
+            "element.apps.ap5.network" = base pkgs.element-web { };
+
             "boards.inexpensivecomputers.net" =
                 php "/var/www/boards.inexpensivecomputers.net" {};
 
