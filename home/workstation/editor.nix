@@ -210,7 +210,7 @@
                 (CallFrom (Require "nvim-treesitter.configs") "setup" {
                     highlight.enable = true;
                     indent.enable = true;
-                    endwise.enable = true;
+                    endwise.enable = false; # TODO RRethy/nvim-treesitter-endwise/pull/42
 
                     matchup = {
                         enable = true;
