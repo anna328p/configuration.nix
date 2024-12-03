@@ -11,6 +11,8 @@
         ./hardware-configuration.nix
         ./qbot.nix
         ./vpn.nix
+        ./nginx.nix
+        ./pds.nix
     ];
 
     nixpkgs.hostPlatform = lib.systems.examples.aarch64-multiplatform;

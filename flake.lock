@@ -528,11 +528,11 @@
         "systems": "systems_2"
       },
       "locked": {
-        "lastModified": 1730135826,
-        "narHash": "sha256-/f+uvZgg+5z9K3hsjvjnG1vAIkTnwOn89pc+dTb5OVs=",
+        "lastModified": 1733173960,
+        "narHash": "sha256-m7tMD/vrAi17vtRakjBHIyvVXsXkuGNz6YVEAe6DY5o=",
         "owner": "anna328p",
         "repo": "nix-prelude",
-        "rev": "bedc10ea318068690a6ce05f63d5d03765d48a76",
+        "rev": "e1cf55026bd0185e77a39c4c81113051ac126305",
         "type": "github"
       },
       "original": {

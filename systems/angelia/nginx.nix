@@ -1,60 +1,37 @@
-{ pkgs, ... }:
+{ localModules, ... }:
 
 {
-    services.nginx = {
-        enable = true;
-        # Use recommended settings
-        recommendedGzipSettings = true;
-        recommendedOptimisation = true;
-        recommendedProxySettings = true;
-        recommendedTlsSettings = true;
+    imports = [
+        localModules.common.nginx-base
+    ];
 
-        # Only allow PFS-enabled ciphers with AES256
-        sslCiphers = "AES256+EECDH:AES256+EDH:!aNULL";
+    services.nginx.virtualHosts = {
+        synapse_api = {
+            serverName = "synapse.srv.ap5.network";
 
-        virtualHosts = (let
-            base = root': locations: {
-                inherit locations;
-                root = root';
-                forceSSL = true;
-                enableACME = true;
-                http2 = true;
+            enableACME = true;
+            forceSSL = true;
+
+            locations."/".extraConfig = ''
+                return 404;
+            '';
+
+            locations."/_matrix" = {
+                proxyPass = "http://[::1]:8008";
             };
+        };
 
-            redirect = dest: {
-                enableACME = true;
-                forceSSL = true;
-                globalRedirect = dest;
+        synapse_federation = {
+            serverName = "synapse.srv.ap5.network";
+            useACMEHost = "synapse.srv.ap5.network";
+
+            onlySSL = true;
+
+            listen = [ { addr = "0.0.0.0"; port = 8448; ssl = true; } ];
+
+            locations."/" = {
+                proxyPass = "http://[::1]:8008";
             };
-        in {
-            "synapse.srv.ap5.network" = {
-                enableACME = true;
-                forceSSL = true;
-
-                locations."/".extraConfig = ''
-                    return 404;
-                '';
-
-                locations."/_matrix" = {
-                    proxyPass = "http://[::1]:8008";
-                };
-            };
-
-            " synapse.srv.ap5.network" = {
-                useACMEHost = "synapse.srv.ap5.network";
-                onlySSL = true;
-
-                listen = [ { addr = "0.0.0.0"; port = 8448; ssl = true; } ];
-
-                locations."/" = {
-                    proxyPass = "http://[::1]:8008";
-                };
-            };
-        });
-
-        appendHttpConfig = ''
-            error_log stderr;
-            access_log syslog:server=unix:/dev/log combined;
-        '';
+        };
     };
 }
