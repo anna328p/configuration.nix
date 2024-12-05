@@ -331,7 +331,7 @@
     "keydb": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-8G1LysNk9yZ0kn1HZHV03OHASmxNjoAr2oW//tU93WM=",
+        "narHash": "sha256-rhQ73Gq1++e0Fd7dKe6HkOuc3iolXqo1jJxzzS4l54o=",
         "type": "file",
         "url": "https://github.com/anna328p/mirror/releases/latest/download/keydb_eng.zip"
       },

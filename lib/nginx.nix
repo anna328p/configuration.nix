@@ -1,7 +1,7 @@
 { ... }:
 
 {
-    exports = { };
+    exports = self: { };
 
     base = root: locations: {
         inherit root locations;

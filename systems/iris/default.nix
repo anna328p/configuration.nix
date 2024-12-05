@@ -9,9 +9,12 @@
         common.virtual
 
         ./hardware-configuration.nix
-        ./networking.nix # generated at runtime by nixos-infect
+        ./networking.nix
         ./mail.nix
+        ./vpn.nix
     ];
+
+    time.timeZone = "Etc/UTC";
 
     nixpkgs.hostPlatform = lib.systems.examples.gnu64;
 
