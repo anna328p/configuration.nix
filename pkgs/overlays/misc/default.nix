@@ -60,6 +60,7 @@ in {
 
     calibre = prev.calibre.overrideAttrs (oa: {
         buildInputs = oa.buildInputs ++ [ final.python3Packages.pycryptodome ];
+        doCheck = false;
     });
 
     mkNamedTOML = final.formats.json {} // {

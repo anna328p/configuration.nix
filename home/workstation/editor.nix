@@ -326,27 +326,27 @@
                 ))
 
 
-                (let
-                    gemCmd = exe: test: args: [
-                        "bash"
-                        "-c"
-                        ("bundle exec ${exe} ${test}"
-                            + " && exec bundle exec ${exe} ${args}"
-                            + " || exec ${exe} ${args}")
-                    ];
+                # (let
+                #     gemCmd = exe: test: args: [
+                #         "bash"
+                #         "-c"
+                #         ("bundle exec ${exe} ${test}"
+                #             + " && exec bundle exec ${exe} ${args}"
+                #             + " || exec ${exe} ${args}")
+                #     ];
 
-                    rubyLS = name: cmd: extra:
-                        CallFrom (Index <lspconfig> name) "setup" {
-                            capabilities = <caps>;
-                            inherit cmd;
-                        } // extra;
-                in
-                    Paste [
-                        (rubyLS "steep"
-                            (gemCmd "steep" "--version" "langserver") { })
+                #     rubyLS = name: cmd: extra:
+                #         CallFrom (Index <lspconfig> name) "setup" {
+                #             capabilities = <caps>;
+                #             inherit cmd;
+                #         } // extra;
+                # in
+                #     Paste [
+                #         (rubyLS "steep"
+                #             (gemCmd "steep" "--version" "langserver") { })
 
-                        (rubyLS "typeprof"
-                            (gemCmd "typeprof" "--version" "--lsp --stdio") { }) ])
+                #         (rubyLS "typeprof"
+                #             (gemCmd "typeprof" "--version" "--lsp --stdio") { }) ])
 
 
                 (Call <lspconfig.nil_ls.setup> {

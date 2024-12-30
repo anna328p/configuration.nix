@@ -56,7 +56,7 @@
         snm.url = gitlab:simple-nixos-mailserver/nixos-mailserver;
         snm.inputs = {
             nixpkgs.follows = "nixpkgs";
-            nixpkgs-24_05.follows = "nixpkgs";
+            nixpkgs-24_11.follows = "nixpkgs";
             flake-compat.follows = "flake-compat";
         };
 

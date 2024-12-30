@@ -21,6 +21,8 @@
                 "gsconnect@andyholmes.github.io"
                 "display-brightness-ddcutil@themightydeity.github.com"
                 "user-theme@gnome-shell-extensions.gcampax.github.com"
+                "blur-my-shell@aunetx"
+                "transmission-daemon-ng@glerro.pm.me"
             ];
         };
 

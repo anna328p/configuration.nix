@@ -8,7 +8,7 @@
         common.workstation
         common.misc.amd
 
-        flakes.nixos-hardware.nixosModules.lenovo-thinkpad-t14-amd-gen1
+        flakes.nixos-hardware.nixosModules.lenovo-thinkpad-t14-amd-gen5
         ./disks.nix
     ];
 
@@ -18,8 +18,11 @@
         kernelPackages = pkgs.linuxPackages_6_11;
 
         kernelParams = [
-            "iwlwifi.swcrypto=0" "bluetooth.disable_ertm=1"
+            # for power management
             "pcie_aspm=force"
+
+            # disable PSR2 Selective Updates due to visual glitches
+            "amdgpu.dcdebugmask=0x200"
         ];
 
         plymouth.enable = lib.mkForce false;
@@ -36,8 +39,21 @@
 
     time.timeZone = "America/Chicago";
 
+    # hardware support
+
+    # run electron apps under wayland for hidpi support
+    environment.variables.NIXOS_OZONE_WL = "1";
+
+    # save power
     hardware.bluetooth.powerOnBoot = false;
 
+    # nfc
+    services.neard.enable = true;
+
+    # fingerprint reader
+    services.fprintd.enable = true;
+
+    # power saving
     powerManagement = {
         enable = true;
         powertop.enable = true;
@@ -45,11 +61,28 @@
         cpuFreqGovernor = "schedutil";
     };
 
-    services.postgresql.enable = true;
+    environment.systemPackages = [ pkgs.powertop ];
+
+    services.postgresql = {
+        enable = true;
+
+        ensureUsers = [
+            {
+                name = "anna";
+                ensureClauses = {
+                    login = true;
+                    superuser = true;
+                };
+            }
+        ];
+    };
+
+    intransience.datastores.system.byPath."/var/lib".dirs = [
+        "fprint"
+        "postgresql"
+    ];
 
     home-manager.users.anna.imports = [ ./home ];
 
-    environment.systemPackages = [ pkgs.powertop ];
-
-    system.stateVersion = "22.05";
+    system.stateVersion = "24.11";
 }

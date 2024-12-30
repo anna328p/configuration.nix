@@ -11,6 +11,8 @@
         ./disks.nix
 
         common.misc.ftp
+
+        ./freeipa.nix
     ];
 
     nixpkgs.hostPlatform = lib.systems.examples.gnu64;

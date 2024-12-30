@@ -9,6 +9,7 @@ final: prev: let
         buildPlugin {
             inherit name;
             src = sources.${name};
+            doCheck = false;
         };
 
     buildPluginsFrom = sources: names:

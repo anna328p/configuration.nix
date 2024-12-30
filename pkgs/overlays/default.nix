@@ -13,10 +13,11 @@ let
     composeOverlays = foldl composeExtensions init;
 
 
-    replaceBuildInputs = oldInputs: toRemove: toAdd: let
-        subtracted = subtractLists toRemove oldInputs;
-    in
-        subtracted ++ toAdd;
+    replaceBuildInputs = oldInputs: toRemove: toAdd:
+        let
+            subtracted = subtractLists toRemove oldInputs;
+        in
+            subtracted ++ toAdd;
 
 
     importArgs = {

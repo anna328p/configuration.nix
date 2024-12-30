@@ -43,6 +43,7 @@
         e.compiz-windows-effect
         e.appindicator
         e.transmission-daemon-indicator-ng
+        e.blur-my-shell
     ];
 
     environment.variables = {
