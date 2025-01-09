@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, config, ... }:
 
 {
     programs.tmux = {
@@ -9,6 +9,7 @@
         historyLimit = 300000;
         newSession = true;
         sensibleOnTop = true;
+        focusEvents = true;
 
         plugins = let
             t = pkgs.tmuxPlugins;
@@ -19,12 +20,20 @@
         terminal = "tmux-256color";
 
         extraConfig = ''
-            setw -g alternate-screen on
-            set-option -ga terminal-overrides ",xterm-256color:RGB"
-            set-option -ga status-style fg=black,bg=blue
-            set-option -ga clock-mode-colour white
             bind-key -n C-j detach
+
+            set-option -ga terminal-features \
+                ",ghostty:clipboard:cstyle:extkeys:focus:hyperlinks:margins:osc7:overline:RGB:strikethrough:sync:usstyle:"
+
+            set-option -ga terminal-features ",xterm-256color:hyperlinks:RGB:"
+
             set -g mouse on
-        '';
+            set -g set-titles on
+            setw -g alternate-screen on
+            set-option -ga clock-mode-colour white
+
+        '' + (lib.optionalString (config.misc.buildType == "base") ''
+            set-option -g status-style fg=black,bg=blue
+        '');
     };
 }

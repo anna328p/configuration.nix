@@ -72,6 +72,13 @@
         nil.url = github:oxalica/nil;
         nil.inputs.flake-utils.follows = "flake-utils";
 
+        ghostty.url = github:ghostty-org/ghostty/tip;
+        ghostty.inputs = {
+            flake-compat.follows = "flake-compat";
+            nixpkgs-stable.follows = "nixpkgs";
+            nixpkgs-unstable.follows = "nixpkgs";
+        };
+
         keydb = {
             url = "https://github.com/anna328p/mirror/releases/latest/download/keydb_eng.zip";
             type = "file";

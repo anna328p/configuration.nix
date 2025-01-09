@@ -3,11 +3,14 @@
 {
     imports = [
         flakes.nix-colors.homeManagerModule
+        
+        ./misc.nix
 
         ./shell.nix
         ./ssh.nix
         ./git.nix
         ./editor.nix
+        ./tmux.nix
 
         ./programs.nix
 
@@ -19,19 +22,5 @@
         ./audio.nix
     ];
 
-    home = {
-        sessionVariables = {
-            NIX_AUTO_RUN = 1;
-            MOZ_USE_XINPUT2 = 1;
-        };
-    };
-
-    xdg.enable = true;
-
-    xdg.userDirs = {
-        enable = true;
-        createDirectories = true;
-    };
-
-    manual.manpages.enable = lib.mkForce true;
+    misc.buildType = "workstation";
 }

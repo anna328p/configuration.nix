@@ -1,10 +1,12 @@
 { flakes, mkFlakeVer, ... }:
 
 final: prev: let
-    rubyVer = "3_3";
+    rubyVer = "3_4";
 in {
     ruby_latest = final."ruby_${rubyVer}";
     rubyPackages_latest = final."rubyPackages_${rubyVer}";
+
+    ghostty = flakes.ghostty.packages.${final.system}.ghostty;
 
     f3d = prev.f3d.overrideAttrs (oa: {
         buildInputs = let

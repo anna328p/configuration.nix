@@ -2,7 +2,7 @@
 
 {
     colorScheme = {
-        slug = "witchhazel-hypercolor";
+        slug = "witch-hazel-hypercolor";
         name = "Witch Hazel Hypercolor";
         author = "Thea Flowers (https://thea.codes)";
         variant = "dark";

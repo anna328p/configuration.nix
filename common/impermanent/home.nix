@@ -32,6 +32,9 @@
                 ".mozilla/firefox"
                 ".mozilla/native-messaging-hosts"
 
+                ".steam"
+                ".local/share/Steam"
+
                 "Documents"
                 "Music"
                 "Pictures"

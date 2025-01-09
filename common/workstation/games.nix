@@ -7,6 +7,7 @@
     ] ++ (lib.optionals config.misc.buildFull [
         # Steam
         p.protontricks
+        p.adwsteamgtk
 
         # Meta Quest app store
         p.sidequest

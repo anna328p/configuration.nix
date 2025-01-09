@@ -6,25 +6,22 @@ let
     scheme = config.colorScheme;
     formatted = colors.prefixHash scheme.palette;
 
-    defs = let c = formatted; in rec {
-        accent_color    = c.base0C;
-        accent_bg_color = accent_color;
+    c = formatted;
+
+    defs = rec {
+        accent_bg_color = c.base0C;
         accent_fg_color = c.base05;
 
-        destructive_color    = c.base08;
-        destructive_bg_color = destructive_color;
+        destructive_bg_color = c.base08;
         destructive_fg_color = c.base05;
 
-        success_color    = c.base0B;
-        success_bg_color = success_color;
+        success_bg_color = c.base0B;
         success_fg_color = c.base05;
 
-        warning_color    = c.base0A;
-        warning_bg_color = warning_color;
+        warning_bg_color = c.base0A;
         warning_fg_color = c.base05;
 
-        error_color    = destructive_color;
-        error_bg_color = error_color;
+        error_bg_color = destructive_bg_color;
         error_fg_color = c.base05;
 
         window_bg_color = c.base00;
@@ -53,7 +50,13 @@ let
         popover_fg_color = c.base05;
     };
 
-    css = colors.genDecls (k: v: "@define-color ${k} ${v};") defs;
+    cssColors = colors.genDecls (k: v: "@define-color ${k} ${v};") defs;
+
+    css = /* css */ ''
+        ${cssColors}
+
+        .nautilus-window.background { background-color: ${c.base00} !important; }
+    '';
 in {
     xdg.configFile = {
         "gtk-3.0/gtk.css".text = css;

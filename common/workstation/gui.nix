@@ -17,11 +17,14 @@
 
     environment.systemPackages = let
         p = pkgs;
-        g = pkgs.gnome;
         e = pkgs.gnomeExtensions;
     in [
+        # Terminal
+        p.ghostty
+
         # Clipboard management
-        p.xclip
+        p.wl-clipboard
+        p.wl-clipboard-x11
 
         # Automation
         p.ydotool
@@ -90,8 +93,9 @@
                             favorite-apps=[ ${genList names} ]
                         '';
                     in overrideList [
-                        "firefox-developer-edition" "discord" "org.telegram.desktop"
-                        "org.gnome.Nautilus" "org.gnome.Terminal"
+                        "firefox-developer-edition" "discord"
+                        "org.telegram.desktop"
+                        "org.gnome.Nautilus" "ghostty"
                         "logseq"
                     ];
                 };
@@ -142,5 +146,10 @@
     # Allow using extensions.gnome.org in firefox
     nixpkgs.config = {
         firefox.enableGnomeExtensions = true;
+    };
+
+    xdg.terminal-exec = {
+        enable = true;
+        settings.default = [ "Alacritty.desktop" ];
     };
 }

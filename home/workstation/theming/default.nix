@@ -16,7 +16,7 @@ in {
     ];
 
     # for testing other themes:
-     #colorScheme = flakes.nix-colors.colorSchemes.solarized-light;
+    # colorScheme = flakes.nix-colors.colorSchemes.solarized-light;
 
     fonts.fontconfig.enable = true;
 
