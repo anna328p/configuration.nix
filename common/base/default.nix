@@ -70,7 +70,7 @@
         };
     };
 
-    system.disableInstallerTools = true;
+    system.disableInstallerTools = lib.mkDefault true;
 
     programs = {
         # Shell

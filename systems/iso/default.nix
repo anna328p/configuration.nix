@@ -17,5 +17,7 @@
     boot.initrd.systemd.enable = false;
     system.etc.overlay.enable = false;
 
+    system.disableInstallerTools = false;
+
     time.timeZone = "Etc/UTC";
 }
