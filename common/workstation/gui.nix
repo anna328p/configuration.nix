@@ -47,6 +47,7 @@
         e.appindicator
         e.transmission-daemon-indicator-ng
         e.blur-my-shell
+        e.battery-time-2
     ];
 
     environment.variables = {
@@ -95,7 +96,7 @@
                     in overrideList [
                         "firefox-developer-edition" "discord"
                         "org.telegram.desktop"
-                        "org.gnome.Nautilus" "ghostty"
+                        "org.gnome.Nautilus" "com.mitchellh.ghostty"
                         "logseq"
                     ];
                 };
@@ -139,8 +140,6 @@
 
         # Email client
         geary.enable = true;
-
-        gnome-terminal.enable = true;
     };
 
     # Allow using extensions.gnome.org in firefox
@@ -150,6 +149,6 @@
 
     xdg.terminal-exec = {
         enable = true;
-        settings.default = [ "Alacritty.desktop" ];
+        settings.default = [ "com.mitchellh.ghostty.desktop" ];
     };
 }

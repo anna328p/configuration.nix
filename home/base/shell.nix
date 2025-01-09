@@ -2,7 +2,8 @@
 
 {
     home.shellAliases = {
-        ls = "eza";
+        ls = "eza --hyperlink -F";
+        ll = "ls -l --smart-group";
 
         ":w" = "sync";
         ":q" = "exit";
@@ -47,9 +48,17 @@
             autoload zargs
             
             setopt GLOB_DOTS
+            unsetopt INTERACTIVE_COMMENTS
+
             for i in util escesc autopushd; do
                 source ${files/zsh/snippets}/$i.zsh
             done
+
+            export ZLE_RPROMPT_INDENT=0
+
+            source ~/.config/zsh/.p10k.zsh
+
+            unalias ll
         '';
 
         prezto = {
@@ -57,19 +66,19 @@
 
             pmodules = [
                 "environment"
+                "helper"
+                "utility"
                 "editor"
                 "history"
                 "directory"
                 "spectrum"
-                "helper"
-                "utility"
                 "completion"
                 "history-substring-search"
             ];
 
             editor.dotExpansion = true;
-
             utility.safeOps = false;
+            terminal.autoTitle = true;
         };
     };
 

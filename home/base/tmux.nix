@@ -23,7 +23,7 @@
             bind-key -n C-j detach
 
             set-option -ga terminal-features \
-                ",ghostty:clipboard:cstyle:extkeys:focus:hyperlinks:margins:osc7:overline:RGB:strikethrough:sync:usstyle:"
+                ",*ghostty:clipboard:cstyle:extkeys:focus:hyperlinks:margins:osc7:overline:RGB:strikethrough:sync:usstyle:"
 
             set-option -ga terminal-features ",xterm-256color:hyperlinks:RGB:"
 

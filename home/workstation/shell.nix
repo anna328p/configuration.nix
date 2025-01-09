@@ -1,6 +1,9 @@
-{ ... }:
+{ pkgs, config, lib, L, ... }:
 
-{
+let
+    scheme = config.colorScheme;
+    colorsPrefixed = lib.mapAttrs (_: v: "#${v}") scheme.palette;
+in {
     home.shellAliases = let
         t = " --show-trace";
         k = " --keep-going";
@@ -36,6 +39,16 @@
             w = "$HOME/work";
             en = "/etc/nixos";
         };
+
+        initExtraFirst = let
+            base16Config = let
+                fn = name: value: "zstyle :base16:colors ${name} '${value}'";
+            in
+                L.concatLines (L.mapSetEntries fn colorsPrefixed);
+        in ''
+            ${base16Config}
+            zstyle :base16 available true
+        '';
 
         prezto = {
             pmodules = [

@@ -17,9 +17,9 @@
     nixpkgs.config.pulseaudio = true;
 
     # ...but disable PulseAudio...
-    hardware.pulseaudio.enable = false;
+    services.pulseaudio.enable = false;
 
-    # ...and use PipeWire instead!
+    # ...and use PipeWire instead
     services.pipewire = {
         enable = true;
 

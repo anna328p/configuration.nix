@@ -23,6 +23,7 @@
                 "user-theme@gnome-shell-extensions.gcampax.github.com"
                 "blur-my-shell@aunetx"
                 "transmission-daemon-ng@glerro.pm.me"
+                "batterytime@typeof.pw"
             ];
         };
 
