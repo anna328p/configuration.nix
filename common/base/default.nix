@@ -46,6 +46,7 @@
 
             # Misc
             p.strace
+            p.xxd
 
             (p.nixos-rebuild.override { nix = config.nix.package.out; })
         ];
