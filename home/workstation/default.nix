@@ -10,7 +10,6 @@
         ./ssh.nix
         ./git.nix
         ./editor.nix
-        ./tmux.nix
 
         ./programs.nix
 

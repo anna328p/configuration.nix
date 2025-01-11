@@ -13,6 +13,7 @@ in {
         ./terminal.nix
         ./firefox.nix
         ./discord.nix
+        ./tmux.nix
     ];
 
     # for testing other themes:
