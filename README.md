@@ -10,7 +10,7 @@ Named after semantically relevant Greek mythological figures.
 
 ### `hermes`
 
-Workstation laptop, currently a Lenovo T14 (1st generation, AMD).
+Workstation laptop, currently a Lenovo P14s (AMD, 5th generation).
 
 Named after the god of travel and mobility.
 

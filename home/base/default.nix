@@ -12,4 +12,6 @@
     home.stateVersion = "22.05";
 
     manual.manpages.enable = lib.mkDefault false;
+
+    programs.man.enable = lib.mkDefault false;
 }

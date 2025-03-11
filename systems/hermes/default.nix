@@ -13,16 +13,19 @@
     ];
 
     boot = {
-        zfs.package = pkgs.zfs_unstable;
+        zfs.package = pkgs.zfsUnstableOld;
 
-        kernelPackages = pkgs.linuxPackages_6_11;
+        kernelPackages = pkgs.linux610;
 
         kernelParams = [
             # for power management
             "pcie_aspm=force"
 
             # disable PSR2 Selective Updates due to visual glitches
-            "amdgpu.dcdebugmask=0x200"
+            # "amdgpu.dcdebugmask=0x200"
+
+            # disable PSR-SU and PSR due to freezing
+            "amdgpu.dcdebugmask=0x410"
         ];
 
         plymouth.enable = lib.mkForce false;
@@ -43,6 +46,9 @@
 
     # run electron apps under wayland for hidpi support
     environment.variables.NIXOS_OZONE_WL = "1";
+
+    # disable font hinting
+    fonts.fontconfig.hinting.enable = false;
 
     # save power
     hardware.bluetooth.powerOnBoot = false;
@@ -77,9 +83,18 @@
         ];
     };
 
+    services.ollama = {
+        enable = true;
+        package = pkgs.ollama-rocm;
+        acceleration = "rocm";
+        rocmOverrideGfx = "11.0.2";
+    };
+
     intransience.datastores.system.byPath."/var/lib".dirs = [
         "fprint"
         "postgresql"
+
+        { path = "private/ollama"; parentDirectory.mode = "0700"; }
     ];
 
     home-manager.users.anna.imports = [ ./home ];

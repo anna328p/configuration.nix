@@ -9,6 +9,7 @@
 
             files = [
                 "machine-id"
+                "zfs/zpool.cache"
             ];
         };
 
@@ -25,10 +26,9 @@
             "libvirt"
             "mopidy"
             "NetworkManager"
+            "nixos"
+            "systemd"
             "zerotier-one"
-
-            "systemd/coredump"
-            "systemd/backlight"
         ];
     };
 

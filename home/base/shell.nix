@@ -37,6 +37,8 @@
 
         initExtraFirst = ''
             source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
+
+            export LESS='-g -i -M -S -w -z-4'
         '';
 
         initExtra = ''

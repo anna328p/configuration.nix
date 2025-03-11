@@ -18,5 +18,7 @@
             enable = config.misc.buildFull;
             binfmt = config.misc.buildFull;
         };
+
+        nix-ld.enable = true;
     };
 }

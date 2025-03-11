@@ -10,14 +10,31 @@
     ];
 
     # CUPS
-    # can't be configured more declaratively :(
     services.printing = {
         enable = true;
 
         drivers = let p = pkgs; in [
             p.gutenprint p.gutenprintBin
             p.brlaser
+            p.canon-cups-ufr2
         ];
+
+        logLevel = "debug";
+    };
+
+    hardware.printers = {
+        ensurePrinters = [
+            {
+                name = "Canon_MF753Cdw";
+                description = "Canon MF753Cdw";
+
+                model = "CNRCUPSMF750CZS.ppd";
+
+                deviceUri = "http://mf753cdw.lan.ap5.network/ipp";
+            }
+        ];
+
+        ensureDefaultPrinter = "Canon_MF753Cdw";
     };
 
     # Scanning

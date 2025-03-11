@@ -12,18 +12,22 @@
                 { path = ".local/share/keyrings"; mode = "0700"; }
 
                 ".local/share/direnv"
-                ".local/share/nvim/site"
+                ".local/share/Google"
                 ".local/share/icc"
+                ".local/share/nvim/site"
                 ".local/share/TelegramDesktop"
 
                 ".local/share/wine"
                 ".local/share/Image-Line"
 
-                ".config/syncthing"
                 ".config/discord"
                 ".config/easyeffects"
-                ".config/keepassxc"
                 ".config/github-copilot"
+                ".config/goa-1.0"
+                ".config/Google"
+                ".config/ideavim"
+                ".config/keepassxc"
+                ".config/syncthing"
 
                 ".config/Logseq"
                 ".logseq"

@@ -9,5 +9,10 @@
             "variable-refresh-rate"
             "xwayland-native-scaling"
         ];
+
+        "org/gnome/desktop/interface" = {
+            font-antialiasing = "grayscale";
+            font-hinting = "none";
+        };
     };
 }

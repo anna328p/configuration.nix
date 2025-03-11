@@ -1,4 +1,4 @@
-{ config, pkgs, flakes, local-lib, ... }:
+{ config, pkgs, flakes, lib, local-lib, ... }:
 
 {
     dconf.settings = let
@@ -16,8 +16,8 @@
         byVariant' = local-lib.colors.byVariant scheme.variant;
     in {
         "org/gnome/desktop/interface" = {
-            font-antialiasing = "rgba";
-            font-hinting = "slight";
+            font-antialiasing = lib.mkDefault "rgba";
+            font-hinting = lib.mkDefault "slight";
 
             color-scheme = byVariant' "default" "prefer-dark";
 

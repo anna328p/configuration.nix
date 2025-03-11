@@ -6,6 +6,8 @@
 
         nixpkgs.url = flake:nixpkgs/nixos-unstable-small;
         nixpkgs-master.url = flake:nixpkgs/master;
+        
+        nixpkgs-linux610.url = flake:nixpkgs/dd50f99e26d3;
 
         # libraries
 

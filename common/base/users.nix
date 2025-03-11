@@ -2,7 +2,7 @@
 
 {
     imports = [
-        flakes.home-manager.nixosModule
+        flakes.home-manager.nixosModules.default
     ];
 
     # systemd.sysusers.enable = true;

@@ -2,9 +2,14 @@
 
 final: prev: let
     rubyVer = "3_4";
+
+    oldPkgs = flakes.nixpkgs-linux610.legacyPackages.${final.system};
 in {
     ruby_latest = final."ruby_${rubyVer}";
     rubyPackages_latest = final."rubyPackages_${rubyVer}";
+
+    linux610 = oldPkgs.linuxPackages_6_10;
+    zfsUnstableOld = oldPkgs.zfs_unstable;
 
     ghostty = flakes.ghostty.packages.${final.system}.ghostty;
 
@@ -58,11 +63,13 @@ in {
         gtkSupport = true;
         vaSupport = true;
         waylandSupport = true;
+        embedInstallers = true;
     };
 
     calibre = prev.calibre.overrideAttrs (oa: {
         buildInputs = oa.buildInputs ++ [ final.python3Packages.pycryptodome ];
         doCheck = false;
+        doInstallCheck = false;
     });
 
     mkNamedTOML = final.formats.json {} // {

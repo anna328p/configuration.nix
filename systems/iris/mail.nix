@@ -51,10 +51,18 @@
             indexAttachments = true;
             memoryLimit = 256;
         };
+
+        policydSPFExtraConfig = ''
+            Mail_From_reject = false
+        '';
     };
 
     services.postfix.config = {
         smtp_bind_address = "172.16.1.121";
         smtp_helo_name = config.mailserver.sendingFqdn;
     };
+
+    services.rspamd.extraConfig = ''
+        extended_spam_headers = true;
+    '';
 }

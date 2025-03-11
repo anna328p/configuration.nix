@@ -40,8 +40,9 @@ in {
                 "DejaVu Sans Mono"
             ];
 
-            font-size = 12;
-            adjust-cell-width = -1;
+            font-size = config.misc.fonts.monospace.size;
+            font-variation = "wdth=120";
+            # adjust-cell-width = "-5%";
 
             clipboard-read = "allow";
             link-url = true;
@@ -51,7 +52,7 @@ in {
 
             window-decoration = false;
             gtk-titlebar = false;
-            gtk-adwaita = false;
+            # gtk-adwaita = false; # broken
             window-padding-balance = true;
         };
     };
