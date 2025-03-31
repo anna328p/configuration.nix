@@ -5,7 +5,6 @@ let
 in {
     hardware.graphics.extraPackages = [
         p.rocmPackages.clr.icd
-        p.clinfo
     ];
 
     environment.systemPackages = [
