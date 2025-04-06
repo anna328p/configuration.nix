@@ -3,13 +3,20 @@
 final: prev: let
     rubyVer = "3_4";
 
-    oldPkgs = flakes.nixpkgs-linux610.legacyPackages.${final.system};
+    # nixpkgs-24_11 = flakes.nixpkgs-24_11.legacyPackages.${final.system};
+
+    nixpkgs-24_11 = import (flakes.nixpkgs-24_11) {
+        inherit (final) system;
+        config.allowUnfree = true;
+    };
+
 in {
     ruby_latest = final."ruby_${rubyVer}";
     rubyPackages_latest = final."rubyPackages_${rubyVer}";
 
-    linux610 = oldPkgs.linuxPackages_6_10;
-    zfsUnstableOld = oldPkgs.zfs_unstable;
+    inherit (nixpkgs-24_11) canon-cups-ufr2;
+
+    nix_latest = flakes.nix.packages.${final.system}.nix;
 
     ghostty = flakes.ghostty.packages.${final.system}.ghostty;
 

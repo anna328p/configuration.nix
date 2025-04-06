@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, flakes, system, ... }:
 
 {
     environment.systemPackages = let p = pkgs; in [

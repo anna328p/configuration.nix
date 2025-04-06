@@ -19,7 +19,7 @@
         p.piper
 
         # Smart cards, Yubikey
-        p.opensc p.pcsctools p.yubikey-manager p.yubikey-manager-qt
+        p.opensc p.pcsctools p.yubikey-manager p.yubioath-flutter
 
         # Power management
         config.boot.kernelPackages.cpupower

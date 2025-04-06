@@ -499,11 +499,13 @@
                 (CallFrom (Require "copilot_cmp") "setup" [])
             ]) { })
 
+            /* TODO: build borken
             (luaPlugin v.CopilotChat-nvim (Code [
                 (CallFrom (Require "CopilotChat") "setup" [ {
                     auto_insert_mode = true;
                 } ])
             ]) { })
+            */
 
             (luaPlugin v.nvim-cmp (Code [
                 (SetLocal <cmp> (Require "cmp"))

@@ -12,13 +12,6 @@ in {
         common.impermanent
     ];
 
-    # impermanence
-    environment.persistence = {
-        system.persistentStoragePath = "/safe/system";
-        home.persistentStoragePath = "/safe/home";
-        cache.persistentStoragePath = "/volatile/cache";
-    };
-
     intransience.datastores = {
         system.path = "/safe/system";
         home.path = "/safe/home";
@@ -45,6 +38,8 @@ in {
         "/volatile/cache" = dataset "volatile/cache";
         "/volatile/steam" = dataset "volatile/steam";
     };
+
+    services.zfs.autoSnapshot.enable = true;
 
     swapDevices = [
         { device = devs.swap; }

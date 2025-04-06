@@ -26,7 +26,7 @@
             "nix-command" "flakes"
         ];
 
-        package = pkgs.nixVersions.git;
+        package = pkgs.nix_latest;
 
         # registry.nixpkgs.flake = flakes.nixpkgs;
         # BUG: nix fails to load the flake if this option is set

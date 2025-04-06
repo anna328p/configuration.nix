@@ -23,7 +23,7 @@
             VISUAL = "nvim";
         };
 
-        envExtra = ''
+        envExtra = /* sh */ ''
             export DEFAULT_USER=$(whoami)
         '';
 
@@ -35,13 +35,32 @@
             size = 100000;
         };
 
-        initExtraFirst = ''
-            source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
+        initExtraFirst = let
+            p10k = pkgs.zsh-powerlevel10k;
+        in /* sh */ ''
+            source ${p10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
 
-            export LESS='-g -i -M -S -w -z-4'
+            LESS=""
+
+            LESS+=" --Long-prompt"
+
+            LESS+=" --mouse"
+            LESS+=" --use-color"
+            LESS+=" --hilite-unread"
+            LESS+=" --Raw-control-chars"
+            LESS+=" --proc-backspace --proc-return"
+
+            LESS+=" --quit-if-one-screen"
+            LESS+=" --window=-4"
+            LESS+=" --chop-long-lines"
+
+            LESS+=" --incsearch"
+            LESS+=" --ignore-case"
+
+            export LESS
         '';
 
-        initExtra = ''
+        initExtra = /* sh */ ''
             zmodload zsh/attr
             zmodload zsh/stat
             zmodload zsh/zpty

@@ -13,9 +13,9 @@
     ];
 
     boot = {
-        zfs.package = pkgs.zfsUnstableOld;
+        zfs.package = pkgs.zfs_unstable;
 
-        kernelPackages = pkgs.linux610;
+        kernelPackages = pkgs.linuxPackages_6_13;
 
         kernelParams = [
             # for power management
@@ -24,7 +24,7 @@
             # disable PSR2 Selective Updates due to visual glitches
             # "amdgpu.dcdebugmask=0x200"
 
-            # disable PSR-SU and PSR due to freezing
+            # disable Panel Replay and PSR due to freezing
             "amdgpu.dcdebugmask=0x410"
         ];
 
