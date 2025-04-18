@@ -5,7 +5,7 @@ final: prev: let
 
     # nixpkgs-24_11 = flakes.nixpkgs-24_11.legacyPackages.${final.system};
 
-    nixpkgs-24_11 = import (flakes.nixpkgs-24_11) {
+    nixpkgs-ufr2 = import flakes.nixpkgs-ufr2 {
         inherit (final) system;
         config.allowUnfree = true;
     };
@@ -19,6 +19,8 @@ in {
             ./0001-add-hack-for-monitor-scaling.patch
         ];
     });
+
+    inherit (nixpkgs-ufr2) canon-cups-ufr2;
 
     nix_latest = flakes.nix.packages.${final.system}.nix;
 

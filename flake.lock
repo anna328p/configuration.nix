@@ -815,6 +815,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-ufr2": {
+      "locked": {
+        "lastModified": 1744297934,
+        "narHash": "sha256-0Aiqb+7FimWzfHLU1XKkOQMk41NPBH1KcWvwUPGHqXM=",
+        "owner": "lluchs",
+        "repo": "nixpkgs",
+        "rev": "80314e12ffd9554cbd6261ca9bfad7a290452b6f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lluchs",
+        "ref": "ufr2-gcc-rpath",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs_2": {
       "locked": {
         "lastModified": 1741037377,
@@ -1025,6 +1041,7 @@
         "nixpkgs-24_11": "nixpkgs-24_11",
         "nixpkgs-linux610": "nixpkgs-linux610",
         "nixpkgs-master": "nixpkgs-master",
+        "nixpkgs-ufr2": "nixpkgs-ufr2",
         "nvim-treesitter": "nvim-treesitter",
         "qbot": "qbot",
         "rainbow-delimiters-nvim": "rainbow-delimiters-nvim",

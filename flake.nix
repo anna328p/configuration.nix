@@ -7,6 +7,8 @@
         nixpkgs.url = flake:nixpkgs/nixos-unstable-small;
         nixpkgs-master.url = flake:nixpkgs/master;
 
+        nixpkgs-ufr2.url = github:lluchs/nixpkgs/ufr2-gcc-rpath;
+
         nixpkgs-24_11.url = flake:nixpkgs/nixos-24.11;
         
         nixpkgs-linux610.url = flake:nixpkgs/dd50f99e26d3;
