@@ -28,6 +28,10 @@
             "amdgpu.dcdebugmask=0x410"
         ];
 
+        kernelModules = [
+            "nxp_nci" "nxp_nci_i2c" # NFC
+        ];
+
         plymouth.enable = lib.mkForce false;
     };
 
@@ -54,7 +58,13 @@
     hardware.bluetooth.powerOnBoot = false;
 
     # nfc
-    services.neard.enable = true;
+
+    services.neard.enable = false;
+
+    hardware.nfc-nci = {
+        enable = true;
+        enableIFD = true;
+    };
 
     # fingerprint reader
     services.fprintd.enable = true;

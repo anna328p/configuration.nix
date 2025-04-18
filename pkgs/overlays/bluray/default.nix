@@ -2,9 +2,7 @@
 
 final: prev: {
     libbluray_bd = prev.libbluray.override {
-        # TODO: NixOS/nixpkgs#296748
-        # withJava = true;
-
+        withJava = true;
         withAACS = true;
         withBDplus = true;
     };

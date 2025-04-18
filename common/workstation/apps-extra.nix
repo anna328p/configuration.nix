@@ -5,15 +5,7 @@ let
 in {
     environment.systemPackages = let
         p = pkgs;
-    in if isMinimal then [
-        # Media players
-        p.mpv p.vlc
-        p.ffmpeg
-    ] else [
-        # Media players with Blu-Ray support
-        p.mpv_bd p.vlc_bd p.keydb
-        p.ffmpeg_bd
-
+    in if isMinimal then [ ] else [
         # Media creation
         p.audacity
         p.vcv-rack
@@ -24,9 +16,7 @@ in {
         p.img2pdf
 
         # Text, documents
-        p.libreoffice
         p.calibre
-        p.xdot
 
         # Typefaces
         p.fontforge-gtk p.nodePackages.svgo

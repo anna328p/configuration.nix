@@ -11,6 +11,7 @@
         ./hardware-configuration.nix
         ./networking.nix
         ./mail.nix
+        ./mail-accounts.nix
         ./vpn.nix
     ];
 

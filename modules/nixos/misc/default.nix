@@ -6,6 +6,7 @@ in {
     imports = [
         ./udev.nix
         ./rebuilds.nix
+        ./bluray.nix
     ];
 
     options.misc = {

@@ -8,6 +8,8 @@
     ];
 
     documentation = {
+        nixos.includeAllModules = true;
+
         dev.enable = true;
         
         man = {

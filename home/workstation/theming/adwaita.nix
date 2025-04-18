@@ -55,7 +55,7 @@ let
     css = /* css */ ''
         ${cssColors}
 
-        .nautilus-window.background { background-color: ${c.base00} !important; }
+        .nautilus-window.background { background-color: ${c.base00}; }
     '';
 in {
     xdg.configFile = {

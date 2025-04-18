@@ -1,4 +1,4 @@
-{ flakes, localModules, ... }:
+{ flakes, config, localModules, ... }:
 
 {
     imports = let
@@ -24,6 +24,8 @@
         initrd.availableKernelModules = [ "usbhid" ];
         kernelModules = [ "nct6775" ];
     };
+
+    misc.bluray.decryption.enable = config.misc.buildFull;
 
     musnix.enable = true;
 

@@ -12,8 +12,8 @@
 
         usbDevSpec = t.submodule {
             options = {
-                vid = mkOption { type = usbIds; };
-                pid = mkOption { type = usbIds; };
+                vid = mkOption { type = usbIds; description = "Vendor ID";  };
+                pid = mkOption { type = usbIds; description = "Product ID"; };
             };
         };
     in {

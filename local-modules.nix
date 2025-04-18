@@ -5,7 +5,6 @@ rec {
     modulePaths.nixos = rec {
         default = local.misc;
 
-
         local = {
             misc = modules/nixos/misc;
         };

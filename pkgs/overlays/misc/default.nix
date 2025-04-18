@@ -14,7 +14,11 @@ in {
     ruby_latest = final."ruby_${rubyVer}";
     rubyPackages_latest = final."rubyPackages_${rubyVer}";
 
-    inherit (nixpkgs-24_11) canon-cups-ufr2;
+    mutter = prev.mutter.overrideAttrs (oa: {
+        patches = (oa.patches or []) ++ [
+            ./0001-add-hack-for-monitor-scaling.patch
+        ];
+    });
 
     nix_latest = flakes.nix.packages.${final.system}.nix;
 

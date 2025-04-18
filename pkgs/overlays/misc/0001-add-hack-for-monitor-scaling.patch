@@ -1,0 +1,44 @@
+From 94c0b036ecae514de7217f99d84d006314fc5770 Mon Sep 17 00:00:00 2001
+From: Anna Kudriavtsev <anna328p@gmail.com>
+Date: Thu, 17 Apr 2025 21:34:25 -0500
+Subject: [PATCH] add hack for monitor scaling
+
+---
+ src/backends/meta-monitor.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/src/backends/meta-monitor.c b/src/backends/meta-monitor.c
+index 08f69d4d2..b9186d56e 100644
+--- a/src/backends/meta-monitor.c
++++ b/src/backends/meta-monitor.c
+@@ -2067,6 +2067,10 @@ meta_monitor_calculate_supported_scales (MetaMonitor                 *monitor,
+   int width, height;
+   GArray *supported_scales;
+ 
++  float extra_scale;
++
++  extra_scale = 16.0 / 9.0;
++
+   supported_scales = g_array_new (FALSE, FALSE, sizeof (float));
+ 
+   meta_monitor_mode_get_resolution (monitor_mode, &width, &height);
+@@ -2108,6 +2112,7 @@ meta_monitor_calculate_supported_scales (MetaMonitor                 *monitor,
+               if (scale > 0.0)
+                 g_array_append_val (supported_scales, scale);
+             }
++
+         }
+     }
+ 
+@@ -2119,6 +2124,8 @@ meta_monitor_calculate_supported_scales (MetaMonitor                 *monitor,
+       g_array_append_val (supported_scales, fallback_scale);
+     }
+ 
++  g_array_append_val (supported_scales, extra_scale);
++
+   *n_supported_scales = supported_scales->len;
+   return (float *) g_array_free (supported_scales, FALSE);
+ }
+-- 
+2.49.0
+

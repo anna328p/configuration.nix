@@ -25,6 +25,13 @@
         # Media
         p.tremotesf
 
+        # Media players
+        p.mpv p.vlc
+        p.ffmpeg
+
+        # Documents
+        p.libreoffice-fresh
+
         ## Programming / Software development
 
         # Interpreters
@@ -42,6 +49,7 @@
         p._7zz
         p.nix-tree
         p.binutils # strings
+        p.binwalk
         p.difftastic
 
         # Misc
@@ -50,9 +58,6 @@
 
     # TODO: Remove
     nixpkgs.config.permittedInsecurePackages = [
-        # Logseq 0.10 dep
-        "electron-27.3.11"
-
         # nheko dep
         "olm-3.2.16"
     ];
