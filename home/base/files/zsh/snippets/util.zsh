@@ -22,5 +22,5 @@ function gman {
 	local tmp=$(mktemp -t gman-"${filename%*.}"-XXXXXX.pdf)
 
 	man -Tps "$@" | ps2pdf - "$tmp"
-	evince "$tmp"
+	papers "$tmp"
 }

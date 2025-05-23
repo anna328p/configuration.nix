@@ -140,6 +140,9 @@
 
         # Email client
         geary.enable = true;
+
+        # Use Papers instead of evince
+        evince.package = pkgs.papers;
     };
 
     # Allow using extensions.gnome.org in firefox

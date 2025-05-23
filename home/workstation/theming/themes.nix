@@ -1,4 +1,4 @@
-{ pkgs, config, local-lib, ... }:
+{ lib, pkgs, config, local-lib, ... }:
 
 
 let
@@ -15,6 +15,11 @@ in {
 
         gtk2.extraConfig = "gtk-theme-name=\"${byVariant' "Adwaita" "Adwaita-dark"}\"";
     };
+
+
+    # TODO: https://github.com/nix-community/home-manager/issues/7113
+    xdg.configFile."gtk-4.0/gtk.css" = lib.mkForce { text = config.gtk.gtk4.extraCss; };
+
 
     qt = {
         enable = true;

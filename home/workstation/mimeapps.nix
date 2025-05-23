@@ -17,8 +17,8 @@ in {
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             [ "writer.desktop" ] # LibreOffice Writer
 
-        "application/pdf"
-            [ "org.gnome.Evince.desktop" ]
+        "application/pdf" "application/postscript" "image/x-djvu"
+            [ "org.gnome.Papers.desktop" ]
 
         "image/jpeg" "image/png" "image/jxl"
         "image/webp" "image/heic" "image/avif"

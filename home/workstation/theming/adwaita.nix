@@ -58,8 +58,6 @@ let
         .nautilus-window.background { background-color: ${c.base00}; }
     '';
 in {
-    xdg.configFile = {
-        "gtk-3.0/gtk.css".text = css;
-        "gtk-4.0/gtk.css".text = css;
-    };
+    config.gtk.gtk3.extraCss = css;
+    config.gtk.gtk4.extraCss = css;
 }
