@@ -15,7 +15,7 @@
     boot = {
         zfs.package = pkgs.zfs_unstable;
 
-        kernelPackages = pkgs.linuxPackages_6_13;
+        kernelPackages = pkgs.linuxPackages_6_14;
 
         kernelParams = [
             # for power management

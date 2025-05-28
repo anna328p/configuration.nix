@@ -43,7 +43,11 @@
 
         nixos-hardware.url = flake:nixos-hardware;
         impermanence.url = github:nix-community/impermanence;
+
         intransience.url = github:anna328p/intransience;
+        intransience.inputs = {
+            nixpkgs.follows = "nixpkgs";
+        };
 
         nixos-generators.url = github:nix-community/nixos-generators;
         nixos-generators.inputs = {
@@ -62,7 +66,7 @@
         snm.url = gitlab:simple-nixos-mailserver/nixos-mailserver;
         snm.inputs = {
             nixpkgs.follows = "nixpkgs";
-            nixpkgs-24_11.follows = "nixpkgs";
+            nixpkgs-25_05.follows = "nixpkgs";
             flake-compat.follows = "flake-compat";
         };
 
@@ -71,6 +75,8 @@
         nix.url = flake:nix;
         nix.inputs = {
             nixpkgs.follows = "nixpkgs";
+            nixpkgs-23-11.follows = "nixpkgs";
+            nixpkgs-regression.follows = "nixpkgs";
             flake-compat.follows = "flake-compat";
             flake-parts.follows = "flake-parts";
         };
@@ -88,6 +94,7 @@
         ghostty.url = github:ghostty-org/ghostty/tip;
         ghostty.inputs = {
             flake-compat.follows = "flake-compat";
+            flake-utils.follows = "flake-utils";
             nixpkgs-stable.follows = "nixpkgs";
             nixpkgs-unstable.follows = "nixpkgs";
         };

@@ -1,4 +1,4 @@
-{ pkgs, config, lib, L, ... }:
+{ config, lib, L, ... }:
 
 let
     scheme = config.colorScheme;
@@ -40,13 +40,14 @@ in {
             en = "/etc/nixos";
         };
 
-        initExtraFirst = let
+        initContent = let
             base16Config = let
                 fn = name: value: "zstyle :base16:colors ${name} '${value}'";
             in
                 L.concatLines (L.mapSetEntries fn colorsPrefixed);
-        in ''
+        in lib.mkBefore /* sh */ ''
             ${base16Config}
+
             zstyle :base16 available true
         '';
 

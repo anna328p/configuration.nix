@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
     home.shellAliases = {
@@ -35,52 +35,54 @@
             size = 100000;
         };
 
-        initExtraFirst = let
+        initContent = let
             p10k = pkgs.zsh-powerlevel10k;
-        in /* sh */ ''
-            source ${p10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
+        in lib.mkMerge [
+            (lib.mkBefore /* sh */ ''
+                source ${p10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
 
-            LESS=""
+                LESS=""
 
-            LESS+=" --Long-prompt"
+                LESS+=" --Long-prompt"
 
-            LESS+=" --mouse"
-            LESS+=" --use-color"
-            LESS+=" --hilite-unread"
-            LESS+=" --Raw-control-chars"
-            LESS+=" --proc-backspace --proc-return"
+                LESS+=" --mouse"
+                LESS+=" --use-color"
+                LESS+=" --hilite-unread"
+                LESS+=" --Raw-control-chars"
+                LESS+=" --proc-backspace --proc-return"
 
-            LESS+=" --quit-if-one-screen"
-            LESS+=" --window=-4"
-            LESS+=" --chop-long-lines"
+                LESS+=" --quit-if-one-screen"
+                LESS+=" --window=-4"
+                LESS+=" --chop-long-lines"
 
-            LESS+=" --incsearch"
-            LESS+=" --ignore-case"
+                LESS+=" --incsearch"
+                LESS+=" --ignore-case"
 
-            export LESS
-        '';
+                export LESS
+            '')
 
-        initExtra = /* sh */ ''
-            zmodload zsh/attr
-            zmodload zsh/stat
-            zmodload zsh/zpty
-            
-            autoload zmv
-            autoload zargs
-            
-            setopt GLOB_DOTS
-            unsetopt INTERACTIVE_COMMENTS
+            (lib.mkOrder lib.modules.defaultOrderPriority /* sh */ ''
+                zmodload zsh/attr
+                zmodload zsh/stat
+                zmodload zsh/zpty
+                
+                autoload zmv
+                autoload zargs
+                
+                setopt GLOB_DOTS
+                unsetopt INTERACTIVE_COMMENTS
 
-            for i in util escesc autopushd; do
-                source ${files/zsh/snippets}/$i.zsh
-            done
+                for i in util escesc autopushd; do
+                    source ${files/zsh/snippets}/$i.zsh
+                done
 
-            export ZLE_RPROMPT_INDENT=0
+                export ZLE_RPROMPT_INDENT=0
 
-            source ~/.config/zsh/.p10k.zsh
+                source ~/.config/zsh/.p10k.zsh
 
-            unalias ll
-        '';
+                unalias ll
+            '')
+        ];
 
         prezto = {
             enable = true;
