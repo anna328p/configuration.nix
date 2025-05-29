@@ -9,18 +9,12 @@
 
     config = let
         cfg = config.misc.bluray;
+        p = pkgs;
     in {
-        nixpkgs.overlays = lib.mkIf cfg.decryption.enable [
-            (final: prev: {
-                mpv = prev.mpv_bd;
-                mpv-unwrapped = prev.mpv-unwrapped_bd;
-                vlc = prev.vlc_bd;
-                ffmpeg = prev.ffmpeg_bd;
-            })
-        ];
-
-        environment.systemPackages = lib.mkIf cfg.decryption.enable [
-            pkgs.keydb
-        ];
+        environment.systemPackages = lib.mkIf cfg.decryption.enable (
+            (map lib.hiPrio
+                [ p.mpv_bd p.mpv-unwrapped_bd p.vlc_bd p.ffmpeg_bd ])
+            ++ [ p.keydb ]
+        );
     };
 }

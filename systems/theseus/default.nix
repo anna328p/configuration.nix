@@ -9,7 +9,7 @@
         common.workstation
         common.misc.amd
 
-        flakes.musnix.nixosModules.default
+        # flakes.musnix.nixosModules.default
 
         ./hardware-configuration.nix
         ./transmission.nix
@@ -27,7 +27,8 @@
 
     misc.bluray.decryption.enable = config.misc.buildFull;
 
-    musnix.enable = true;
+    # error: amdgpu-pro was removed due to lack of maintenance
+    # musnix.enable = true;
 
     networking = {
         hostName = "theseus";
