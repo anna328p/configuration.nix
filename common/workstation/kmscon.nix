@@ -5,7 +5,7 @@
         hmcfg = config.home-manager.users.anna;
         monospaceFont = hmcfg.misc.fonts.monospace;
     in {
-        enable = true;
+        enable = false;
         hwRender = true;
 
         fonts = [

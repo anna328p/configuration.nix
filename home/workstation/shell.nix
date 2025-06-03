@@ -12,7 +12,8 @@ in {
         open = "xdg-open";
 
         nbs = "time nixos-rebuild switch --use-remote-sudo"
-            + " --flake 'path:/etc/nixos'";
+            + " --flake \"path:$(realpath /etc/nixos)\""
+            + " --accept-flake-config --impure";
 
         nbst = nbs + t;
         nbsk = nbs + k;
@@ -24,6 +25,15 @@ in {
         nbsfk = nbs + f + k;
 
         nsn = "nix search nixpkgs";
+
+        nfu = "nix flake update";
+        nfuc = nfu + " --commit-lock-file";
+
+        da = "direnv allow";
+        dr = "direnv reload";
+        
+        gcm = "git commit -m";
+        gaa = "git add -A";
     };
 
     programs.zsh = {
