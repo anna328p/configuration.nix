@@ -95,8 +95,7 @@
         ghostty.inputs = {
             flake-compat.follows = "flake-compat";
             flake-utils.follows = "flake-utils";
-            nixpkgs-stable.follows = "nixpkgs";
-            nixpkgs-unstable.follows = "nixpkgs";
+            nixpkgs.follows = "nixpkgs";
         };
 
         keydb = {

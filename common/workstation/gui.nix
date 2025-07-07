@@ -81,36 +81,34 @@
     };
 
     services = {
-        xserver = {
-            enable = true;
-
-            desktopManager = {
-                xterm.enable = false;
-
-                gnome = {
-                    enable = true;
-
-                    # Declaratively configure dash
-                    favoriteAppsOverride = let
-                        genList = lib.concatMapStringsSep ", " (s: "'${s}.desktop'");
-
-                        overrideList = names: ''
-                            [org.gnome.shell]
-                            favorite-apps=[ ${genList names} ]
-                        '';
-                    in overrideList [
-                        "firefox-developer-edition" "discord"
-                        "org.telegram.desktop"
-                        "org.gnome.Nautilus" "com.mitchellh.ghostty"
-                        "logseq"
-                    ];
-                };
-            };
-
-            displayManager.gdm = {
+        desktopManager = {
+            gnome = {
                 enable = true;
-                wayland = true;
+
+                # Declaratively configure dash
+                favoriteAppsOverride = let
+                    genList = lib.concatMapStringsSep ", " (s: "'${s}.desktop'");
+
+                    overrideList = names: ''
+                        [org.gnome.shell]
+                        favorite-apps=[ ${genList names} ]
+                    '';
+                in overrideList [
+                    "firefox-developer-edition" "discord"
+                    "org.telegram.desktop"
+                    "org.gnome.Nautilus" "com.mitchellh.ghostty"
+                    "logseq"
+                ];
             };
+        };
+
+        displayManager.gdm = {
+            enable = true;
+            wayland = true;
+        };
+
+        xserver = {
+            desktopManager.xterm.enable = false;
 
             wacom.enable = true;
 
