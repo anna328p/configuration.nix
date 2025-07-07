@@ -14,6 +14,7 @@
         ./hardware-configuration.nix
         ./transmission.nix
         ./nginx.nix
+        ./extra-users.nix
 
         common.misc.ftp
     ];

@@ -21,19 +21,21 @@
 
         in [
             p.neovim-ruby-env
-            p.ccls
+            p.inotify-tools
+            p.difftastic
 
             n.vscode-langservers-extracted
             n.bash-language-server
 
+            p.ccls
             p.proselint
         ] ++ (lib.optionals systemConfig.misc.buildFull [
             p.nil p.statix
             p.haskell-language-server
-            p.rust-analyzer
+            p.rust-analyzer p.clippy
             p.shellcheck
-            p.pyright
-            p.ruff
+            p.pyright p.ruff
+            p.vscode-extensions.vadimcn.vscode-lldb.adapter
         ]) ++ lib.optional pylanceExists pylance;
 
         extraLuaConfig = let
@@ -53,6 +55,9 @@
                 cursorline = true;
                 scrolloff = 3;
                 sidescrolloff = 5;
+
+                # pretty
+                winblend = 10;
 
                 # don't show mode twice
                 showmode = false;
@@ -106,9 +111,10 @@
 
                 float = {
                     source = "if_many";
-                    show_header = true;
+                    show_header = false;
                     focusable = false;
                     max_width = 80;
+                    border = "rounded";
                 };
             })
 
@@ -119,6 +125,13 @@
                     (Call <vim.diagnostic.open_float> []) ]);
             }])
 
+            (Call <vim.keymap.set> [
+                "n" "K"
+                (Function ({ }: [
+                    (Call <vim.lsp.buf.hover> { border = "rounded"; })
+                ]))
+                { desc = "Hover Documentation"; }
+            ])
 
             # define a textobject to select the entire file
             (Call <vim.keymap.set> [ [ "x" "o" ] "ae" 
@@ -169,9 +182,9 @@
                     (Call <vim.api.nvim_set_hl>
                         [ 0 group { link = target; } ]);
 
-                inherit (L) o mapSetPairs uncurry;
+                inherit (L) mapSetPairs uncurry;
             in
-                o mapSetPairs uncurry mkHighlight links
+                mapSetPairs (uncurry mkHighlight) links
             )) { })
 
             (luaPlugin v.gitsigns-nvim (Code [
@@ -199,6 +212,44 @@
                     };
                  })
             ]) { })
+
+            # telescope and such
+
+            v.popup-nvim v.plenary-nvim
+
+            v.telescope-ui-select-nvim
+
+            (luaPlugin v.telescope-nvim (Code (let
+                mkMapping = from: to:
+                    (Call <vim.keymap.set> [ "n" from to ]);
+            in [
+                (SetLocal <telescope> (Require "telescope"))
+                (SetLocal <tb> (Require "telescope.builtin"))
+                (SetLocal <tt> (Require "telescope.themes"))
+
+                # telescope mappings
+                (mkMapping "<leader>ff" <tb.find_files>)
+                (mkMapping "<leader>fg" <tb.live_grep>)
+                (mkMapping "<leader>fb" <tb.buffers>)
+                (mkMapping "<leader>fh" <tb.help_tags>)
+
+                (CallFrom <telescope> "setup" [ {
+                    defaults = {
+                        layout_config.vertical = { width = 80; height = 24; };
+                    };
+
+                    extensions.ui-select = {
+                        sorting_strategy = "ascending";
+                        layout_strategy = "cursor";
+
+                        layout_config = { width = 80; height = 8; };
+
+                        border = true;
+                    };
+                } ])
+
+                (CallFrom <telescope> "load_extension" [ "ui-select" ])
+            ])) { })
 
             v.nvim-treesitter-endwise
 
@@ -292,7 +343,7 @@
                     <file_watching_cap> ]))
 
                 (SetLocal <auto_ls> [
-                    "hls" "bashls" "cssls" "rust_analyzer"
+                    "hls" "bashls" "cssls" 
                     "ruby_lsp" "pyright" "ruff" ])
 
                 (ForEach (IPairs <auto_ls>) (_: name: [
@@ -393,6 +444,23 @@
                 } ])
             ]) { })
 
+            (luaPlugin v.rustaceanvim (Code [
+                (Set <vim.g.rustaceanvim> {
+                    server.default_settings.rust-analyzer = {
+                        procMacro = {
+                            enable = true;
+                            ignored = {
+                                async-trait = [ "async_trait" ];
+                                napi-derive = [ "napi" ];
+                                async-recursion = [ "async_recursion" ];
+                            };
+                        };
+                    };
+                })
+            ]) { })
+
+            v.nvim-dap
+
             v.guard-collection
 
             (let
@@ -455,6 +523,18 @@
                 (CallFrom (Require "guard") "setup" [{
                     fmt_on_save = false;
                 }])
+            ]) { })
+
+            (luaPlugin v.nvim-lightbulb (Code [
+                (CallFrom (Require "nvim-lightbulb") "setup" {
+                    autocmd.enabled = true;
+                })
+            ]) { })
+
+            (luaPlugin v.actions-preview-nvim (Code [
+                (SetLocal <hl> (Require "actions-preview.highlight"))
+
+                (CallFrom (Require "actions-preview") "setup" { })
             ]) { })
 
             # (let
@@ -676,41 +756,6 @@
                            [ (Call <vim.cmd.quit> []) ]) ]);
                     }])
             ]) { })
-
-            v.popup-nvim v.plenary-nvim
-
-            v.telescope-ui-select-nvim
-
-            (luaPlugin v.telescope-nvim (Code (let
-                mkMapping = from: to:
-                    (Call <vim.keymap.set> [ "n" from to ]);
-            in [
-                (SetLocal <telescope> (Require "telescope"))
-                (SetLocal <tb> (Require "telescope.builtin"))
-                (SetLocal <tt> (Require "telescope.themes"))
-
-                # telescope mappings
-                (mkMapping "<leader>ff" <tb.find_files>)
-                (mkMapping "<leader>fg" <tb.live_grep>)
-                (mkMapping "<leader>fb" <tb.buffers>)
-                (mkMapping "<leader>fh" <tb.help_tags>)
-
-                (CallFrom <telescope> "setup" [ {
-                    defaults = {
-                        layout_config.vertical = { width = 80; height = 24; };
-                    };
-
-                    extensions.ui-select = {
-                        sorting_strategy = "ascending";
-                        layout_strategy = "bottom_pane";
-                        layout_config.height = 8;
-                        border = true;
-                    };
-                } ])
-
-                (CallFrom <telescope> "load_extension" [ "ui-select" ])
-            ])) { })
-
             # misc
             v.vim-sensible
             v.vim-startify

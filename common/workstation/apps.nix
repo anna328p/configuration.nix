@@ -21,6 +21,7 @@
 
         # Graphics
         p.gimp
+        p.graphviz
 
         # Media
         p.tremotesf

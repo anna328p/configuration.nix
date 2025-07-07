@@ -17,7 +17,7 @@ index 08f69d4d2..b9186d56e 100644
  
 +  float extra_scale;
 +
-+  extra_scale = 16.0 / 9.0;
++  extra_scale = 30.0 / 17.0;
 +
    supported_scales = g_array_new (FALSE, FALSE, sizeof (float));
  
@@ -41,4 +41,3 @@ index 08f69d4d2..b9186d56e 100644
  }
 -- 
 2.49.0
-

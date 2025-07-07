@@ -16,7 +16,7 @@ in {
 
     mutter = prev.mutter.overrideAttrs (oa: {
         patches = (oa.patches or []) ++ [
-            ./0001-add-hack-for-monitor-scaling.patch
+            # ./0001-add-hack-for-monitor-scaling.patch
         ];
     });
 

@@ -3,7 +3,12 @@
 {
     # IME support
     i18n = {
-        supportedLocales = [ "en_US.UTF-8/UTF-8" "ja_JP.UTF-8/UTF-8" ];
+        supportedLocales = [
+            "en_US.UTF-8/UTF-8"
+            "ja_JP.UTF-8/UTF-8"
+            "ko_KR.UTF-8/UTF-8"
+        ];
+
         inputMethod = {
             enable = true;
             type = "ibus";
@@ -11,7 +16,7 @@
             ibus.engines = let
                 i = pkgs.ibus-engines;
             in
-                [ i.mozc ];
+                [ i.mozc i.hangul ];
         };
     };
 

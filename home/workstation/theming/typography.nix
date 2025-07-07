@@ -7,9 +7,9 @@
         enable = true;
 
         sans-serif = {
-            package = pkgs.source-sans;
-            name = "Source Sans 3";
-            size = 10.8;
+            package = pkgs.adwaita-fonts;
+            name = "Adwaita Sans";
+            size = 10;
         };
 
         serif = {
