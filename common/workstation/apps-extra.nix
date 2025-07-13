@@ -39,7 +39,7 @@ in {
         p.openscad
         p.solvespace
         p.prusa-slicer
-        p.f3d
+        # p.f3d # build broken
 
         # EDA
         p.kicad p.libxslt
@@ -50,7 +50,7 @@ in {
 
         # Misc
         p.woeusb         # Write Windows install disks
-        p.idevicerestore # Flash Apple devices
+        # p.idevicerestore # Flash Apple devices (build broken)
         p.anki           # Flashcards
         p.gnome-decoder  # Scan QR codes from screenshots
     ];
