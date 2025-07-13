@@ -12,9 +12,13 @@ function psgrep {
   ps aux | grep -v grep | grep "$@"
 }
 
+function nr {
+	env NIXPKGS_ALLOW_UNFREE=1 nix run --impure "$@"
+}
+
 function nrn {
 	local name="$1"; shift
-	nix run --impure "nixpkgs#""$name" -- "$@"
+	nr "nixpkgs#""$name" "$@"
 }
 
 function gman {

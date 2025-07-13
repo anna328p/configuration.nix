@@ -36,6 +36,7 @@
             p.shellcheck
             p.pyright p.ruff
             p.vscode-extensions.vadimcn.vscode-lldb.adapter
+            p.typescript-language-server n.prettier
         ]) ++ lib.optional pylanceExists pylance;
 
         extraLuaConfig = let
@@ -140,6 +141,8 @@
 
             # keybind for lsp formatting
             (Call <vim.keymap.set> [ [ "n" ] "grq" <vim.lsp.buf.format> ])
+
+            (Call <vim.keymap.set> [ [ "n" ] "grs" <vim.lsp.buf.signature_help> ])
         ];
 
         plugins = with L.lua; let
@@ -344,7 +347,7 @@
 
                 (SetLocal <auto_ls> [
                     "hls" "bashls" "cssls" 
-                    "ruby_lsp" "pyright" "ruff" ])
+                    "ruby_lsp" "pyright" "ruff" "ts_ls" ])
 
                 (ForEach (IPairs <auto_ls>) (_: name: [
                     (CallFrom (Index <lspconfig> name) "setup" {
@@ -353,7 +356,7 @@
 
 
                 (CallFrom (Index <lspconfig> "pyright") "setup" (
-                    if pylanceExists then let
+                    if true then let
                         pylanceMagic = builtins.readFile
                             ../../secrets/pylance-license.json;
                     in {
@@ -363,11 +366,22 @@
                             clientVerification = pylanceMagic;
                         };
 
-                        settings.python.analysis.inlayHints = {
-                            variableTypes = true;
-                            functionReturnTypes = true;
-                            callArgumentNames = true;
-                            pytestParameters = true;
+                        settings.python.analysis = {
+                            languageServerMode = "full";
+                            typeCheckingMode = "strict";
+                            diagnosticMode = "workspace";
+                            regenerateStdLibIndices = false;
+                            enableExtractCodeAction = true;
+
+                            inlayHints = {
+                                variableTypes = true;
+                                functionReturnTypes = true;
+                                callArgumentNames = true;
+                                pytestParameters = true;
+                            };
+
+                            autoFormatStrings = true;
+                            nodeExecutable = "${pkgs.nodejs}/bin/node";
                         };
 
                         capabilities = <caps>;
