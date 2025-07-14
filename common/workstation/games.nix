@@ -16,7 +16,8 @@
         p.osu-lazer
         p.wesnoth
 
-        p.prismlauncher # Minecraft
+        # TODO: JRE 8 build broken 2025-07-14
+        # p.prismlauncher # Minecraft
     ]);
 
     programs.steam.enable = config.misc.buildFull;

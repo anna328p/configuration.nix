@@ -11,7 +11,7 @@ in {
     in rec {
         open = "xdg-open";
 
-        nbs = "time nixos-rebuild switch --use-remote-sudo"
+        nbs = "time nixos-rebuild switch --sudo"
             + " --flake \"path:$(realpath /etc/nixos)\""
             + " --accept-flake-config --impure";
 

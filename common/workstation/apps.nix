@@ -5,7 +5,7 @@
         ## Internet / Communications
 
         # Browser
-        p.firefox-devedition-bin
+        p.firefox-devedition
 
         # Password manager
         p.keepassxc
@@ -20,7 +20,7 @@
         p.logseq
 
         # Graphics
-        p.gimp
+        p.gimp3
         p.graphviz
 
         # Media
