@@ -11,7 +11,7 @@
     # tmpfs on root
     fileSystems."/" = {
         fsType = "tmpfs";
-        options = [ "size=100%" "huge=within_size" ];
+        options = [ "size=100%" "huge=within_size" "mode=0755" ];
     };
 
     intransience.enable = true;

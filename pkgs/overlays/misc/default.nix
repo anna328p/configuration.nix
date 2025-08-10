@@ -2,14 +2,6 @@
 
 final: prev: let
     rubyVer = "3_4";
-
-    # nixpkgs-24_11 = flakes.nixpkgs-24_11.legacyPackages.${final.system};
-
-    nixpkgs-ufr2 = import flakes.nixpkgs-ufr2 {
-        inherit (final) system;
-        config.allowUnfree = true;
-    };
-
 in {
     ruby_latest = final."ruby_${rubyVer}";
     rubyPackages_latest = final."rubyPackages_${rubyVer}";
@@ -19,8 +11,6 @@ in {
             # ./0001-add-hack-for-monitor-scaling.patch
         ];
     });
-
-    inherit (nixpkgs-ufr2) canon-cups-ufr2;
 
     nix_latest = flakes.nix.packages.${final.system}.nix;
 

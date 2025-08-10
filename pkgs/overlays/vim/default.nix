@@ -29,16 +29,23 @@ final: prev: let
     in
         pkg.overrideAttrs (_: overrides);
 
+    nvimOverlay = vfinal: vprev: {
+        inherit nvim-treesitter;
+
+        # HACK
+        neotest = vprev.neotest.overrideAttrs (old: {
+            doCheck = false;
+        });
+
+    } // buildPluginsFrom flakes [
+        "vim-slim"
+        "rainbow-delimiters-nvim"
+        "copilot-lualine"
+        "guard-nvim"
+    ];
+
 in {
     neovim-unwrapped = nvim-pkgs.neovim;
 
-    vimPlugins = prev.vimPlugins.extend
-        (vfinal: vprev: {
-            inherit nvim-treesitter;
-        } // buildPluginsFrom flakes [
-            "vim-slim"
-            "rainbow-delimiters-nvim"
-            "copilot-lualine"
-            "guard-nvim"
-        ]);
+    vimPlugins = prev.vimPlugins.extend nvimOverlay;
 }

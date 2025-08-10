@@ -94,7 +94,7 @@
                         favorite-apps=[ ${genList names} ]
                     '';
                 in overrideList [
-                    "firefox-developer-edition" "discord"
+                    "firefox-devedition" "discord"
                     "org.telegram.desktop"
                     "org.gnome.Nautilus" "com.mitchellh.ghostty"
                     "logseq"

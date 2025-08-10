@@ -14,5 +14,9 @@
             font-antialiasing = "grayscale";
             font-hinting = "none";
         };
+
+        "org/gnome/desktop/peripherals/pointingstick" = {
+            scroll-method = "none";
+        };
     };
 }

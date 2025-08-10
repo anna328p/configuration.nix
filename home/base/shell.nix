@@ -10,11 +10,11 @@
         ":wq" = "sync; exit";
     };
 
-    home.file.".config/zsh/.p10k.zsh".source = files/zsh/p10k.zsh;
+    xdg.configFile."zsh/.p10k.zsh".source = files/zsh/p10k.zsh;
 
     programs.zsh = {
         enable = true;
-        dotDir = ".config/zsh";
+        dotDir = "${config.xdg.configHome}/zsh";
 
         enableCompletion = true;
 

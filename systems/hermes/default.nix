@@ -9,6 +9,7 @@
         common.misc.amd
 
         flakes.nixos-hardware.nixosModules.lenovo-thinkpad-t14-amd-gen5
+
         ./disks.nix
     ];
 
@@ -29,7 +30,7 @@
         ];
 
         kernelModules = [
-            "nxp_nci" "nxp_nci_i2c" # NFC
+            #             "nxp_nci" "nxp_nci_i2c" # NFC
         ];
 
         plymouth.enable = lib.mkForce false;
@@ -54,11 +55,7 @@
     # disable font hinting
     fonts.fontconfig.hinting.enable = false;
 
-    # save power
-    hardware.bluetooth.powerOnBoot = false;
-
     # nfc
-
     services.neard.enable = false;
 
     hardware.nfc-nci = {
@@ -70,6 +67,11 @@
     services.fprintd.enable = true;
 
     # power saving
+    hardware.bluetooth.powerOnBoot = false;
+
+    services.tuned.enable = true;
+    services.tlp.enable = lib.mkForce false;
+
     powerManagement = {
         enable = true;
         powertop.enable = true;

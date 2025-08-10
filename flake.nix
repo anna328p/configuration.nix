@@ -7,12 +7,6 @@
         nixpkgs.url = flake:nixpkgs/nixos-unstable-small;
         nixpkgs-master.url = flake:nixpkgs/master;
 
-        nixpkgs-ufr2.url = github:lluchs/nixpkgs/ufr2-gcc-rpath;
-
-        nixpkgs-24_11.url = flake:nixpkgs/nixos-24.11;
-        
-        nixpkgs-linux610.url = flake:nixpkgs/dd50f99e26d3;
-
         # libraries
 
         nix-prelude.url = github:anna328p/nix-prelude;
@@ -47,6 +41,7 @@
         intransience.url = github:anna328p/intransience;
         intransience.inputs = {
             nixpkgs.follows = "nixpkgs";
+            nix-prelude.follows = "nix-prelude";
         };
 
         nixos-generators.url = github:nix-community/nixos-generators;
@@ -89,7 +84,6 @@
         };
 
         nil.url = github:oxalica/nil;
-        nil.inputs.flake-utils.follows = "flake-utils";
 
         ghostty.url = github:ghostty-org/ghostty/tip;
         ghostty.inputs = {

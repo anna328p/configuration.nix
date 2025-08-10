@@ -102,6 +102,14 @@
             (Call <vim.api.nvim_create_user_command>
                 [ "W" "write <args>" { nargs = "*"; } ])
 
+            # new cmdline
+            (CallFrom (Require "vim._extui") "enable" [ {
+                enable = true;
+            } ])
+
+            # experimental loader
+            (Call <vim.loader.enable> [ true ])
+
             # diagnostics
 
             (Call <vim.diagnostic.config> {
@@ -169,26 +177,6 @@
                     user_default_options.mode = "virtualtext";
                 })
             ]) { })
-
-            (luaPlugin v.rainbow-delimiters-nvim (Code (let
-                links = {
-                    "RainbowDelimiterRed"    =  "rainbowcol1";
-                    "RainbowDelimiterYellow" =  "rainbowcol2";
-                    "RainbowDelimiterBlue"   =  "rainbowcol3";
-                    "RainbowDelimiterOrange" =  "rainbowcol4";
-                    "RainbowDelimiterGreen"  =  "rainbowcol5";
-                    "RainbowDelimiterViolet" =  "rainbowcol6";
-                    "RainbowDelimiterCyan"   =  "rainbowcol7";
-                };
-
-                mkHighlight = group: target:
-                    (Call <vim.api.nvim_set_hl>
-                        [ 0 group { link = target; } ]);
-
-                inherit (L) mapSetPairs uncurry;
-            in
-                mapSetPairs (uncurry mkHighlight) links
-            )) { })
 
             (luaPlugin v.gitsigns-nvim (Code [
                 (CallFrom (Require "gitsigns") "setup" { })
@@ -323,17 +311,15 @@
 
             # language servers
 
-            v.cmp-nvim-lsp
-
             (luaPlugin v.nvim-lspconfig (Code [
                 (SetLocal <lspconfig> (Require "lspconfig"))
 
                 (SetLocal <lsp_caps>
                     (Call <vim.lsp.protocol.make_client_capabilities> []))
 
-                (SetLocal <cmp_caps>
-                    (CallFrom (Require "cmp_nvim_lsp")
-                        "default_capabilities" []))
+                (SetLocal <blink_caps>
+                    (CallFrom (Require "blink.cmp")
+                        "get_lsp_capabilities" []))
 
                 (SetLocal <file_watching_cap> {
                     workspace.didChangeWatchedFiles.dynamicRegistration = true;
@@ -342,7 +328,7 @@
                 (SetLocal <caps> (Call <vim.tbl_deep_extend> [
                     "force"
                     <lsp_caps>
-                    <cmp_caps>
+                    <blink_caps>
                     <file_watching_cap> ]))
 
                 (SetLocal <auto_ls> [
@@ -573,15 +559,11 @@
             # ]) { })
 
             # completions
-            v.luasnip v.cmp_luasnip v.cmp-nvim-lua
-            v.cmp-omni
-            v.cmp-treesitter
-            v.cmp-buffer v.cmp-tmux
-            v.cmp-emoji
 
             (luaPlugin v.copilot-lua (Code [
                 (CallFrom (Require "copilot") "setup" [ {
                     suggestion.enabled = false;
+
                     panel = {
                         enabled = false;
                         auto_refresh = true;
@@ -589,120 +571,120 @@
                 } ])
             ]) { })
 
-            (luaPlugin v.copilot-cmp (Code [
-                (CallFrom (Require "copilot_cmp") "setup" [])
-            ]) { })
+            v.blink-copilot
+            v.blink-compat
+            v.blink-emoji-nvim
 
-            /* TODO: build borken
-            (luaPlugin v.CopilotChat-nvim (Code [
-                (CallFrom (Require "CopilotChat") "setup" [ {
-                    auto_insert_mode = true;
-                } ])
-            ]) { })
-            */
+            v.cmp-treesitter
+            v.cmp-tmux
 
-            (luaPlugin v.nvim-cmp (Code [
-                (SetLocal <cmp> (Require "cmp"))
+            (luaPlugin v.blink-cmp (Code [
+                (SetLocal <blink> (Require "blink.cmp"))
 
-                (CallFrom <cmp> "setup" [ {
-                    snippet.expand = Function ({ args }: [
-                        (CallFrom (Require "luasnip") "lsp_expand" [
-                            (Index args "body")
-                        ])]);
+                (CallFrom <blink> "setup" [ {
+                    keymap = {
+                        preset = "none";
 
-                    mapping = {
-                        "<C-e>" = Call <cmp.mapping.close> [];
+                        "<C-space>" = [ "show" "select_and_accept" ];
+                        "<C-e>" = [ "cancel" "fallback" ];
 
-                        "<Tab>" = Call <cmp.mapping> [
-                            (Function ({ fallback }: [
-                                (If (Call <cmp.visible> []) {
-                                    Then = [ (Call <cmp.select_next_item> []) ];
-                                    Else = [ (Call fallback []) ];
-                                })]))
-                            [ "i" "s" ]
-                        ];
+                        "<S-Tab>" = [ "select_prev" "fallback" ];
+                        "<Tab>" = [ "select_next" "fallback" ];
 
-                        "<S-Tab>" = Call <cmp.mapping> [
-                            (Function ({ fallback }: [
-                                (If (Call <cmp.visible> []) {
-                                    Then = [ (Call <cmp.select_prev_item> []) ];
-                                    Else = [ (Call fallback []) ];
-                                })]))
-                            [ "i" "s" ]
-                        ];
+                        "<Up>" = [ "select_prev" "fallback" ];
+                        "<Down>" = [ "select_next" "fallback" ];
 
-                        "<C-Space>" = Call <cmp.mapping.confirm> [
-                            { select = true; }
-                        ];
+                        "<C-k>" = [ "show_signature" "hide_signature" "fallback" ];
+
+                        "<C-b>" = [ "scroll_documentation_up" "fallback" ];
+                        "<C-f>" = [ "scroll_documentation_down" "fallback" ];
                     };
 
-                    sources = let
-                        wrapNames = map (name: { inherit name; });
-                    in
-                        Call <cmp.config.sources> (map wrapNames [
-                            [ "nvim_lsp" "nvim_lua" "omni" ]
-                            [ "copilot" "luasnip" ]
-                            [ "treesitter" ]
-                            [ "buffer" "tmux" ]
-                            [ "emoji" ]
-                        ]);
+                    completion = {
+                        documentation = {
+                            auto_show = true;
+                        };
 
-                    view.entries = "native";
+                        list.selection = {
+                            preselect = false;
+                            auto_insert = true;
+                        };
 
-                    experimental.ghost_text = true;
-                }])
+                        menu.draw = {
+                            columns = [
+                                (Call <vim.tbl_extend> [ "force"
+                                    [ "label" "label_description" ]
+                                    { gap = 1; }
+                                ])
+
+                                [ "kind" ]
+                                [ "source_id" ]
+                            ];
+
+                            components.label.width.max = 40;
+                        };
+
+                        ghost_text = {
+                            enabled = true;
+                            show_without_selection = true;
+                        };
+
+                        menu = {
+                            border = "none";
+                            draw.treesitter = [ "lsp" ];
+                        };
+                    };
+
+                    sources.default = [
+                        "lsp" "path" "buffer" "omni"
+                        "copilot" "treesitter" "tmux" "emoji"
+                    ];
+
+                    sources.providers = {
+                        copilot = {
+                            name = "copilot";
+                            module = "blink-copilot";
+                            score_offset = 100;
+                            async = true;
+                        };
+
+                        emoji = {
+                            name = "emoji";
+                            module = "blink-emoji";
+                            score_offset = -10;
+                        };
+
+                        treesitter = {
+                            name = "treesitter";
+                            module = "blink.compat.source";
+                            score_offset = -50;
+                        };
+
+                        tmux = {
+                            name = "tmux";
+                            module = "blink.compat.source";
+                            score_offset = -50;
+                        };
+                    };
+
+                    signature.enabled = true;
+                } ])
             ]) { })
 
-            (luaPlugin v.nvim-autopairs (Code [
-                (SetLocal <autopairs> (Require "nvim-autopairs"))
+            (luaPlugin v.blink-pairs (Code [
+                (SetLocal <pairs> (Require "blink-pairs"))
 
-                (Call <autopairs.setup> {
-                    check_ts = true;
-                    ts_config = { };
+                (Call <pairs.setup> {
+                    highlights.groups = [
+                        "rainbowcol1"
+                        "rainbowcol2"
+                        "rainbowcol3"
+                        "rainbowcol4"
+                        "rainbowcol5"
+                        "rainbowcol6"
+                        "rainbowcol7"
+                    ];
                 })
-
-                (Paste (map (L.o (Call <autopairs.add_rules>) Require) [
-                    "nvim-autopairs.rules.endwise-elixir"
-                    "nvim-autopairs.rules.endwise-lua"
-                    "nvim-autopairs.rules.endwise-ruby" ]))
-
-                (SetLocal <single_quote_rule>
-                    (Index (Call <autopairs.get_rule> [ "'" ]) 1))
-
-                (Call <table.insert> [
-                    (Index <single_quote_rule> "not_filetypes")
-                    "nix" ])
-
-                (SetLocal <mk_autopairs_rules> (Function ({ }: [
-                    (SetLocal <Rule> (Require "nvim-autopairs.rule"))
-                    (SetLocal <cond> (Require "nvim-autopairs.conds"))
-                    (SetLocal <ts_cond> (Require "nvim-autopairs.ts-conds"))
-
-                    (ReturnOne [
-                        # nix double single quotes
-                        (Call <Rule> [ "''" "''" "nix" ])
-
-                        # nix auto semicolon for bindings
-                        (Chain (Call <Rule> [ "''" "''" "nix" ]) [
-                            [ "with_pair" [
-                                (Call <ts_cond.is_ts_node> [
-                                    "ERROR" "binding" "binding_set"
-                                    "attrset_expression" "formals" ])]]
-                            [ "use_key" [ "<space>" ] ]
-                            [ "replace_endpair" [
-                                (Function ({ }: [
-                                    (ReturnOne " ;<C-g>U<Left>") ]))]]
-                            [ "with_cr" (Call <cond.none> []) ]])])])))
- 
-                (Call <autopairs.add_rules> (Call <mk_autopairs_rules> []))
-
-                # cmp integration
-                (SetLocal <autopairs_cmp>
-                    (Require "nvim-autopairs.completion.cmp"))
-
-                (CallOn <cmp.event> "on" [
-                    "confirm_done"
-                    (Call <autopairs_cmp.on_confirm_done> []) ])
             ]) { })
 
             # languages
