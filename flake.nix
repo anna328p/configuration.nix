@@ -4,24 +4,24 @@
     inputs = {
         # nixpkgs
 
-        nixpkgs.url = flake:nixpkgs/nixos-unstable-small;
-        nixpkgs-master.url = flake:nixpkgs/master;
+        nixpkgs.url = github:nixos/nixpkgs/nixos-unstable-small;
+        nixpkgs-master.url = github:nixos/nixpkgs/master;
 
         # libraries
 
         nix-prelude.url = github:anna328p/nix-prelude;
 
-        flake-utils.url = flake:flake-utils;
+        flake-utils.url = github:numtide/flake-utils;
 
         flake-compat.url = github:edolstra/flake-compat;
         flake-compat.flake = false;
 
-        flake-parts.url = flake:flake-parts;
+        flake-parts.url = github:hercules-ci/flake-parts;
         flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
 
         # home-manager
 
-        home-manager.url = flake:home-manager;
+        home-manager.url = github:nix-community/home-manager;
         home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
         # android
@@ -35,7 +35,7 @@
 
         # modules
 
-        nixos-hardware.url = flake:nixos-hardware;
+        nixos-hardware.url = github:nixos/nixos-hardware;
         impermanence.url = github:nix-community/impermanence;
 
         intransience.url = github:anna328p/intransience;
@@ -67,12 +67,11 @@
 
         # packages
 
-        nix.url = flake:nix;
+        nix.url = github:DeterminateSystems/nix-src;
         nix.inputs = {
             nixpkgs.follows = "nixpkgs";
             nixpkgs-23-11.follows = "nixpkgs";
             nixpkgs-regression.follows = "nixpkgs";
-            flake-compat.follows = "flake-compat";
             flake-parts.follows = "flake-parts";
         };
 

@@ -94,15 +94,29 @@
 
     nix.settings = {
         experimental-features = [
-            "cgroups" "auto-allocate-uids" "ca-derivations"
-            "pipe-operators" "git-hashing"
+            "cgroups" "auto-allocate-uids" "external-builders"
+            "dynamic-derivations" "recursive-nix" "build-time-fetch-tree"
+            "configurable-impure-env"
+            "ca-derivations" "impure-derivations" "git-hashing" "blake3-hashes"
+            "local-overlay-store" "mounted-ssh-store"
+            "pipe-operators" "parallel-eval" "parse-toml-timestamps"
         ];
 
         auto-optimise-store = true;
         auto-allocate-uids = true;
         use-cgroups = true;
+
+        log-lines = 50;
+
+        use-xdg-base-directories = true;
+
         preallocate-contents = true;
+        sync-before-registering = true;
+        builders-use-substitutes = true;
+
         allow-import-from-derivation = true;
+        lazy-trees = true;
+        eval-cores = 0;
 
         extra-substituters = "https://nix-community.cachix.org";
         extra-trusted-public-keys =

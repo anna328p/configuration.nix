@@ -14,6 +14,7 @@ in {
         p.inkscape
         p.imagemagick
         p.img2pdf
+        p.darktable
 
         # Text, documents
         p.calibre
