@@ -9,7 +9,6 @@
             onShutdown = "shutdown";
 
             qemu = {
-                ovmf.enable = true;
                 runAsRoot = false;
 
                 package = if config.misc.buildFull

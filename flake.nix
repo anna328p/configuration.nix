@@ -4,29 +4,35 @@
     inputs = {
         # nixpkgs
 
-        nixpkgs.url = github:nixos/nixpkgs/nixos-unstable-small;
-        nixpkgs-master.url = github:nixos/nixpkgs/master;
+        nixpkgs.follows = "nixpkgs-staging-next";
+
+        nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+        nixpkgs-unstable-small.url = "github:nixos/nixpkgs/nixos-unstable-small";
+        nixpkgs-master.url = "github:nixos/nixpkgs/master";
+
+        nixpkgs-staging-next.url = "github:nixos/nixpkgs/staging-next";
+
 
         # libraries
 
-        nix-prelude.url = github:anna328p/nix-prelude;
+        nix-prelude.url = "github:anna328p/nix-prelude";
 
-        flake-utils.url = github:numtide/flake-utils;
+        flake-utils.url = "github:numtide/flake-utils";
 
-        flake-compat.url = github:edolstra/flake-compat;
+        flake-compat.url = "github:edolstra/flake-compat";
         flake-compat.flake = false;
 
-        flake-parts.url = github:hercules-ci/flake-parts;
+        flake-parts.url = "github:hercules-ci/flake-parts";
         flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
 
         # home-manager
 
-        home-manager.url = github:nix-community/home-manager;
+        home-manager.url = "github:nix-community/home-manager";
         home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
         # android
 
-        nix-on-droid.url = github:nix-community/nix-on-droid;
+        nix-on-droid.url = "github:nix-community/nix-on-droid";
         nix-on-droid.inputs = {
             nixpkgs.follows = "nixpkgs";
             nixpkgs-docs.follows = "nixpkgs";
@@ -35,30 +41,30 @@
 
         # modules
 
-        nixos-hardware.url = github:nixos/nixos-hardware;
-        impermanence.url = github:nix-community/impermanence;
+        nixos-hardware.url = "github:nixos/nixos-hardware";
+        impermanence.url = "github:nix-community/impermanence";
 
-        intransience.url = github:anna328p/intransience;
+        intransience.url = "github:anna328p/intransience";
         intransience.inputs = {
             nixpkgs.follows = "nixpkgs";
             nix-prelude.follows = "nix-prelude";
         };
 
-        nixos-generators.url = github:nix-community/nixos-generators;
+        nixos-generators.url = "github:nix-community/nixos-generators";
         nixos-generators.inputs = {
             nixpkgs.follows = "nixpkgs";
             nixlib.follows = "nixpkgs";
         };
 
-        nix-colors.url = github:misterio77/nix-colors;
+        nix-colors.url = "github:misterio77/nix-colors";
         nix-colors.inputs.nixpkgs-lib.follows = "nixpkgs";
 
-        musnix.url = github:musnix/musnix;
+        musnix.url = "github:musnix/musnix";
         musnix.inputs.nixpkgs.follows = "nixpkgs";
 
-        qbot.url = github:arch-community/qbot;
+        qbot.url = "github:arch-community/qbot";
 
-        snm.url = gitlab:simple-nixos-mailserver/nixos-mailserver;
+        snm.url = "gitlab:simple-nixos-mailserver/nixos-mailserver";
         snm.inputs = {
             nixpkgs.follows = "nixpkgs";
             nixpkgs-25_05.follows = "nixpkgs";
@@ -67,7 +73,7 @@
 
         # packages
 
-        nix.url = github:DeterminateSystems/nix-src;
+        nix.url = "https://flakehub.com/f/DeterminateSystems/nix-src/*";
         nix.inputs = {
             nixpkgs.follows = "nixpkgs";
             nixpkgs-23-11.follows = "nixpkgs";
@@ -75,20 +81,20 @@
             flake-parts.follows = "flake-parts";
         };
 
-        neovim-nightly-overlay.url = github:nix-community/neovim-nightly-overlay;
+        neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
         neovim-nightly-overlay.inputs = {
             nixpkgs.follows = "nixpkgs";
             flake-parts.follows = "flake-parts";
             flake-compat.follows = "flake-compat";
         };
 
-        nil.url = github:oxalica/nil;
+        nil.url = "github:oxalica/nil";
 
-        ghostty.url = github:ghostty-org/ghostty/tip;
+        ghostty.url = "github:ghostty-org/ghostty/tip";
         ghostty.inputs = {
             flake-compat.follows = "flake-compat";
             flake-utils.follows = "flake-utils";
-            nixpkgs.follows = "nixpkgs";
+            nixpkgs.follows = "nixpkgs-unstable";
         };
 
         keydb = {
@@ -97,28 +103,30 @@
             flake = false;
         };
 
-        vim-slim.url = github:slim-template/vim-slim;
+        vim-slim.url = "github:slim-template/vim-slim";
         vim-slim.flake = false;
 
-        rainbow-delimiters-nvim.url = gitlab:hiphish/rainbow-delimiters.nvim;
+        rainbow-delimiters-nvim.url = "gitlab:hiphish/rainbow-delimiters.nvim";
         rainbow-delimiters-nvim.flake = false;
 
-        nvim-treesitter.url = github:nvim-treesitter/nvim-treesitter;
+        nvim-treesitter.url = "github:nvim-treesitter/nvim-treesitter";
         nvim-treesitter.flake = false;
 
-        copilot-lualine.url = github:AndreM222/copilot-lualine;
+        copilot-lualine.url = "github:AndreM222/copilot-lualine";
         copilot-lualine.flake = false;
         
-        # TODO remove once nvimdev/guard.nvim#160 merged
-        guard-nvim.url = github:anna328p/guard.nvim;
-        guard-nvim.flake = false;
-
-        easyeffects-presets.url = github:digitalone1/easyeffects-presets;
+        easyeffects-presets.url = "github:digitalone1/easyeffects-presets";
         easyeffects-presets.flake = false;
 
         modemmanager-enz7360.url =
-            gitlab:ShaneParslow/ModemManager/enz7360?host=gitlab.freedesktop.org;
+            "gitlab:ShaneParslow/ModemManager/enz7360?host=gitlab.freedesktop.org";
         modemmanager-enz7360.flake = false;
+
+        mutter.url = "github:anna328p/mutter/add-fifth-scales";
+        mutter.flake = false;
+
+        gvdb.url = "gitlab:/GNOME/gvdb?host=gitlab.gnome.org";
+        gvdb.flake = false;
     };
 
     nixConfig = {
@@ -127,11 +135,13 @@
         extra-substituters = ''
             https://nix-community.cachix.org
             https://anna328p.cachix.org
+            https://install.determinate.systems
         '';
 
         extra-trusted-public-keys = ''
             nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
             anna328p.cachix.org-1:HcPUMrtQ7qT+bfx2fQ2HyJV5wCYQ2A3WwhxxrxDkvG0=
+            cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM=
         '';
     };
 

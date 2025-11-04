@@ -27,8 +27,8 @@ jobs:
       - name: Update volatile inputs
         run: nix flake update keydb
 
-      - name: Build hermes configuration
-        run: nix build --accept-flake-config 'path:.#nixosConfigurations.hermes.config.system.build.toplevel'
+      - name: Build hermes-small configuration
+        run: nix build --accept-flake-config 'path:.#nixosConfigurations.hermes-small.config.system.build.toplevel'
 
       - name: Confirm success
         run: echo 'OK'

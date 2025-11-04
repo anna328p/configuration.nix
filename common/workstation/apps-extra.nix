@@ -1,11 +1,9 @@
 { pkgs, lib, config, ... }:
 
-let
-    isMinimal = !(config.misc.buildFull);
-in {
+{
     environment.systemPackages = let
         p = pkgs;
-    in if isMinimal then [ ] else [
+    in lib.mkIf config.misc.buildFull [
         # Media creation
         p.audacity
         p.vcv-rack
@@ -24,7 +22,7 @@ in {
 
         # Communication
         p.zoom-us
-        p.element-desktop 
+        #p.element-desktop  # build broken 2025-10-11
 
         # VMs
         p.mono
@@ -40,7 +38,7 @@ in {
         p.openscad
         p.solvespace
         p.prusa-slicer
-        # p.f3d # build broken
+        # p.f3d # TODO reenable
 
         # EDA
         p.kicad p.libxslt

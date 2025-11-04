@@ -49,6 +49,7 @@
             p.xxd
 
             (p.nixos-rebuild.override { nix = config.nix.package.out; })
+            p.nh
         ];
 
         defaultPackages = lib.mkDefault [];
@@ -118,9 +119,16 @@
         lazy-trees = true;
         eval-cores = 0;
 
-        extra-substituters = "https://nix-community.cachix.org";
-        extra-trusted-public-keys =
-            "nix-community.cachix.org-1"
-            + ":mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=";
+        substituters = [
+            "https://nix-community.cachix.org"
+            "https://anna328p.cachix.org"
+            "https://install.determinate.systems"
+        ];
+
+        trusted-public-keys = [
+            "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+            "anna328p.cachix.org-1:HcPUMrtQ7qT+bfx2fQ2HyJV5wCYQ2A3WwhxxrxDkvG0="
+            "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM="
+        ];
     };
 }

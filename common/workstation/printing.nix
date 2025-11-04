@@ -15,7 +15,6 @@
 
         drivers = let p = pkgs; in [
             p.gutenprint p.gutenprintBin
-            p.brlaser
             p.canon-cups-ufr2
         ];
 
@@ -41,14 +40,5 @@
     hardware.sane = {
         enable = true;
         extraBackends = [ pkgs.sane-airscan ];
-
-        brscan5 = {
-            enable = true;
-            
-            netDevices.livingroom = {
-                model = "HL-L2390DW";
-                ip = "10.0.0.4";
-            };
-        };
     };
 }

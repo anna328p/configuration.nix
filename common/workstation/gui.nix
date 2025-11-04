@@ -43,6 +43,9 @@
         # Image rendering
         p.libjxl-with-plugins
 
+        # Display management
+        p.mutter
+
         # GNOME addons
         p.gnome-sound-recorder p.gnome-tweaks p.gnome-music
 
@@ -100,6 +103,11 @@
                     "logseq"
                 ];
             };
+        };
+
+        displayManager.autoLogin = {
+            enable = true;
+            user = "anna";
         };
 
         displayManager.gdm = {

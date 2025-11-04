@@ -18,7 +18,7 @@
                     p.mopidy-ytmusic p.mopidy-somafm
                 ];
 
-                configuration = builtins.readFile files/mopidy.conf;
+                # configuration = builtins.readFile files/mopidy.conf;
             };
         };
 

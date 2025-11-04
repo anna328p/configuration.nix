@@ -18,6 +18,6 @@
 
     # Hardware video decoding
     hardware.graphics.extraPackages = let p = pkgs; in [
-        p.libva1 p.vaapiVdpau p.libvdpau-va-gl
+        p.libva1 p.libva-vdpau-driver p.libvdpau-va-gl
     ];
 }

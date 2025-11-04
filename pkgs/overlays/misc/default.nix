@@ -2,15 +2,87 @@
 
 final: prev: let
     rubyVer = "3_4";
+
+    overrideCmake = pkg: pkg.overrideAttrs (oa: {
+        cmakeFlags = (oa.cmakeFlags or []) ++ [
+            "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
+        ];
+    });
+
+    disableCheck = pkg: pkg.overrideAttrs (oa: {
+        doCheck = false;
+    });
+
+    disableInstallCheck = pkg: pkg.overrideAttrs (oa: {
+        doInstallCheck = false;
+    });
+
+    inherit (final.stdenv.hostPlatform) system;
+
+    pkgsUnstable = flakes.nixpkgs-unstable.legacyPackages.${system};
 in {
     ruby_latest = final."ruby_${rubyVer}";
     rubyPackages_latest = final."rubyPackages_${rubyVer}";
+     
+    # inherit (pkgsUnstable) tdesktop;
 
     mutter = prev.mutter.overrideAttrs (oa: {
-        patches = (oa.patches or []) ++ [
-            # ./0001-add-hack-for-monitor-scaling.patch
-        ];
+        src = flakes.mutter;
+
+        postUnpack = ''
+            pushd source/subprojects
+            ln -s ${flakes.gvdb} gvdb
+            popd
+        '';
     });
+
+        # git = prev.git.override {
+        #     doInstallCheck = false;
+        # };
+
+        # gitMinimal = prev.gitMinimal.override {
+        #     doInstallCheck = false;
+        # };
+
+        # colord = prev.colord.overrideAttrs (oa: {
+        #     doInstallCheck = false;
+        # });
+
+        # openldap = prev.openldap.overrideAttrs (oa: {
+        #     doCheck = false;
+        # });
+
+        # libphonenumber = prev.libphonenumber.override {
+        #     enableTests = false;
+        # };
+
+        # nbd = prev.nbd.overrideAttrs (oa: {
+        #     doCheck = false;
+        # });
+
+        # dfc = prev.dfc.overrideAttrs (oa: {
+        #     doCheck = false;
+        #     cmakeFlags = (oa.cmakeFlags or []) ++ [
+        #         "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
+        #     ];
+        # });
+
+        # maxflow = prev.maxflow.overrideAttrs (oa: {
+        #     doCheck = false;
+        #     cmakeFlags = (oa.cmakeFlags or []) ++ [
+        #         "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
+        #     ];
+        # });
+
+        # libvdpau-va-gl = overrideCmake prev.libvdpau-va-gl;
+
+        # neovim-unwrapped = prev.neovim-unwrapped.override {
+        #     lua = final.luajit_2_1.override {
+        #         packageOverrides = lfinal: lprev: {
+        #             rustaceanvim = disableCheck lprev.rustaceanvim;
+        #         };
+        #     };
+        # };
 
     nix_latest = flakes.nix.packages.${final.system}.nix;
 
@@ -69,11 +141,16 @@ in {
         embedInstallers = true;
     };
 
-    calibre = prev.calibre.overrideAttrs (oa: {
-        buildInputs = oa.buildInputs ++ [ final.python3Packages.pycryptodome ];
-        doCheck = false;
-        doInstallCheck = false;
-    });
+    calibre = let
+        pkg = prev.calibre.overrideAttrs (oa: {
+            buildInputs = oa.buildInputs ++ [ final.python3Packages.pycryptodome ];
+            doCheck = false;
+            doInstallCheck = false;
+        });
+    in
+        pkg.override {
+            speechSupport = false;
+        };
 
     mkNamedTOML = final.formats.json {} // {
         type = let

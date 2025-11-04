@@ -16,7 +16,7 @@
     boot = {
         zfs.package = pkgs.zfs_unstable;
 
-        kernelPackages = pkgs.linuxPackages_6_16;
+        kernelPackages = pkgs.linuxPackages_6_17;
 
         kernelParams = [
             # for power management
@@ -38,10 +38,8 @@
 
     # identity
 
-    networking = {
-        hostName = "hermes";
-        hostId = "6a5a4b0b";
-    };
+    networking.hostName = "hermes";
+    networking.hostId = "6a5a4b0b";
 
     misc.uuid = "46397c55-410c-4b6c-9050-5fbedb77e303";
 
@@ -55,6 +53,9 @@
     # disable font hinting
     fonts.fontconfig.hinting.enable = false;
 
+    # faster wifi reconnect
+    networking.networkmanager.wifi.backend = "iwd";
+
     # nfc
     services.neard.enable = false;
 
@@ -67,6 +68,7 @@
     services.fprintd.enable = true;
 
     # power saving
+
     hardware.bluetooth.powerOnBoot = false;
 
     services.tuned.enable = true;
@@ -80,6 +82,8 @@
     };
 
     environment.systemPackages = [ pkgs.powertop ];
+
+    # misc
 
     services.postgresql = {
         enable = true;
@@ -95,18 +99,9 @@
         ];
     };
 
-    services.ollama = {
-        enable = true;
-        package = pkgs.ollama-rocm;
-        acceleration = "rocm";
-        rocmOverrideGfx = "11.0.2";
-    };
-
     intransience.datastores.system.byPath."/var/lib".dirs = [
         "fprint"
         "postgresql"
-
-        { path = "private/ollama"; parentDirectory.mode = "0700"; }
     ];
 
     home-manager.users.anna.imports = [ ./home ];

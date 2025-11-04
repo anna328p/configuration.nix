@@ -12,7 +12,7 @@
 
         # Messengers
         p.discord-custom
-        p.tdesktop
+        p.telegram-desktop
         p.nheko
         p.thunderbird
 

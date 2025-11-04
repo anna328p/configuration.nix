@@ -41,7 +41,6 @@ final: prev: let
         "vim-slim"
         "rainbow-delimiters-nvim"
         "copilot-lualine"
-        "guard-nvim"
     ];
 
 in {

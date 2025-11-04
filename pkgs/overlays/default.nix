@@ -29,9 +29,9 @@ let
 in composeOverlays (map importOverlay [
     ../overlay.nix
 
-    ./misc
-    ./transmission
     ./vim
+    ./transmission
     ./bluray
     ./modemmanager
+    ./misc
 ])

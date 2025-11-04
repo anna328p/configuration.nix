@@ -26,10 +26,10 @@
 
             n.vscode-langservers-extracted
             n.bash-language-server
-
+        ] ++ (lib.optionals systemConfig.misc.buildFull [
             p.ccls
             p.proselint
-        ] ++ (lib.optionals systemConfig.misc.buildFull [
+
             p.nil p.statix
             p.haskell-language-server
             p.rust-analyzer p.clippy
@@ -321,61 +321,59 @@
                     (CallFrom (Require "blink.cmp")
                         "get_lsp_capabilities" []))
 
-                (SetLocal <file_watching_cap> {
+                (SetLocal <extra_caps> {
+                    # file watching
                     workspace.didChangeWatchedFiles.dynamicRegistration = true;
+
+                    # multiline semantic tokens
+                    textDocument.semanticTokens.multilineTokenSupport = true;
                 })
 
                 (SetLocal <caps> (Call <vim.tbl_deep_extend> [
                     "force"
                     <lsp_caps>
                     <blink_caps>
-                    <file_watching_cap> ]))
+                    <extra_caps> ]))
 
-                (SetLocal <auto_ls> [
-                    "hls" "bashls" "cssls" 
-                    "ruby_lsp" "pyright" "ruff" "ts_ls" ])
-
-                (ForEach (IPairs <auto_ls>) (_: name: [
-                    (CallFrom (Index <lspconfig> name) "setup" {
-                        capabilities = <caps>;
-                    }) ]))
+                (Call <vim.lsp.config> [ "*" {
+                    capabilities = <caps>;
+                } ])
 
 
-                (CallFrom (Index <lspconfig> "pyright") "setup" (
-                    if true then let
-                        pylanceMagic = builtins.readFile
-                            ../../secrets/pylance-license.json;
-                    in {
-                        cmd = [ "${pylance}/bin/pylance" ];
+                (Call <vim.lsp.inlay_hint.enable> [ true ])
 
-                        init_options = {
-                            clientVerification = pylanceMagic;
+
+                (Call <vim.lsp.config> [ "pyright" (let
+                    pylanceMagic = builtins.readFile
+                        ../../secrets/pylance-license.json;
+                in {
+                    cmd = [ "${pylance}/bin/pylance" ];
+
+                    init_options = {
+                        clientVerification = pylanceMagic;
+                    };
+
+                    settings.python.analysis = {
+                        languageServerMode = "default";
+                        typeCheckingMode = "strict";
+                        diagnosticMode = "workspace";
+                        regenerateStdLibIndices = false;
+                        enableExtractCodeAction = true;
+
+                        inlayHints = {
+                            variableTypes = true;
+                            functionReturnTypes = true;
+                            callArgumentNames = "partial";
+                            pytestParameters = true;
                         };
 
-                        settings.python.analysis = {
-                            languageServerMode = "full";
-                            typeCheckingMode = "strict";
-                            diagnosticMode = "workspace";
-                            regenerateStdLibIndices = false;
-                            enableExtractCodeAction = true;
+                        autoFormatStrings = true;
+                        autoImportCompletions = true;
+                        nodeExecutable = "${pkgs.nodejs}/bin/node";
+                    };
+                }) ])
 
-                            inlayHints = {
-                                variableTypes = true;
-                                functionReturnTypes = true;
-                                callArgumentNames = true;
-                                pytestParameters = true;
-                            };
-
-                            autoFormatStrings = true;
-                            nodeExecutable = "${pkgs.nodejs}/bin/node";
-                        };
-
-                        capabilities = <caps>;
-                    } else {
-                        capabilities = <caps>;
-                    }
-                ))
-
+                (Call <vim.lsp.enable> [ "pyright" ])
 
                 # (let
                 #     gemCmd = exe: test: args: [
@@ -400,9 +398,7 @@
                 #             (gemCmd "typeprof" "--version" "--lsp --stdio") { }) ])
 
 
-                (Call <lspconfig.nil_ls.setup> {
-                    capabilities = <caps>;
-
+                (Call <vim.lsp.config> [ "nil_ls" {
                     settings.nil = let
                         nixWrapped = pkgs.writeShellScript "nix-wrapped" ''
                             exec ${lib.getExe systemConfig.nix.package} \
@@ -420,12 +416,23 @@
                             };
                         };
                     };
-                })
+                } ])
 
-                (Call <lspconfig.ccls.setup> {
-                    capabilities = <caps>;
+                (Call <vim.lsp.enable> [ "nil_ls" ])
+
+                (Call <vim.lsp.config> [ "ccls" {
                     single_file_support = true;
-                })
+                } ])
+
+                (Call <vim.lsp.enable> [ "ccls" ])
+
+                (SetLocal <auto_ls> [
+                    "hls" "bashls" "cssls" 
+                    "ruby_lsp" "pyright" "ruff" "ts_ls" ])
+
+                (ForEach (IPairs <auto_ls>) (_: name: [
+                    (Call <vim.lsp.enable> [ name ]) ]))
+
 
                 # make nil-ls a semanticTokensProvider
                 (Call <vim.api.nvim_create_autocmd> [ "LspAttach" {
@@ -520,9 +527,9 @@
                     [ "fmt" [ "lsp" ] ]
                 ])
 
-                (CallFrom (Require "guard") "setup" [{
+                (Set <vim.g.guard_config> {
                     fmt_on_save = false;
-                }])
+                })
             ]) { })
 
             (luaPlugin v.nvim-lightbulb (Code [

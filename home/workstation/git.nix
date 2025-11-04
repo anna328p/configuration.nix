@@ -3,17 +3,22 @@
 {
     programs = {
         git = {
-            package = pkgs.gitAndTools.gitFull;
+            package = pkgs.gitFull;
 
-            userName = "Anna Kudriavtsev";
-            userEmail = "anna328p@gmail.com";
+            settings = {
+                user.name = "Anna Kudriavtsev";
+                user.email = "anna328p@gmail.com";
+            };
 
             ignores = [
                 ".ccls_cache"
                 ".direnv"
             ];
+        };
 
-            difftastic.enable = true;
+        difftastic = {
+            enable = true;
+            git.enable = true;
         };
 
         gh = {
