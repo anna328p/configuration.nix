@@ -38,7 +38,7 @@
             p.file # query file types
             p.bc p.units # calculators
 
-            p.neofetch # why not?
+            p.neofetch
 
             # Compressors, archivers
             p.zstd p.xz p.pigz
@@ -61,15 +61,6 @@
         };
 
         pathsToLink = [ "/share/zsh" ];
-
-        etc = {
-            # local time compatibility with perlless activation / etc overlay
-            # HACK: NixOS/nixpkgs#284641
-            localtime = lib.optionalAttrs (config.time.timeZone != null) {
-                source = "/etc/zoneinfo/${config.time.timeZone}";
-                mode = lib.mkForce "symlink";
-            };
-        };
     };
 
     system.disableInstallerTools = lib.mkDefault true;

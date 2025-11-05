@@ -24,8 +24,6 @@ in {
     ruby_latest = final."ruby_${rubyVer}";
     rubyPackages_latest = final."rubyPackages_${rubyVer}";
      
-    # inherit (pkgsUnstable) tdesktop;
-
     mutter = prev.mutter.overrideAttrs (oa: {
         src = flakes.mutter;
 
@@ -36,53 +34,13 @@ in {
         '';
     });
 
-        # git = prev.git.override {
-        #     doInstallCheck = false;
-        # };
+    valkey = disableCheck prev.valkey;
 
-        # gitMinimal = prev.gitMinimal.override {
-        #     doInstallCheck = false;
-        # };
-
-        # colord = prev.colord.overrideAttrs (oa: {
-        #     doInstallCheck = false;
-        # });
-
-        # openldap = prev.openldap.overrideAttrs (oa: {
-        #     doCheck = false;
-        # });
-
-        # libphonenumber = prev.libphonenumber.override {
-        #     enableTests = false;
-        # };
-
-        # nbd = prev.nbd.overrideAttrs (oa: {
-        #     doCheck = false;
-        # });
-
-        # dfc = prev.dfc.overrideAttrs (oa: {
-        #     doCheck = false;
-        #     cmakeFlags = (oa.cmakeFlags or []) ++ [
-        #         "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
-        #     ];
-        # });
-
-        # maxflow = prev.maxflow.overrideAttrs (oa: {
-        #     doCheck = false;
-        #     cmakeFlags = (oa.cmakeFlags or []) ++ [
-        #         "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
-        #     ];
-        # });
-
-        # libvdpau-va-gl = overrideCmake prev.libvdpau-va-gl;
-
-        # neovim-unwrapped = prev.neovim-unwrapped.override {
-        #     lua = final.luajit_2_1.override {
-        #         packageOverrides = lfinal: lprev: {
-        #             rustaceanvim = disableCheck lprev.rustaceanvim;
-        #         };
-        #     };
-        # };
+    inherit (pkgsUnstable)
+        logseq guvcview
+        thunderbird-unwrapped firefox-devedition-unwrapped
+        libreoffice-fresh
+        ;
 
     nix_latest = flakes.nix.packages.${final.system}.nix;
 
@@ -142,13 +100,16 @@ in {
     };
 
     calibre = let
-        pkg = prev.calibre.overrideAttrs (oa: {
+        pkg = pkgsUnstable.calibre;
+
+        foo = disableCheck pkg;
+        bar = disableInstallCheck foo;
+
+        baz = bar.overrideAttrs (oa: {
             buildInputs = oa.buildInputs ++ [ final.python3Packages.pycryptodome ];
-            doCheck = false;
-            doInstallCheck = false;
         });
     in
-        pkg.override {
+        baz.override {
             speechSupport = false;
         };
 

@@ -85,7 +85,6 @@
         neovim-nightly-overlay.inputs = {
             nixpkgs.follows = "nixpkgs";
             flake-parts.follows = "flake-parts";
-            flake-compat.follows = "flake-compat";
         };
 
         nil.url = "github:oxalica/nil";

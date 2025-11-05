@@ -18,7 +18,8 @@
         p.calibre
 
         # Typefaces
-        p.fontforge-gtk p.nodePackages.svgo
+        # p.fontforge-gtk # broken
+        p.nodePackages.svgo
 
         # Communication
         p.zoom-us

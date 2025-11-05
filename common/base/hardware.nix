@@ -8,9 +8,7 @@
 
     system.etc.overlay = {
         enable = lib.mkDefault true;
-
-        # mutable = false;
-        # TODO: broken by nixpkgs#328926
+        mutable = lib.mkDefault false; # requires userborn
     };
 
     # TTY appearance
