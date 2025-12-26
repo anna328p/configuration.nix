@@ -14,7 +14,6 @@ in {
     };
 
     mkPackageSet = pkgs: import ./all-packages.nix {
-        inherit (pkgs) callPackage;
-        inherit flakes mkFlakeVer;
+        inherit pkgs flakes mkFlakeVer;
     };
 }

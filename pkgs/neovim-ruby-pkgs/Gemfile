@@ -2,8 +2,10 @@
 
 source 'https://rubygems.org'
 
+gem 'reek'
 gem 'rubocop'
+
 gem 'ruby-lsp'
+gem 'ruby-lsp-reek'
+
 gem 'solargraph'
-gem 'steep'
-gem 'typeprof'

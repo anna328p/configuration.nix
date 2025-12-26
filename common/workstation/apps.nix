@@ -5,7 +5,7 @@
         ## Internet / Communications
 
         # Browser
-        p.firefox-devedition
+        p.firefox-nightly-bin
 
         # Password manager
         p.keepassxc

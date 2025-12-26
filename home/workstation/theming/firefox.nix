@@ -140,9 +140,9 @@ in {
         enable = true;
         package = pkgs.firefox-devedition;
 
-        profiles.dev-edition-default = {
-            name = "dev-edition-default";
-            path = "dev-edition-default";
+        profiles.default = {
+            name = "default";
+            path = "default";
             id = 0; 
 
             inherit userChrome userContent;
@@ -152,6 +152,33 @@ in {
                 "devtools.chrome.enabled" = true;
                 "devtools.debugger.remote-enabled" = true;
                 "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+
+                "gfx.wayland.hdr" = true;
+                "gfx.wayland.hdr.force-enabled" = true;
+                "gfx.wayland.compositor" = true;
+                "gfx.wayland.compositor.force-enabled" = true;
+
+                "gfx.webrender.all" = true;
+                "gfx.webrender.layer-compositor" = true;
+                "gfx.webrender.precache-shaders" = true;
+
+                "layers.gpu-process.enabled" = true;
+                "layers.gpu-process.force-enabled" = true;
+
+                "media.gpu-process-decoder.enabled" = true;
+                "media.gpu-process-encoder.enabled" = true;
+                "media.hardware-video-decoding.force-enabled" = true;
+                "media.hardware-video-encoding.force-enabled" = true;
+                "media.mkv.enabled" = true;
+                "media.hls.enabled" = true;
+                
+                "media.webrtc.camera.allow-pipewire" = true;
+                "media.webrtc.hw.h264.enabled" = true;
+
+                "widget.wayland.fractional-scale.enabled" = true;
+                "widget.gtk.global-menu.wayland.enabled" = true;
+
+                "layout.frame_rate" = 120;
             };
         };
     };

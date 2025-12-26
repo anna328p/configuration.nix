@@ -19,7 +19,7 @@ final: prev: let
 
     inherit (final.stdenv.hostPlatform) system;
 
-    pkgsUnstable = flakes.nixpkgs-unstable.legacyPackages.${system};
+    firefoxPkgs = flakes.firefox-nightly.packages.${system};
 in {
     ruby_latest = final."ruby_${rubyVer}";
     rubyPackages_latest = final."rubyPackages_${rubyVer}";
@@ -36,15 +36,11 @@ in {
 
     valkey = disableCheck prev.valkey;
 
-    inherit (pkgsUnstable)
-        logseq guvcview
-        thunderbird-unwrapped firefox-devedition-unwrapped
-        libreoffice-fresh
-        ;
+    nix_latest = flakes.nix.packages.${system}.nix;
 
-    nix_latest = flakes.nix.packages.${final.system}.nix;
+    ghostty = flakes.ghostty.packages.${system}.ghostty;
 
-    ghostty = flakes.ghostty.packages.${final.system}.ghostty;
+    inherit (firefoxPkgs) firefox-nightly-bin;
 
     f3d = prev.f3d.overrideAttrs (oa: {
         buildInputs = let
@@ -100,16 +96,16 @@ in {
     };
 
     calibre = let
-        pkg = pkgsUnstable.calibre;
+        pkg = prev.calibre;
 
-        foo = disableCheck pkg;
-        bar = disableInstallCheck foo;
+        pkgA = disableCheck pkg;
+        pkgB = disableInstallCheck pkgA;
 
-        baz = bar.overrideAttrs (oa: {
+        pkgC = pkgB.overrideAttrs (oa: {
             buildInputs = oa.buildInputs ++ [ final.python3Packages.pycryptodome ];
         });
     in
-        baz.override {
+        pkgC.override {
             speechSupport = false;
         };
 

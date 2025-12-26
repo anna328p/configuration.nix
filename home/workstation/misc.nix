@@ -5,6 +5,7 @@
         sessionVariables = {
             NIX_AUTO_RUN = 1;
             MOZ_USE_XINPUT2 = 1;
+            RUBY_YJIT_ENABLE = 1;
         };
     };
 

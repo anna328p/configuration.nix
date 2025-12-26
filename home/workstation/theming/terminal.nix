@@ -52,7 +52,6 @@ in {
 
             window-decoration = false;
             gtk-titlebar = false;
-            # gtk-adwaita = false; # broken
             window-padding-balance = true;
         };
     };

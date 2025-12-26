@@ -56,7 +56,7 @@
                 LESS+=" --chop-long-lines"
 
                 LESS+=" --incsearch"
-                LESS+=" --ignore-case"
+                LESS+=" --ignore-case "
 
                 export LESS
             '')

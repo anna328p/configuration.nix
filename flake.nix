@@ -4,14 +4,11 @@
     inputs = {
         # nixpkgs
 
-        nixpkgs.follows = "nixpkgs-staging-next";
+        nixpkgs.follows = "nixpkgs-unstable";
 
         nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
         nixpkgs-unstable-small.url = "github:nixos/nixpkgs/nixos-unstable-small";
         nixpkgs-master.url = "github:nixos/nixpkgs/master";
-
-        nixpkgs-staging-next.url = "github:nixos/nixpkgs/staging-next";
-
 
         # libraries
 
@@ -24,6 +21,9 @@
 
         flake-parts.url = "github:hercules-ci/flake-parts";
         flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
+
+        ruby-nix.url = "github:inscapist/ruby-nix";
+        ruby-nix.inputs.nixpkgs.follows = "nixpkgs";
 
         # home-manager
 
@@ -96,6 +96,8 @@
             nixpkgs.follows = "nixpkgs-unstable";
         };
 
+        firefox-nightly.url = "github:nix-community/flake-firefox-nightly";
+
         keydb = {
             url = "https://github.com/anna328p/mirror/releases/latest/download/keydb_eng.zip";
             type = "file";
@@ -108,8 +110,11 @@
         rainbow-delimiters-nvim.url = "gitlab:hiphish/rainbow-delimiters.nvim";
         rainbow-delimiters-nvim.flake = false;
 
-        nvim-treesitter.url = "github:nvim-treesitter/nvim-treesitter";
+        nvim-treesitter.url = "github:nvim-treesitter/nvim-treesitter/main";
         nvim-treesitter.flake = false;
+
+        nvim-treesitter-textobjects.url = "github:nvim-treesitter/nvim-treesitter-textobjects/main";
+        nvim-treesitter-textobjects.flake = false;
 
         copilot-lualine.url = "github:AndreM222/copilot-lualine";
         copilot-lualine.flake = false;

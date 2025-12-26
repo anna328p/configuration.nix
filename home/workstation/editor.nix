@@ -8,6 +8,94 @@
 
         pylanceExists = builtins.pathExists pylancePath;
         pylance = pkgs.callPackage pylancePath { };
+
+        macros = with L.lua; let
+            inherit (L.lua) __findFile;
+        in rec {
+            Call0 = fn: Call fn [ ];
+            Call1 = fn: arg1: Call fn [ arg1 ];
+            Call2 = fn: arg1: arg2: Call fn [ arg1 arg2 ];
+
+            CallOn0 = fn: CallOn fn [ ];
+            CallOn1 = fn: arg1: CallOn fn [ arg1 ];
+
+            FromRequire = lib: CallFrom (Require lib);
+
+            Setup = lib: CallFrom (Require lib) "setup";
+
+            createUserCommand = name: command: opts:
+                Call <vim.api.nvim_create_user_command>
+                    [ name command opts ];
+
+            createAutocmd = event: opts:
+                Call <vim.api.nvim_create_autocmd>
+                    [ event opts ];
+
+            listWins =
+                Call <vim.api.nvim_list_wins> [ ];
+
+            getCurrentBuf =
+                Call <vim.api.nvim_get_current_buf> [ ];
+
+            getOptionValue = name: opts:
+                Call <vim.api.nvim_get_option_value> [ name opts ];
+
+            trim = Call1 <vim.trim>;
+
+            tblExtend = behavior: tables:
+                Call <vim.tbl_extend> ([ behavior ] ++ tables);
+
+            tblDeepExtend = behavior: tables:
+                Call <vim.tbl_deep_extend> ([ behavior ] ++ tables);
+
+            keymap = rec {
+                set = modes: lhs: rhs: opts:
+                    Call <vim.keymap.set> [ modes lhs rhs opts ];
+
+                set' = { modes, lhs, rhs, opts ? null }:
+                    set modes lhs rhs opts;
+            };
+
+            lsp = {
+                config = name: config:
+                    Call <vim.lsp.config> [ name config ];
+
+                enable = name:
+                    Call <vim.lsp.enable> [ name ];
+
+                getClientById = id:
+                    Call <vim.lsp.get_client_by_id> [ id ];
+
+                inlayHint = {
+                    enable = flag:
+                        Call <vim.lsp.inlay_hint.enable> [ flag ];
+                };
+
+                protocol = {
+                    makeClientCapabilities =
+                        Call <vim.lsp.protocol.make_client_capabilities> [];
+                };
+
+                buf = {
+                    hover = config:
+                        Call <vim.lsp.buf.hover> [ config ];
+                };
+            };
+
+            diagnostic = {
+                config = opts: namespace:
+                    Call <vim.diagnostic.config> [ opts namespace ];
+
+                openFloat = opts:
+                    Call <vim.diagnostic.open_float> [ opts ];
+            };
+
+            loader = {
+                enable = flag:
+                    Call <vim.loader.enable> [ flag ];
+            };
+        };
+
     in {
         enable = true;
         defaultEditor = true;
@@ -18,7 +106,6 @@
         extraPackages = let
             p = pkgs;
             n = pkgs.nodePackages;
-
         in [
             p.neovim-ruby-env
             p.inotify-tools
@@ -73,6 +160,9 @@
                 shiftwidth = 4;
                 expandtab = false;
 
+                # folding
+                foldlevelstart = 99;
+
                 # misc
                 undofile = true;
                 completeopt = [ "menu" "menuone" "noselect" ];
@@ -83,36 +173,32 @@
 
             inherit (L.lua) __findFile;
 
-            inherit (L)
-                o
-                mapSetPairs
-                uncurry
-                ;
+            inherit (L) mapSetEntries;
+
+            M = macros;
+
         in with L.lua; Code [
-            (Paste (o mapSetPairs uncurry
-                (k: v: (Set (Index <vim.opt> k) v)) opts))
+            (Paste (mapSetEntries
+                (k: v: (Set (Index <vim.opt> k) v))
+                opts))
 
             (CallOn <vim.opt.clipboard> "append" [ "unnamed" ])
 
             # typo protection
-
-            (Call <vim.api.nvim_create_user_command>
-                [ "Q" "quit" {} ])
-
-            (Call <vim.api.nvim_create_user_command>
-                [ "W" "write <args>" { nargs = "*"; } ])
+            (M.createUserCommand "Q" "quit" {})
+            (M.createUserCommand "W" "write <args>" { nargs = "*"; })
 
             # new cmdline
-            (CallFrom (Require "vim._extui") "enable" [ {
+            (M.FromRequire "vim._extui" "enable" {
                 enable = true;
-            } ])
+            })
 
             # experimental loader
-            (Call <vim.loader.enable> [ true ])
+            (M.loader.enable true)
 
             # diagnostics
 
-            (Call <vim.diagnostic.config> {
+            (M.diagnostic.config {
                 virtual_text = false; # Turn off inline diagnostics
                 underline = true;
                 signs = true;
@@ -125,32 +211,39 @@
                     max_width = 80;
                     border = "rounded";
                 };
-            })
+
+            } null)
 
             # open diagnostic float on cursor hover
-            (Set <vim.opt.updatetime> 300)
-            (Call <vim.api.nvim_create_autocmd> [ "CursorHold" {
-                callback = Function ({ }: [
-                    (Call <vim.diagnostic.open_float> []) ]);
-            }])
 
-            (Call <vim.keymap.set> [
-                "n" "K"
-                (Function ({ }: [
+            (Set <vim.opt.updatetime> 300)
+
+            (M.createAutocmd "CursorHold" {
+                callback = Function ({ }: [
+                    (M.diagnostic.openFloat { })
+                ]);
+            })
+
+            (M.keymap.set' {
+                modes = "n";
+                lhs = "K";
+                rhs = Function ({ }: [
                     (Call <vim.lsp.buf.hover> { border = "rounded"; })
-                ]))
-                { desc = "Hover Documentation"; }
-            ])
+                ]);
+                opts.desc = "Hover Documentation";
+            })
 
             # define a textobject to select the entire file
-            (Call <vim.keymap.set> [ [ "x" "o" ] "ae" 
-                ":<C-U>lockmarks normal! ggVG<CR>"
-                { silent = true; }])
+            (M.keymap.set' {
+                modes = [ "x" "o" ];
+                lhs = "ae";
+                rhs = ":<C-U>lockmarks normal! ggVG<CR>";
+                opts.silent = true;
+            })
 
             # keybind for lsp formatting
-            (Call <vim.keymap.set> [ [ "n" ] "grq" <vim.lsp.buf.format> ])
-
-            (Call <vim.keymap.set> [ [ "n" ] "grs" <vim.lsp.buf.signature_help> ])
+            (M.keymap.set "n" "grq" <vim.lsp.buf.format> null)
+            (M.keymap.set "n" "grs" <vim.lsp.buf.signature_help> null)
         ];
 
         plugins = with L.lua; let
@@ -164,28 +257,32 @@
             prefixHashes = L.mapAttrValues (v: "#" + v);
 
             inherit (L.lua) __findFile;
+
+            nvim-treesitter = v.nvim-treesitter.withAllGrammars;
+
+            M = macros;
         in [
             # visual
             (luaPlugin v.base16-nvim (Code [
                 (Set <vim.opt.termguicolors> true)
-                (CallFrom (Require "base16-colorscheme") "setup"
+                (M.Setup "base16-colorscheme"
                     (prefixHashes config.colorScheme.palette))
             ]) { })
 
             (luaPlugin v.nvim-colorizer-lua (Code [
-                (CallFrom (Require "colorizer") "setup" {
+                (M.Setup "colorizer" {
                     user_default_options.mode = "virtualtext";
                 })
             ]) { })
 
             (luaPlugin v.gitsigns-nvim (Code [
-                (CallFrom (Require "gitsigns") "setup" { })
+                (M.Setup "gitsigns" { })
             ]) { })
 
             v.copilot-lualine
 
             (luaPlugin v.lualine-nvim (Code [
-                (CallFrom (Require "lualine") "setup" {
+                (M.Setup "lualine" {
                     options = {
                         icons_enabled = false;
                         theme = "base16";
@@ -196,7 +293,7 @@
             ]) { })
 
             (luaPlugin v.tabline-nvim (Code [
-                (CallFrom (Require "tabline") "setup" {
+                (M.Setup "tabline" {
                     options = {
                         show_devicons = false;
                         show_filename_only = true;
@@ -212,7 +309,7 @@
 
             (luaPlugin v.telescope-nvim (Code (let
                 mkMapping = from: to:
-                    (Call <vim.keymap.set> [ "n" from to ]);
+                    M.keymap.set "n" from to null;
             in [
                 (SetLocal <telescope> (Require "telescope"))
                 (SetLocal <tb> (Require "telescope.builtin"))
@@ -248,30 +345,56 @@
 
             v.nvim-treesitter-textobjects
 
-            (luaPlugin v.nvim-treesitter.withAllGrammars (Code [
-                (CallFrom (Require "nvim-treesitter.configs") "setup" {
-                    highlight.enable = true;
-                    indent.enable = true;
-                    endwise.enable = false; # TODO RRethy/nvim-treesitter-endwise/pull/42
+            (luaPlugin nvim-treesitter (Code [
+                (Set <vim.g.matchup_treesitter_include_match_words> true)
+                (Set <vim.g.matchup_treesitter_disable_virtual_text> false)
 
-                    matchup = {
+                (M.Setup "nvim-treesitter-textobjects" {
+                    select = {
                         enable = true;
-                        enable_quotes = true;
-                        include_match_words = true;
-                    };
+                        lookahead = true;
 
-                    textobjects = {
-                        select = {
-                            enable = true;
-                            lookahead = true;
-
-                            keymaps = {
-                                "iT" = "@type.inner";
-                                "aT" = "@type.outer";
-                            };
+                        keymaps = {
+                            "iT" = "@type.inner";
+                            "aT" = "@type.outer";
                         };
                     };
                 })
+
+                (CallOn <vim.opt.runtimepath> "append"
+                    [ ",${nvim-treesitter}/runtime" ])
+
+                (Set <ts> <vim.treesitter>)
+
+                (Set <ts_plugin> (Require "nvim-treesitter"))
+
+                (Set <_G.ts_foldexpr> <vim.treesitter.foldexpr>)
+                (Set <_G.ts_indentexpr> <ts_plugin.indentexpr>)
+
+                (SetLocal <get_buffer_ft> (Function ({ buf }: [
+                    (SetLocal <ft>
+                        (M.getOptionValue "filetype" { inherit buf; }))
+
+                    # For some reason it comes with some whitespace attached
+                    (ReturnOne (M.trim <ft>))
+                ])))
+
+                (M.createAutocmd "FileType" {
+                    desc = "Enable treesitter highlighting and indents";
+                    callback = Function ({ args }: [
+                        # Filetype of current buffer
+                        (SetLocal <ft> (Call <get_buffer_ft> [ <args.buf> ]))
+
+                        # If the language is available...
+                        (If (Call <ts.language.add> [ <ft> ]) [
+                            # enable treesitter highlighting, indents, folds
+                            (Call <ts.start> [ ])
+                            (Set <vim.bo.indentexpr> "v:lua.ts_indentexpr()")
+                            (Set <vim.wo.foldexpr> "v:lua.ts_foldexpr()")
+                            (Set <vim.wo.foldmethod> "expr")
+                        ])
+                    ]);
+                } )
             ]) {
                 runtime."after/queries/nix/injections.scm".source =
                     ./nvim/nix-injections.scm;
@@ -281,17 +404,15 @@
                     ./nvim/python-textobjects.scm;
             })
 
-            v.playground
-
             (luaPlugin v.nvim-treesitter-context (Code [
-                (CallFrom (Require "treesitter-context") "setup" {
+                (M.Setup "treesitter-context" {
                     enable = true;
                 })
             ]) { })
 
             (luaPlugin v.indent-blankline-nvim (Code [
                 # show indentation levels
-                (CallFrom (Require "ibl") "setup" {
+                (M.Setup "ibl" {
                     indent.char = "│";
 
                     scope.show_start = false;
@@ -304,7 +425,7 @@
             ]) { })
 
             (luaPlugin v.nvim-surround (Code [
-                (CallFrom (Require "nvim-surround") "setup" { })
+                (M.Setup "nvim-surround" { })
             ]) { })
 
             #vim-illuminate
@@ -314,12 +435,10 @@
             (luaPlugin v.nvim-lspconfig (Code [
                 (SetLocal <lspconfig> (Require "lspconfig"))
 
-                (SetLocal <lsp_caps>
-                    (Call <vim.lsp.protocol.make_client_capabilities> []))
+                (SetLocal <lsp_caps> (M.lsp.protocol.makeClientCapabilities))
 
                 (SetLocal <blink_caps>
-                    (CallFrom (Require "blink.cmp")
-                        "get_lsp_capabilities" []))
+                    (M.FromRequire "blink.cmp" "get_lsp_capabilities" []))
 
                 (SetLocal <extra_caps> {
                     # file watching
@@ -329,21 +448,21 @@
                     textDocument.semanticTokens.multilineTokenSupport = true;
                 })
 
-                (SetLocal <caps> (Call <vim.tbl_deep_extend> [
-                    "force"
-                    <lsp_caps>
-                    <blink_caps>
-                    <extra_caps> ]))
+                (SetLocal <caps>
+                    (M.tblDeepExtend "force"
+                        [ <lsp_caps> <blink_caps> <extra_caps> ]))
 
-                (Call <vim.lsp.config> [ "*" {
-                    capabilities = <caps>;
-                } ])
+                (M.lsp.config "*" { capabilities = <caps>; })
 
+                (M.lsp.inlayHint.enable true)
 
-                (Call <vim.lsp.inlay_hint.enable> [ true ])
+                # HACK: lua.nix suffers from implicit formal arg sorting
+                (SetLocal <setup_ls> (Function ({ name, settings }: [
+                    (M.lsp.config name settings)
+                    (M.lsp.enable name)
+                ])))
 
-
-                (Call <vim.lsp.config> [ "pyright" (let
+                (M.Call2 <setup_ls> "pyright" (let
                     pylanceMagic = builtins.readFile
                         ../../secrets/pylance-license.json;
                 in {
@@ -371,34 +490,9 @@
                         autoImportCompletions = true;
                         nodeExecutable = "${pkgs.nodejs}/bin/node";
                     };
-                }) ])
+                }))
 
-                (Call <vim.lsp.enable> [ "pyright" ])
-
-                # (let
-                #     gemCmd = exe: test: args: [
-                #         "bash"
-                #         "-c"
-                #         ("bundle exec ${exe} ${test}"
-                #             + " && exec bundle exec ${exe} ${args}"
-                #             + " || exec ${exe} ${args}")
-                #     ];
-
-                #     rubyLS = name: cmd: extra:
-                #         CallFrom (Index <lspconfig> name) "setup" {
-                #             capabilities = <caps>;
-                #             inherit cmd;
-                #         } // extra;
-                # in
-                #     Paste [
-                #         (rubyLS "steep"
-                #             (gemCmd "steep" "--version" "langserver") { })
-
-                #         (rubyLS "typeprof"
-                #             (gemCmd "typeprof" "--version" "--lsp --stdio") { }) ])
-
-
-                (Call <vim.lsp.config> [ "nil_ls" {
+                (M.Call2 <setup_ls> "nil_ls" {
                     settings.nil = let
                         nixWrapped = pkgs.writeShellScript "nix-wrapped" ''
                             exec ${lib.getExe systemConfig.nix.package} \
@@ -408,7 +502,7 @@
                         diagnostics.ignored = [ "uri_literal" ];
                         nix = {
                             binary = "${nixWrapped}";
-                            maxMemoryMB = 8192;
+                            maxMemoryMB = 16384;
 
                             flake = {
                                 autoArchive = true;
@@ -416,39 +510,51 @@
                             };
                         };
                     };
-                } ])
+                })
 
-                (Call <vim.lsp.enable> [ "nil_ls" ])
-
-                (Call <vim.lsp.config> [ "ccls" {
+                (M.Call2 <setup_ls> "ccls" {
                     single_file_support = true;
-                } ])
+                })
 
-                (Call <vim.lsp.enable> [ "ccls" ])
+                (M.Call2 <setup_ls> "ruby_lsp" {
+                    cmd_env = {
+                        BUNDLE_GEMFILE = "${../../pkgs/neovim-ruby-pkgs}/Gemfile";
+                    };
+
+                    init_options = {
+                        linters = [ "rubocop" "reek" ];
+                        formatter = "rubocop_internal";
+                        experimentalFeaturesEnabled = true;
+                    };
+                })
+
 
                 (SetLocal <auto_ls> [
                     "hls" "bashls" "cssls" 
-                    "ruby_lsp" "pyright" "ruff" "ts_ls" ])
+                    "steep" "sorbet" "typeprof"
+                    "pyright" "ruff"
+                    "ts_ls" ])
 
                 (ForEach (IPairs <auto_ls>) (_: name: [
-                    (Call <vim.lsp.enable> [ name ]) ]))
-
+                    (M.lsp.enable name)
+                ]))
 
                 # make nil-ls a semanticTokensProvider
-                (Call <vim.api.nvim_create_autocmd> [ "LspAttach" {
+                (M.createAutocmd "LspAttach" {
                     callback = Function ({ args }: [
                         (SetLocal <cid>
                             (Index' args [ "data" "client_id" ]))
 
                         (SetLocal <client>
-                            (Call <vim.lsp.get_client_by_id> [ <cid> ]))
+                            (M.lsp.getClientById <cid>))
 
                         (If (Eq <client.name> "nil_ls") [
                             (Set (Index' <client> [
                                     "server_capabilities"
                                     "semanticTokensProvider" ])
-                                null) ])]);
-                } ])
+                                null)
+                        ])]);
+                } )
             ]) { })
 
             (luaPlugin v.rustaceanvim (Code [
@@ -533,7 +639,7 @@
             ]) { })
 
             (luaPlugin v.nvim-lightbulb (Code [
-                (CallFrom (Require "nvim-lightbulb") "setup" {
+                (M.Setup "nvim-lightbulb" {
                     autocmd.enabled = true;
                 })
             ]) { })
@@ -541,54 +647,37 @@
             (luaPlugin v.actions-preview-nvim (Code [
                 (SetLocal <hl> (Require "actions-preview.highlight"))
 
-                (CallFrom (Require "actions-preview") "setup" { })
+                (M.Setup "actions-preview" { })
             ]) { })
-
-            # (let
-            #     statixConfig = pkgs.mkNamedTOML.generate "statix.toml" {
-            #         disabled = [ "unquoted_uri" "empty_pattern" ];
-            #     };
-
-            # in luaPlugin v.null-ls-nvim (Code [
-            #     (SetLocal <null_ls> (Require "null-ls"))
-
-            #     (CallFrom <null_ls> "setup" {
-            #         sources = [
-            #             <null_ls.builtins.diagnostics.shellcheck>
-            #             <null_ls.builtins.code_actions.shellcheck>
-            #             <null_ls.builtins.code_actions.statix>
-
-            #             (CallFrom <null_ls.builtins.diagnostics.statix> "with" {
-            #                 extra_args = [ "--config" "${statixConfig}" ];
-            #             })
-            #         ];
-            #      })
-            # ]) { })
 
             # completions
 
+            v.copilot-lsp
+
             (luaPlugin v.copilot-lua (Code [
-                (CallFrom (Require "copilot") "setup" [ {
+                (M.Setup "copilot" {
                     suggestion.enabled = false;
 
                     panel = {
                         enabled = false;
                         auto_refresh = true;
                     };
-                } ])
+
+                    nes = {
+                        enabled = true;
+                    };
+                })
             ]) { })
 
             v.blink-copilot
             v.blink-compat
             v.blink-emoji-nvim
+            v.blink-cmp-tmux
 
             v.cmp-treesitter
-            v.cmp-tmux
 
             (luaPlugin v.blink-cmp (Code [
-                (SetLocal <blink> (Require "blink.cmp"))
-
-                (CallFrom <blink> "setup" [ {
+                (M.Setup "blink.cmp" {
                     keymap = {
                         preset = "none";
 
@@ -619,11 +708,10 @@
 
                         menu.draw = {
                             columns = [
-                                (Call <vim.tbl_extend> [ "force"
+                                (Table' [
                                     [ "label" "label_description" ]
                                     { gap = 1; }
                                 ])
-
                                 [ "kind" ]
                                 [ "source_id" ]
                             ];
@@ -638,7 +726,7 @@
 
                         menu = {
                             border = "none";
-                            draw.treesitter = [ "lsp" ];
+                            draw.treesitter = [ "lsp" "copilot" ];
                         };
                     };
 
@@ -669,19 +757,17 @@
 
                         tmux = {
                             name = "tmux";
-                            module = "blink.compat.source";
+                            module = "blink-cmp-tmux";
                             score_offset = -50;
                         };
                     };
 
                     signature.enabled = true;
-                } ])
+                })
             ]) { })
 
             (luaPlugin v.blink-pairs (Code [
-                (SetLocal <pairs> (Require "blink-pairs"))
-
-                (Call <pairs.setup> {
+                (M.Setup "blink-pairs" {
                     highlights.groups = [
                         "rainbowcol1"
                         "rainbowcol2"
@@ -730,24 +816,24 @@
                 };
 
             in luaPlugin v.nvim-tree-lua (Code [
-                (CallFrom (Require "nvim-tree") "setup" settings)
+                (M.Setup "nvim-tree" settings)
 
                 (SetLocal <tree_api> (Require "nvim-tree.api"))
 
-                (Call <vim.keymap.set> [ "n" "<leader>t" <tree_api.tree.toggle> ])
-                (Call <vim.keymap.set> [ "n" "<leader>r" <tree_api.tree.reload> ])
+                (SetLocal <find_file_open> (Function ({ }: [
+                    (Call <tree_api.tree.find_file> { open = true; })
+                ])))
 
-                (Call <vim.keymap.set> [ "n" "<leader>n" (Function ({ }: [
-                    (Call <tree_api.tree.find_file> { open = true; })])) ])
+                (M.keymap.set "n" "<leader>t" <tree_api.tree.toggle> null)
+                (M.keymap.set "n" "<leader>r" <tree_api.tree.reload> null)
+                (M.keymap.set "n" "<leader>n" <find_file_open> null)
 
-                (Call <vim.api.nvim_create_autocmd> [ "BufEnter" {
+                (M.createAutocmd "BufEnter" {
                     nested = true;
                     callback = Function ({ args }: [
-                        (SetLocal <n_windows>
-                            (Count (Call <vim.api.nvim_list_wins> [])))
+                        (SetLocal <n_windows> (Count (M.listWins)))
 
-                        (SetLocal <this_buf>
-                            (Call <vim.api.nvim_get_current_buf> []))
+                        (SetLocal <this_buf> (M.getCurrentBuf))
 
                         (SetLocal <in_tree>
                             (Call <tree_api.tree.is_tree_buf> [ <this_buf> ]))
@@ -755,10 +841,13 @@
                         (If (And' [
                                 (Ne <this_buf> 1)
                                 (Eq <n_windows> 1)
-                                <in_tree> ])
-                           [ (Call <vim.cmd.quit> []) ]) ]);
-                    }])
+                                <in_tree> ]) [
+                            (Call <vim.cmd.quit> [])
+                        ])
+                    ]);
+                })
             ]) { })
+
             # misc
             v.vim-sensible
             v.vim-startify

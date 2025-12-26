@@ -1,4 +1,9 @@
-{ self, nixpkgs, nix-on-droid, nix-prelude, nil, ... }@flakes:
+{ self
+, nixpkgs
+, nix-on-droid
+, nix-prelude
+, nil
+, ... }@flakes:
 
 let
     inherit (import ./local-modules.nix) localModules;

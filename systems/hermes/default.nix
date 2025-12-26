@@ -53,9 +53,6 @@
     # disable font hinting
     fonts.fontconfig.hinting.enable = false;
 
-    # faster wifi reconnect
-    networking.networkmanager.wifi.backend = "iwd";
-
     # nfc
     services.neard.enable = false;
 

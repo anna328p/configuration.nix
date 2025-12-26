@@ -26,8 +26,12 @@ final: prev: let
         set = { nvim-treesitter = pkg; };
 
         overrides = final.callPackage src { } set set;
+
+        pkg' = pkg.overrideAttrs (_: overrides);
     in
-        pkg.overrideAttrs (_: overrides);
+        pkg'.overrideAttrs (oa: {
+            postPatch = "";
+        });
 
     nvimOverlay = vfinal: vprev: {
         inherit nvim-treesitter;
@@ -41,6 +45,7 @@ final: prev: let
         "vim-slim"
         "rainbow-delimiters-nvim"
         "copilot-lualine"
+        "nvim-treesitter-textobjects"
     ];
 
 in {

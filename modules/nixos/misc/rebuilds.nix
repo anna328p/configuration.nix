@@ -1,7 +1,7 @@
 { config, lib, ... }:
 
 let
-    inherit (lib) mkOption mkIf types;
+    inherit (lib) mkOption mkIf types optional;
 in {
     options.misc = {
         buildFull = mkOption {
@@ -11,5 +11,17 @@ in {
         };
     };
 
-    config._module.args.ifFullBuild = mkIf config.misc.buildFull;
+    config = let
+        buildFull = config.misc.buildFull;
+        isSmall = !buildFull;
+    in {
+        _module.args.ifFullBuild = mkIf buildFull;
+
+        system.nixos = {
+            tags = optional isSmall "small";
+            variant_id = mkIf isSmall "small";
+            variantName = mkIf isSmall "Small";
+        };
+    };
+
 }

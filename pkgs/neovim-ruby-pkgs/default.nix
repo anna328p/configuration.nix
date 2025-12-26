@@ -4,9 +4,7 @@
 }:
 
 bundlerEnv {
-    name = "neovim-ruby-env";
-
+    name = "neovim-ruby-pkgs";
     ruby = ruby_latest;
-
     gemdir = ./.;
 }
