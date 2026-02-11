@@ -386,16 +386,4 @@ in rec {
     genVarDecls = genDecls (k: v: "--${k}: ${v} !important;");
 
     byVariant = variant: light: dark: { inherit light dark; }.${variant};
-
-    # Export all new functions
-    inherit
-        hexToRgb rgbToHex
-        hexToOklab oklabToHex
-        hexToOkhsv okhsvToHex
-        hexToOkhsl okhslToHex
-        rgbToLinear linearToRgb
-        linearRgbToOklab oklabToLinearRgb
-        oklabToOkhsv okhsvToOklab
-        oklabToOkhsl okhslToOklab
-        ;
 }
