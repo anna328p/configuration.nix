@@ -14,17 +14,33 @@
 
             # ADALM2000
             { vid = "0451"; pid = "b672"; }
+
+            # Pinecil v1 GD32 DFU Bootloader
+            { vid = "28e9"; pid = "0189"; }
+
+            # Pinecil v2 BLIOT CDC Virtual ComPort
+            { vid = "ffff"; pid = "ffff"; }
+        ];
+
+        usb.mtpNoProbe = [
+            # Pinecil v1 GD32 DFU Bootloader
+            { vid = "28e9"; pid = "0189"; }
+
+            # Pinecil v2 BLIOT CDC Virtual ComPort
+            { vid = "ffff"; pid = "ffff"; }
         ];
 
         extraRuleFiles = let
-            libfido2-rules = "${pkgs.libfido2}/etc/udev/rules.d/70-u2f.rules";
-            badstr = ''GROUP="plugdev", '';
+            inherit (builtins) readFile replaceStrings toFile;
+            redact = str: replaceStrings [ str ] [ "" ];
 
-            text = builtins.readFile libfido2-rules;
-            text' = builtins.replaceStrings [ badstr ] [ "" ] text;
-            file = builtins.toFile "70-u2f.rules" text';
+            u2frules = 
+                "${pkgs.libfido2}/etc/udev/rules.d/70-u2f.rules"
+                |> readFile
+                |> redact ''GROUP="plugdev", ''
+                |> toFile "70-u2f.rules";
         in [
-            file
+            u2frules
         ];
 
         extraRules = [

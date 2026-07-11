@@ -5,11 +5,13 @@
         etc = {
             dirs = [
                 "nixos"
+                "colord"
             ];
 
             files = [
                 "machine-id"
                 "zfs/zpool.cache"
+                "wpa_supplicant/imperative.conf"
             ];
         };
 

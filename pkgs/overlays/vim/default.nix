@@ -1,7 +1,11 @@
 { flakes, ... }:
 
 final: prev: let
-    nvim-pkgs = flakes.neovim-nightly-overlay.packages.${final.system};
+    inherit (final.stdenv.hostPlatform) system;
+
+    nvim-pkgs = flakes.neovim-nightly-overlay.packages.${system};
+
+    unstableSmall = flakes.nixpkgs-unstable-small.legacyPackages.${system};
 
     buildPlugin = final.vimUtils.buildVimPlugin;
 
@@ -40,6 +44,9 @@ final: prev: let
         neotest = vprev.neotest.overrideAttrs (old: {
             doCheck = false;
         });
+
+        # TODO: remove when NixOS/nixpkgs#523577 makes it to unstable
+        inherit (unstableSmall.vimPlugins) blink-pairs;
 
     } // buildPluginsFrom flakes [
         "vim-slim"

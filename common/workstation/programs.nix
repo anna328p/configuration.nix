@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, ... }:
 
 {
     # flatpak
@@ -9,10 +9,6 @@
             enable = true;
             enableZshIntegration = true;
         };
-
-        git.package = if config.misc.buildFull
-            then pkgs.gitFull
-            else pkgs.gitMinimal;
 
         appimage = {
             enable = config.misc.buildFull;

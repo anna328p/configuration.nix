@@ -2,6 +2,9 @@
 
 {
     boot = {
+        # Graphical splash screen
+        plymouth.enable = true;
+
         # Emulate ARM systems for remote deployments
         binfmt.emulatedSystems = lib.optionals config.misc.buildFull
             [ "aarch64-linux" ];
@@ -9,6 +12,9 @@
         # Control connected monitors' settings
         kernelModules = [ "i2c-dev" "ddcci" ];
         #extraModulePackages = [ config.boot.kernelPackages.ddcci-driver ];
+
+        # Disable spectre/meltdown mitigations to improve power efficiency
+        kernelParams = [ "iomem=relaxed" "mitigations=off" ];
     };
 
     environment.systemPackages = let p = pkgs; in [
@@ -23,6 +29,9 @@
 
         # Power management
         config.boot.kernelPackages.cpupower
+
+        # ADB
+        p.android-tools
     ];
 
     users = {
@@ -38,9 +47,6 @@
         groups.i2c = {};
         groups.adbusers = {};
     };
-
-    # Android device debugging support
-    programs.adb.enable = true;
 
     services = {
         # Mouse configuration

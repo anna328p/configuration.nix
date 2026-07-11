@@ -1,9 +1,7 @@
-{ localModules, flakes, lib, ... }:
+{ lib, ... }:
 
 {
     imports = [
-        flakes.intransience.nixosModules.default
-
         ./system.nix
         ./home.nix
     ];

@@ -19,6 +19,9 @@
         firewall.enable = false;
     };
 
+    # HACK: nixpkgs#427528 breaks when using etc overlay
+    systemd.services.wpa_supplicant.serviceConfig.ExecStartPre = lib.mkForce [];
+
     users.users.anna.extraGroups = [ "networkmanager" "dialout" ];
 
     services = {
@@ -61,7 +64,7 @@
     };
 
     environment.etc = {
-        mullvad-vpn = lib.mkIf config.misc.buildFull {
+        mullvad-vpn = lib.mkIf config.services.mullvad-vpn.enable {
             source = "/var/opt/mullvad-vpn";
             mode = "symlink";
         };

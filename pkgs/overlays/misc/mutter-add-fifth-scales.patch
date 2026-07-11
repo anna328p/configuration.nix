@@ -1,0 +1,27 @@
+From d405af135fa1d4699ae3fb1c189b2e7db10100bd Mon Sep 17 00:00:00 2001
+From: Daniel van Vugt <daniel.van.vugt@canonical.com>
+Date: Thu, 31 Jul 2025 16:35:22 +0800
+Subject: [PATCH] monitor: Add support for one fifth scaling factors
+
+---
+ src/backends/meta-monitor.c     |  2 +-
+ src/tests/gdctl/show            |  6 +--
+ src/tests/gdctl/show-modes      |  6 +--
+ src/tests/gdctl/show-properties | 14 ++---
+ src/tests/gdctl/show-verbose    | 26 ++++-----
+ src/tests/monitor-scale-tests.c | 96 ++++++++++++++++++---------------
+ 6 files changed, 81 insertions(+), 69 deletions(-)
+
+diff --git a/src/backends/meta-monitor.c b/src/backends/meta-monitor.c
+index adda5a67b7..4dad7f3f5d 100644
+--- a/src/backends/meta-monitor.c
++++ b/src/backends/meta-monitor.c
+@@ -30,7 +30,7 @@
+ #include "backends/meta-backlight-private.h"
+ #include "core/boxes-private.h"
+ 
+-#define MAX_DENOMINATOR 4
++#define MAX_DENOMINATOR 5
+ #define MIN_INTEGER_SCALE 1
+ #define MAX_INTEGER_SCALE 4
+ #define MINIMUM_LOGICAL_AREA (800 * 480)

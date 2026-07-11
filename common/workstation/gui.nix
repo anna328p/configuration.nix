@@ -56,6 +56,7 @@
         e.transmission-daemon-indicator-ng
         e.blur-my-shell
         e.battery-time-2
+        e.clockify-time-tracker
     ];
 
     environment.variables = {
@@ -105,15 +106,7 @@
             };
         };
 
-        displayManager.autoLogin = {
-            enable = true;
-            user = "anna";
-        };
-
-        displayManager.gdm = {
-            enable = true;
-            wayland = true;
-        };
+        displayManager.gdm.enable = true;
 
         xserver = {
             desktopManager.xterm.enable = false;

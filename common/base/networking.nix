@@ -27,12 +27,14 @@
         # use systemd-resolved
         resolved = {
             enable = true;
-            llmnr = "false";
 
-            fallbackDns = [
-                "1.1.1.1"
-                "1.0.0.1"
-            ];
+            settings.Resolve = {
+                LLMNR = false;
+                FallbackDns = [
+                    "1.1.1.1"
+                    "1.0.0.1"
+                ];
+            };
         };
     };
 

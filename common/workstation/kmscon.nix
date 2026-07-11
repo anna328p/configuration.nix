@@ -1,33 +1,27 @@
 { config, lib, L, flakes, ... }:
 
-{
-    services.kmscon = let
-        hmcfg = config.home-manager.users.anna;
-        monospaceFont = hmcfg.misc.fonts.monospace;
-    in {
+let
+    hmcfg = config.home-manager.users.anna;
+    monospaceFont = hmcfg.misc.fonts.monospace;
+in {
+    fonts.packages = [ monospaceFont.package ];
+
+    services.kmscon = {
         enable = false;
-        hwRender = true;
 
-        fonts = [
-            { inherit (monospaceFont) name package; }
-        ];
-
-        extraConfig = let
-            inherit (builtins) toString;
-            inherit (lib) mapAttrsToList mapAttrs;
-            inherit (L) concatLines;
-
-            toLine = k: v: "${k}=${toString v}";
-
-            mkConf = attrs: concatLines (mapAttrsToList toLine attrs);
+        config = let
+            inherit (lib) mapAttrs;
 
             inherit (flakes.nix-colors.lib-core.conversions) hexToRGBString;
             mkColorStrings = mapAttrs (_: hexToRGBString ", ");
 
             c = mkColorStrings hmcfg.colorScheme.palette;
 
-        in mkConf {
+        in {
+            hwaccel = true;
+
             font-size = monospaceFont.size;
+            font-name = monospaceFont.name;
 
             palette = "custom";
 

@@ -26,7 +26,7 @@ in {
         };
     in {
         # EFI System Partition
-        "/boot" = { device = devs.boot; };
+        "/boot" = { device = devs.boot; fsType = "vfat"; };
 
         # Nix store
         "/nix" = dataset "volatile/nix";

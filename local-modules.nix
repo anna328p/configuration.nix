@@ -11,9 +11,12 @@ rec {
 
         common = {
             base = common/base;
-            physical = common/physical;
-            server = common/server;
+
             virtual = common/virtual;
+            physical = common/physical;
+            portable = common/portable;
+
+            server = common/server;
             workstation = common/workstation;
 
             impermanent = common/impermanent;

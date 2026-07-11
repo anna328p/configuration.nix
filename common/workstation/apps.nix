@@ -1,7 +1,9 @@
-{ pkgs, flakes, system, ... }:
+{ pkgs, ... }:
 
 {
     environment.systemPackages = let p = pkgs; in [
+        p.clockify
+
         ## Internet / Communications
 
         # Browser
@@ -15,12 +17,16 @@
         p.telegram-desktop
         p.nheko
         p.thunderbird
+        p.signal-desktop
 
         # Notes
         p.logseq
+        p.anytype
 
         # Graphics
         p.gimp3
+        p.darktable
+
         p.graphviz
 
         # Media
@@ -33,26 +39,6 @@
         # Documents
         p.libreoffice-fresh
 
-        ## Programming / Software development
-
-        # Interpreters
-        p.nodejs
-        p.ruby_latest
-        p.python3
-
-        # Nix
-        p.nix-prefetch-git
-        p.cachix
-
-        # Misc
-        p.gh # GitHub CLI
-        p.direnv
-        p._7zz
-        p.nix-tree
-        p.binutils # strings
-        p.binwalk
-        p.difftastic
-
         # Misc
         p.espeak-ng # TTS
     ];
@@ -61,5 +47,8 @@
     nixpkgs.config.permittedInsecurePackages = [
         # nheko dep
         "olm-3.2.16"
+
+        # logseq dep
+        "electron-39.8.10"
     ];
 }

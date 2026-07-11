@@ -68,6 +68,8 @@ function base16 {
   typeset -g POWERLEVEL9K_MODE=nerdfont-complete
   typeset -g POWERLEVEL9K_ICON_PADDING=none
 
+  typeset -g POWERLEVEL9K_TERM_SHELL_INTEGRATION=true
+
   # When set to true, icons appear before content on both sides of the prompt. When set
   # to false, icons go after content. If empty or not set, icons go before content in the left
   # prompt and after content in the right prompt.
@@ -166,8 +168,7 @@ function base16 {
   # If set to "first" ("last"), remove everything before the first (last) subdirectory that contains
   # files matching $POWERLEVEL9K_SHORTEN_FOLDER_MARKER. For example, when the current directory is
   # /foo/bar/git_repo/nested_git_repo/baz, prompt will display git_repo/nested_git_repo/baz (first)
-  # or nested_git_repo/baz (last). This assumes that git_repo and nested_git_repo contain markers
-  # and other directories don't.
+  # or nested_git_repo/baz (last). This assumes that git_repo and nested_git_repo contain markers and other directories don't.
   #
   # Optionally, "first" and "last" can be followed by ":<offset>" where <offset> is an integer.
   # This moves the truncation point to the right (positive offset) or to the left (negative offset)

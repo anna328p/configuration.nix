@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ifFullBuild, ... }:
+{ pkgs, lib, config, ... }:
 
 {
     environment.systemPackages = let p = pkgs; in [
@@ -7,9 +7,8 @@
     ] ++ (lib.optionals config.misc.buildFull [
         # Steam
         p.protontricks
-        p.adwsteamgtk
 
-        # Meta Quest app store
+        # Oculus Quest app store
         p.sidequest
 
         # Games
@@ -19,5 +18,6 @@
         p.prismlauncher # Minecraft
     ]);
 
+    # TODO: libva build broken
     programs.steam.enable = config.misc.buildFull;
 }

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, config, ... }:
 
 {
     # MIDI support
@@ -7,7 +7,14 @@
     # Manage audio server stuff
     environment.systemPackages = let p = pkgs; in [
         p.pavucontrol
-        p.helvum
+        p.crosspipe
+
+        p.carla
+        p.lsp-plugins
+        p.audacity
+    ] ++ lib.optionals config.misc.buildFull [
+        p.audacity
+        p.vcv-rack
     ];
 
     # Allow audio access (I have no idea if this does anything)

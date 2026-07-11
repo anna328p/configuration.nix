@@ -1,0 +1,7 @@
+{ ... }:
+
+{
+    imports = [
+        ./power-management.nix
+    ];
+}

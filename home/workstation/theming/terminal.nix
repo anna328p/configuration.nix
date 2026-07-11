@@ -42,11 +42,11 @@ in {
 
             font-size = config.misc.fonts.monospace.size;
             font-variation = "wdth=120";
-            # adjust-cell-width = "-5%";
 
             clipboard-read = "allow";
             link-url = true;
             shell-integration = "none";
+            shell-integration-features = "cursor";
 
             linux-cgroup = "single-instance";
 

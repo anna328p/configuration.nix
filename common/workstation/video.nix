@@ -18,6 +18,7 @@
 
     # Hardware video decoding
     hardware.graphics.extraPackages = let p = pkgs; in [
-        p.libva1 p.libva-vdpau-driver p.libvdpau-va-gl
+    # TODO reenable when libva build gets fixed
+    #p.libva1 p.libva-vdpau-driver p.libvdpau-va-gl
     ];
 }

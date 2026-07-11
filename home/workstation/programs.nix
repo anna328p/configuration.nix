@@ -2,11 +2,6 @@
 
 {
     services = {
-        fluidsynth = {
-            enable = systemConfig.misc.buildFull;
-            soundService = "pipewire-pulse";
-        };
-
         gpg-agent = {
             enable = true;
             enableSshSupport = true;

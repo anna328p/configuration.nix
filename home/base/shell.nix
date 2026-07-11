@@ -52,7 +52,7 @@
                 LESS+=" --proc-backspace --proc-return"
 
                 LESS+=" --quit-if-one-screen"
-                LESS+=" --window=-4"
+                # LESS+=" --window=-4"
                 LESS+=" --chop-long-lines"
 
                 LESS+=" --incsearch"

@@ -13,13 +13,18 @@ in {
             name = byVariant' "adw-gtk3" "adw-gtk3-dark";
         };
 
-        gtk2.extraConfig = "gtk-theme-name=\"${byVariant' "Adwaita" "Adwaita-dark"}\"";
+        gtk4.theme = null;
+
+        gtk2.extraConfig = let
+            themeName = byVariant' "Adwaita" "Adwaita-dark";
+        in ''
+            gtk-theme-name="${themeName}"
+        '';
     };
 
 
     # TODO: https://github.com/nix-community/home-manager/issues/7113
     xdg.configFile."gtk-4.0/gtk.css" = lib.mkForce { text = config.gtk.gtk4.extraCss; };
-
 
     qt = {
         enable = true;

@@ -1,10 +1,11 @@
-{ pkgs, lib, localModules, flakes, ... }:
+{ pkgs, lib, localModules, L, flakes, ... }:
 {
     imports = let
         inherit (localModules) common;
     in [
         common.base
         common.physical
+        common.portable
         common.workstation
         common.misc.amd
 
@@ -13,25 +14,18 @@
         ./disks.nix
     ];
 
-    boot = {
-        zfs.package = pkgs.zfs_unstable;
+    boot = let
+        inherit (builtins) toString;
+        inherit (L.units) gibi;
 
-        kernelPackages = pkgs.linuxPackages_6_17;
+        arcSize = toString (8 * gibi);
+    in {
+        zfs.package = pkgs.zfs_2_4;
 
-        kernelParams = [
-            # for power management
-            "pcie_aspm=force"
+        kernelPackages = pkgs.linuxPackages_7_1;
 
-            # disable PSR2 Selective Updates due to visual glitches
-            # "amdgpu.dcdebugmask=0x200"
-
-            # disable Panel Replay and PSR due to freezing
-            "amdgpu.dcdebugmask=0x410"
-        ];
-
-        kernelModules = [
-            #             "nxp_nci" "nxp_nci_i2c" # NFC
-        ];
+        # Address OOM lockups
+        kernelParams = [ "zfs.zfs_arc_max=${arcSize}" ];
 
         plymouth.enable = lib.mkForce false;
     };
@@ -63,22 +57,6 @@
 
     # fingerprint reader
     services.fprintd.enable = true;
-
-    # power saving
-
-    hardware.bluetooth.powerOnBoot = false;
-
-    services.tuned.enable = true;
-    services.tlp.enable = lib.mkForce false;
-
-    powerManagement = {
-        enable = true;
-        powertop.enable = true;
-
-        cpuFreqGovernor = "schedutil";
-    };
-
-    environment.systemPackages = [ pkgs.powertop ];
 
     # misc
 

@@ -13,7 +13,7 @@
         dev.enable = true;
         
         man = {
-            generateCaches = true;
+            cache.enable = true;
             
             man-db.enable = false;
             mandoc.enable = true;

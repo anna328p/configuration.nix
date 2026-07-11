@@ -1,4 +1,4 @@
-{ config, local-lib, lib, L, ... }:
+{ config, local-lib, lib, L, pkgs, ... }:
 
 
 {
@@ -34,6 +34,11 @@
                 description = "List of USB device IDs to mark with the uaccess flag";
                 type = t.listOf usbDevSpec;
             };
+
+            mtpNoProbe = mkOption {
+                description = "List of USB devices for which to disable MTP probing";
+                type = t.listOf usbDevSpec;
+            };
         };
     };
 
@@ -44,25 +49,41 @@
         inherit (L) pipe' concatLines concatMapLines;
         inherit (lib) mkIf cartesianProduct;
 
-    in {
-        services.udev = mkIf cfg.udev.enable {
-            extraRules = let
-                uaccessRule = { vid, pid }:
-                    ''SUBSYSTEMS=="usb", ATTRS{idVendor}=="${vid}", '' +
-                    ''ATTRS{idProduct}=="${pid}", TAG+="uaccess"'';
-
-                uaccessRules = pipe' [
+        usbRules = let
+            mkRules = mkRule: 
+                pipe' [
                     (map cartesianProduct)
                     concatLists
-                    (map uaccessRule)
+                    (map mkRule)
                     concatLines
                 ];
 
-            in concatLines [
-                (uaccessRules cfg.udev.usb.uaccessDevices)
-                (concatMapLines readFile cfg.udev.extraRuleFiles)
-                (concatLines cfg.udev.extraRules)
-            ];
+            mkUSBRule = rest:
+                { vid, pid }:
+                    ''SUBSYSTEMS=="usb"''
+                    + '', ATTRS{idVendor}=="${vid}"''
+                    + '', ATTRS{idProduct}=="${pid}"''
+                    + '', ${rest}'';
+
+            uaccessRule = mkUSBRule ''TAG+="uaccess"'';
+            mtpNoProbeRule = mkUSBRule ''ENV{MTP_NO_PROBE}="1"'';
+
+        in concatLines [
+            (mkRules uaccessRule cfg.udev.usb.uaccessDevices)
+            (mkRules mtpNoProbeRule cfg.udev.usb.mtpNoProbe)
+            (concatMapLines readFile cfg.udev.extraRuleFiles)
+            (concatLines cfg.udev.extraRules)
+        ];
+
+        usbRulesPkg = pkgs.writeTextFile {
+            name = "udev-rules-usb";
+            text = usbRules;
+            destination = "/etc/udev/rules.d/65-usb.rules";
+        };
+
+    in {
+        services.udev = mkIf cfg.udev.enable {
+            packages = [ usbRulesPkg ];
         };
     };
 }

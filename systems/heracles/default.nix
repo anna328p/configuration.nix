@@ -15,6 +15,7 @@
         ./nginx.nix
         ./pds.nix
         ./postgresql.nix
+        ./anytype.nix
     ];
 
     nixpkgs.hostPlatform = lib.systems.examples.aarch64-multiplatform;

@@ -105,14 +105,13 @@
 
         extraPackages = let
             p = pkgs;
-            n = pkgs.nodePackages;
         in [
             p.neovim-ruby-env
             p.inotify-tools
             p.difftastic
 
-            n.vscode-langservers-extracted
-            n.bash-language-server
+            p.vscode-langservers-extracted
+            p.bash-language-server
         ] ++ (lib.optionals systemConfig.misc.buildFull [
             p.ccls
             p.proselint
@@ -123,10 +122,10 @@
             p.shellcheck
             p.pyright p.ruff
             p.vscode-extensions.vadimcn.vscode-lldb.adapter
-            p.typescript-language-server n.prettier
+            p.typescript-language-server p.prettier
         ]) ++ lib.optional pylanceExists pylance;
 
-        extraLuaConfig = let
+        initLua = let
             rg = lib.getExe pkgs.ripgrep;
 
             opts = {
@@ -189,7 +188,7 @@
             (M.createUserCommand "W" "write <args>" { nargs = "*"; })
 
             # new cmdline
-            (M.FromRequire "vim._extui" "enable" {
+            (M.FromRequire "vim._core.ui2" "enable" {
                 enable = true;
             })
 
@@ -664,7 +663,7 @@
                     };
 
                     nes = {
-                        enabled = true;
+                        enabled = false;
                     };
                 })
             ]) { })

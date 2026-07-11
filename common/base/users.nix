@@ -1,4 +1,4 @@
-{ lib, L, pkgs, flakes, config, specialArgs, localModules, ... }:
+{ lib, flakes, config, specialArgs, localModules, ... }:
 
 {
     imports = [
@@ -15,27 +15,15 @@
                       + "659EYdA2EnrNxB9vTrSmJVv5lAlF8nR0fu4HpBJ5e5wP02LHqq0";
     in {
         mutableUsers = false;
-        defaultUserShell = pkgs.zsh;
 
-        users.anna = let
-            # consistent uid everywhere
-            uid = 1000;
-
-            # container support
-            subIdOffset = uid * (L.pow2 16);
-            subIdWidth = (L.pow2 16) - 1;
-        in {
+        users.anna = {
             description = "Anna";
             isNormalUser = true;
 
-            inherit uid;
+            uid = 1000; # consistent uid everywhere
+            autoSubUidGidRange = true; # container support
 
-            # container support
-            subUidRanges = [ { startUid = subIdOffset; count = subIdWidth; } ];
-            subGidRanges = [ { startGid = subIdOffset; count = subIdWidth; } ];
-
-            # sudo rights
-            extraGroups = [ "wheel" ];
+            extraGroups = [ "wheel" ]; # sudo rights
 
             initialHashedPassword = passwdHash;
 
@@ -60,23 +48,4 @@
         
         users.anna = { };
     };
-
-    security = {
-        sudo.enable = false;
-        
-        doas.enable = true;
-        doas.wheelNeedsPassword = false; # https://xkcd.com/1200
-
-        allowUserNamespaces = true;
-    };
-
-    environment.systemPackages = let
-        doas-sudo-wrapper = pkgs.writeShellScriptBin "sudo" ''
-            exec doas "$@"
-        '';
-    in [
-        doas-sudo-wrapper
-    ];
-
-    nix.settings.trusted-users = [ "root" "@wheel" ];
 }

@@ -14,7 +14,7 @@
 
         ./docs.nix
 
-        ./sound.nix
+        ./audio.nix
         ./video.nix
         ./gui.nix
         ./rygel.nix
@@ -24,13 +24,9 @@
         ./apps.nix
         ./apps-extra.nix
         ./programs.nix
+        ./devtools.nix
+        ./radio.nix
     ];
-
-    boot = {
-        plymouth.enable = true;
-
-        kernelParams = [ "iomem=relaxed" "mitigations=off" ];
-    };
 
     # Import home configs
     home-manager.users.anna.imports = [ localModules.home.workstation ];

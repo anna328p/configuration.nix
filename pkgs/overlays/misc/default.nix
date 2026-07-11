@@ -19,19 +19,22 @@ final: prev: let
 
     inherit (final.stdenv.hostPlatform) system;
 
+    pkgsMaster = import flakes.nixpkgs-master {
+        inherit system;
+        config.allowUnfree = true;
+    };
+
     firefoxPkgs = flakes.firefox-nightly.packages.${system};
 in {
     ruby_latest = final."ruby_${rubyVer}";
     rubyPackages_latest = final."rubyPackages_${rubyVer}";
+
+    inherit (pkgsMaster) claude-code;
      
     mutter = prev.mutter.overrideAttrs (oa: {
-        src = flakes.mutter;
-
-        postUnpack = ''
-            pushd source/subprojects
-            ln -s ${flakes.gvdb} gvdb
-            popd
-        '';
+        patches = (oa.patches or []) ++ [
+            ./mutter-add-fifth-scales.patch
+        ];
     });
 
     valkey = disableCheck prev.valkey;
@@ -87,7 +90,7 @@ in {
     in
         final.wrapDiscord final.discord;
 
-    wine-custom = prev.wineWowPackages.full.override {
+    wine-custom = prev.wineWow64Packages.full.override {
         wineRelease = "staging";
         gtkSupport = true;
         vaSupport = true;
@@ -102,7 +105,10 @@ in {
         pkgB = disableInstallCheck pkgA;
 
         pkgC = pkgB.overrideAttrs (oa: {
-            buildInputs = oa.buildInputs ++ [ final.python3Packages.pycryptodome ];
+            # HACK: temp fix until nixpkgs#493988 is merged
+            preInstall = ''
+                export QMAKE="${final.qt6.qtbase}/bin/qmake"
+            '';
         });
     in
         pkgC.override {

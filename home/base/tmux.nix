@@ -20,8 +20,6 @@
         terminal = "tmux-256color";
 
         extraConfig = ''
-            bind-key -n C-j detach
-
             set-option -ga terminal-features \
                 ",*ghostty:clipboard:cstyle:extkeys:focus:hyperlinks:margins:mouse:osc7:overline:RGB:strikethrough:sync:usstyle:"
 

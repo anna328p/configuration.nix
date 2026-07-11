@@ -14,6 +14,7 @@
     xdg.userDirs = {
         enable = true;
         createDirectories = true;
+        setSessionVariables = true;
     };
 
     manual.manpages.enable = lib.mkForce true;

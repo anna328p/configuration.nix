@@ -1,10 +1,8 @@
 { lib, pkgs, ... }:
 
-let
-    kernelPackages = lib.mkDefault pkgs.linuxPackages_latest;
-in {
+{
     boot = {
-        inherit kernelPackages;
+        kernelPackages = lib.mkDefault pkgs.linuxPackages_latest;
 
         supportedFilesystems = [
             "zfs"
@@ -17,5 +15,7 @@ in {
             kernelModules = [ "dm-snapshot" ];
             supportedFilesystems = [ "zfs" ];
         };
+
+        zfs.forceImportRoot = false;
     };
 }

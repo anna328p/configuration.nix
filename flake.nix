@@ -67,7 +67,6 @@
         snm.url = "gitlab:simple-nixos-mailserver/nixos-mailserver";
         snm.inputs = {
             nixpkgs.follows = "nixpkgs";
-            nixpkgs-25_05.follows = "nixpkgs";
             flake-compat.follows = "flake-compat";
         };
 
@@ -75,9 +74,10 @@
 
         nix.url = "https://flakehub.com/f/DeterminateSystems/nix-src/*";
         nix.inputs = {
-            nixpkgs.follows = "nixpkgs";
-            nixpkgs-23-11.follows = "nixpkgs";
-            nixpkgs-regression.follows = "nixpkgs";
+        # TODO broken wasmtime rust 1.88 something
+        #     nixpkgs.follows = "nixpkgs";
+        #     nixpkgs-23-11.follows = "nixpkgs";
+        #     nixpkgs-regression.follows = "nixpkgs";
             flake-parts.follows = "flake-parts";
         };
 
@@ -92,7 +92,6 @@
         ghostty.url = "github:ghostty-org/ghostty/tip";
         ghostty.inputs = {
             flake-compat.follows = "flake-compat";
-            flake-utils.follows = "flake-utils";
             nixpkgs.follows = "nixpkgs-unstable";
         };
 
