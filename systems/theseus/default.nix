@@ -15,6 +15,8 @@
         ./transmission.nix
         ./nginx.nix
         ./extra-users.nix
+        ./samba.nix
+        ./comfyui.nix
 
         common.misc.ftp
     ];
@@ -42,8 +44,14 @@
 
     services = {
         atftpd.enable = true;
-        xserver.displayManager.gdm.autoSuspend = false;
+
+        xserver = {
+            displayManager.gdm.autoSuspend = false;
+            videoDrivers = [ "amdgpu" "nvidia" ];
+        };
     };
+
+    hardware.nvidia.open = false;
 
     home-manager.users.anna.imports = [ ./home ];
 

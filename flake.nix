@@ -70,6 +70,12 @@
             flake-compat.follows = "flake-compat";
         };
 
+        nixified-ai.url = github:nixified-ai/flake;
+        nixified-ai.inputs = {
+            nixpkgs.follows = "nixpkgs";
+            flake-parts.follows = "flake-parts";
+        };
+
         # packages
 
         nix.url = "https://flakehub.com/f/DeterminateSystems/nix-src/*";
@@ -139,12 +145,14 @@
             https://nix-community.cachix.org
             https://anna328p.cachix.org
             https://install.determinate.systems
+            https://ai.cachix.org
         '';
 
         extra-trusted-public-keys = ''
             nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
             anna328p.cachix.org-1:HcPUMrtQ7qT+bfx2fQ2HyJV5wCYQ2A3WwhxxrxDkvG0=
             cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM=
+            ai.cachix.org-1:N9dzRK+alWwoKXQlnn0H6aUx0lU/mspIoz8hMvGvbbc=
         '';
     };
 
